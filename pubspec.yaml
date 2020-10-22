@@ -1,5 +1,5 @@
 name: flutter_sphero_sdk
-description: A Flutter SDK for Sphero
+description: A Flutter SDK for Sphero baseed of the gobot
 version: 0.0.1
 author:
 homepage:
