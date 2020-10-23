@@ -8,11 +8,23 @@ const SensorData = 'sensordata';
 
 /// Collision event when collision is detected
 const Collision = 'collision';
+int calculateChecksum(List<int> header, List<int> body) {
+  final buf = [...header, ...body];
+  return calculateChecksum2(buf.skip(2).toList());
+}
+
+int calculateChecksum2(List<int> buf) {
+  var calculatedChecksum = 0;
+  for (var i = 0; i < buf.length; i++) {
+    calculatedChecksum += buf[i];
+  }
+  return ~(calculatedChecksum % 256);
+}
 
 class Packet {
-  const Packet(this.header, this.body, this.checksum);
-  final Uint8List header;
-  final Uint8List body;
+  Packet(this.header, this.body) : checksum = calculateChecksum(header, body);
+  final List<int> header;
+  final List<int> body;
   final int checksum;
 }
 
@@ -38,6 +50,8 @@ class LocatorConfig {
 
   /// Controls how the X,Y-plane is aligned with Sphero’s heading coordinate system.
   final int yawTare;
+
+  List<int> toBytes() {}
 }
 
 /// CollisionConfig provides configuration for the collision detection alogorithm.
@@ -103,6 +117,9 @@ class CollisionPacket {
 
   /// Millisecond timer
   final int timestamp;
+
+  /// Big Endian
+  factory CollisionPacket.fromBytes(List<int> list) {}
 }
 
 /// DataStreamingConfig provides configuration for Sensor Data Streaming.
@@ -130,6 +147,8 @@ class DataStreamingConfig {
 
   /// Bitwise selector of more data sources to stream (optional)
   final int mask2;
+
+  List<int> toBytes() {}
 }
 
 /// DataStreamingPacket represents the response from a Data Streaming event
@@ -177,6 +196,9 @@ class DataStreamingPacket {
     this.veloX,
     this.veloY,
   }); // int16
+
+  factory DataStreamingPacket.fromBytes(List<int> list) {}
+
   /// 8000 0000h	accelerometer axis X, raw	-2048 to 2047	4mG
   final int rawAccX; // int16
   /// 4000 0000h	accelerometer axis Y, raw	-2048 to 2047	4mG

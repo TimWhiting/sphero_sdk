@@ -9,6 +9,8 @@ dependencies:
     sdk: flutter
   flutter_ble_lib: any
   rxdart: any
+  dartx: any
+  buffer: any
 
 flutter:
   # Nothing
