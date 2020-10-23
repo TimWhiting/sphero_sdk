@@ -1,3 +1,21 @@
+import 'dart:typed_data';
+
+/// SensorData event when sensor data is received
+const ERROR = 'error';
+
+/// SensorData event when sensor data is received
+const SensorData = 'sensordata';
+
+/// Collision event when collision is detected
+const Collision = 'collision';
+
+class Packet {
+  const Packet(this.header, this.body, this.checksum);
+  final Uint8List header;
+  final Uint8List body;
+  final int checksum;
+}
+
 /// LocatorConfig provides configuration for the Location api.
 /// https://github.com/orbotix/DeveloperResources/blob/master/docs/Sphero_API_1.50.pdf
 /// The current (X,Y) coordinates of Sphero on the ground plane in centimeters.

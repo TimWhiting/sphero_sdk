@@ -1,20 +1,8 @@
+import 'dart:async';
 import 'dart:typed_data';
 
-/// SensorData event when sensor data is received
-const ERROR = 'error';
-
-/// SensorData event when sensor data is received
-const SensorData = 'sensordata';
-
-/// Collision event when collision is detected
-const Collision = 'collision';
-
-class Packet {
-  const Packet(this.header, this.body, this.checksum);
-  final Uint8List header;
-  final Uint8List body;
-  final int checksum;
-}
+import 'package:rxdart/rxdart.dart';
+import 'src/packets.dart';
 
 class SpheroDriver {
   SpheroDriver({this.name = 'Sphero'});
@@ -23,4 +11,11 @@ class SpheroDriver {
   int _seq;
   final asyncResponse = <Uint8List>[];
   final syncResponse = <Uint8List>[];
+  final packetChannel = BehaviorSubject<Packet>();
+  final responseChannel = BehaviorSubject<DataStreamingPacket>();
+  final events = BehaviorSubject<String>();
+
+  /// Halt halts the SpheroDriver and sends a SpheroDriver.Stop command to the Sphero.
+  /// Returns true on successful halt.
+  void halt() {}
 }
