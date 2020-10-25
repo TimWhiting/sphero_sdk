@@ -200,33 +200,40 @@ typedef CommandGenerator = CommandEncoder Function(int deviceId);
 
 typedef CommandEncoder = Command Function(CommandPartial partial);
 
-abstract class ThreeAxisSensor {
-  final int x;
-  final int y;
-  final int z;
+class ThreeAxisSensor {
+  final double x;
+  final double y;
+  final double z;
 
   ThreeAxisSensor({this.x, this.y, this.z});
 }
 
-abstract class TwoAxisSensor {
-  final int x;
-  final int y;
+class TwoAxisSensor {
+  final double x;
+  final double y;
 
   TwoAxisSensor({this.x, this.y});
 }
 
-abstract class AngleSensor {
-  final int pitch;
-  final int roll;
-  final int yaw;
+class AngleSensor {
+  final double pitch;
+  final double roll;
+  final double yaw;
 
   AngleSensor({this.pitch, this.roll, this.yaw});
 }
 
-abstract class SensorResponse {
+class SensorResponse {
   AngleSensor angles;
   ThreeAxisSensor accelerometer;
   ThreeAxisSensor gyro;
   TwoAxisSensor position;
   TwoAxisSensor velocity;
+
+  SensorResponse(
+      {this.angles,
+      this.accelerometer,
+      this.gyro,
+      this.position,
+      this.velocity});
 }
