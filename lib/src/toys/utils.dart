@@ -44,12 +44,11 @@ List<int> sensorValuesToRawV21(List<int> sensorMask,
       return v21;
     });
 
-Map<String, List<int>> sensorValuesToRaw(List<int> sensorMask,
+SensorMaskRaw sensorValuesToRaw(List<int> sensorMask,
     [APIVersion apiVersion = APIVersion.V2]) {
-  return {
-    'v2': sensorValuesToRawV2(sensorMask, apiVersion),
-    'v21': sensorValuesToRawV21(sensorMask, apiVersion)
-  };
+  return SensorMaskRaw(
+      v2: sensorValuesToRawV2(sensorMask, apiVersion),
+      v21: sensorValuesToRawV21(sensorMask, apiVersion));
 }
 
 int flatSensorMask(List<int> sensorMask) => sensorMask.fold(0, (bits, m) {

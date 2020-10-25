@@ -19,7 +19,7 @@ final sequencer = () {
   };
 };
 
-final factory = ({int Function() seq}) {
+final commandsFactory = ({int Function() seq}) {
   final getSequence = seq ?? sequencer();
 
   final gen = (int deviceId) => (Command part) => Command.fromPart(

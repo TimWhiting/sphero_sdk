@@ -23,9 +23,10 @@ class CharacteristicUUID {
 }
 
 class ToyAdvertisement {
-  String name;
-  String prefix;
-  Core typeof;
+  final String name;
+  final String prefix;
+  final Core Function(Peripheral) typeof;
+  const ToyAdvertisement({this.name, this.prefix, this.typeof});
 }
 
 class Stance {
@@ -49,6 +50,7 @@ class SensorControlDefaults {
 }
 
 class SensorMaskRaw {
+  SensorMaskRaw({this.v2, this.v21});
   List<int> v2;
   List<int> v21;
 }
