@@ -174,8 +174,8 @@ abstract class Core {
     print('init-discoverAllServicesAndCharacteristics');
     await p.discoverAllServicesAndCharacteristics();
 
-    bindServices();
-    bindListeners();
+    await bindServices();
+    await bindListeners();
 
     print('init-done');
   }
