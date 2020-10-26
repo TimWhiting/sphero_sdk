@@ -43,7 +43,7 @@ class Queue<T> {
     return completer.future;
   }
 
-  // Becareful not to exceed 255 as seq will return to 0 and it can collide.
+  /// Be careful not to exceed 255 as seq will return to 0 and it can collide.
   void processCommand() {
     final command = commandQueue.removeAt(0);
     if (command != null) {

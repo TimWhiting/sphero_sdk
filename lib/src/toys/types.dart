@@ -1,8 +1,4 @@
-// web
-// export enum ServicesUUID {
-//   apiV2ControlService = '00010001-574f-4f20-5370-6865726f2121',
-//   nordicDfuService = '00020001-574f-4f20-5370-6865726f2121'
-// }
+import 'package:flutter/foundation.dart';
 
 import 'core.dart';
 
@@ -26,7 +22,8 @@ class ToyAdvertisement {
   final String name;
   final String prefix;
   final Core Function(Peripheral) typeof;
-  const ToyAdvertisement({this.name, this.prefix, this.typeof});
+  const ToyAdvertisement(
+      {@required this.name, @required this.prefix, @required this.typeof});
 }
 
 class Stance {
@@ -55,7 +52,6 @@ class SensorMaskRaw {
   List<int> v21;
 }
 
-// tslint:disable:no-bitwise
 class SensorMaskV2 {
   static const int off = 0;
   static const int velocityY = 1 << 3;
@@ -96,4 +92,3 @@ class SensorMaskV2 {
       SensorMaskV2.velocityX |
       SensorMaskV2.velocityY;
 }
-// tslint:enable:no-bitwise

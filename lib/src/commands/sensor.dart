@@ -6,19 +6,19 @@ class Sensor {
   Command enableCollisionAsync() =>
       _encode(CommandPartial(commandId: SensorCommandIds.enableCollisionAsync));
 
-  /**
-     * @param  {number} xThreshold An 8-bit settable threshold for the X (left/right)
-     * and Y (front/back) axes of Sphero. A value of 00h disables the contribution of that axis.
-     * @param  {number} yThreshold An 8-bit settable threshold for the X (left/right)
-     * and Y (front/back) axes of Sphero. A value of 00h disables the contribution of that axis.
-     * @param  {number} xSpeed An 8-bit settable speed value for the X and Y axes.
-     * This setting is ranged by the speed, then added to Xt, Yt to generate the final threshold value.
-     * @param  {number} ySpeed An 8-bit settable speed value for the X and Y axes.
-     * This setting is ranged by the speed, then added to Xt, Yt to generate the final threshold value.
-     * @param  {number} deadTime An 8-bit post-collision dead time to prevent retriggering; specified in 10ms increments.
-     * @param  {number=0x01} method Detection method type to use. Currently the only method
-     * supported is 01h. Use 00h to completely disable this service.
-     */
+  /// Configures the collision seetings:
+  ///
+  /// [xThreshold] An 8-bit settable threshold for the X (left/right)
+  /// and Y (front/back) axes of Sphero. A value of 00h disables the contribution of that axis.
+  /// [yThreshold] An 8-bit settable threshold for the X (left/right)
+  /// and Y (front/back) axes of Sphero. A value of 00h disables the contribution of that axis.
+  /// [xSpeed] An 8-bit settable speed value for the X and Y axes.
+  /// This setting is ranged by the speed, then added to Xt, Yt to generate the final threshold value.
+  /// [ySpeed] An 8-bit settable speed value for the X and Y axes.
+  /// This setting is ranged by the speed, then added to Xt, Yt to generate the final threshold value.
+  /// [deadTime] An 8-bit post-collision dead time to prevent retriggering; specified in 10ms increments.
+  /// [method] {method=0x01}  Detection method type to use. Currently the only method
+  /// supported is 01h. Use 00h to completely disable this service.
   Command configureCollision(
           int xThreshold, int yThreshold, int xSpeed, int ySpeed, int deadTime,
           {int method = 0x01}) =>

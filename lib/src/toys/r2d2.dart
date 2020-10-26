@@ -71,7 +71,7 @@ class R2D2 extends RollableToy {
   }
 
   // TODO: Refractor this and simplify
-  // utility calculation for dome rotation
+  /// utility calculation for dome rotation
   Uint8List calculateDomeAngle(int angle) {
     final result = Uint8List(2);
     switch (angle) {
@@ -135,7 +135,6 @@ class R2D2 extends RollableToy {
     values[1] = 0;
     values[0] = val;
     while (values[0] > 0) {
-      // tslint:disable-next-line
       values[0] = values[0] >> 1;
       values[1] = values[1] + 1;
     }

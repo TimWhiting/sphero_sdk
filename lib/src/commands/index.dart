@@ -7,7 +7,7 @@ import 'system_info.dart';
 import 'types.dart';
 import 'user_io.dart';
 
-final sequencer = () {
+int Function() sequencer() {
   var s = 0;
   return () {
     var temp = s;
@@ -17,9 +17,9 @@ final sequencer = () {
     }
     return temp;
   };
-};
+}
 
-final commandsFactory = ({int Function() seq}) {
+Device commandsFactory({int Function() seq}) {
   final getSequence = seq ?? sequencer();
 
   final gen = (int deviceId) => (Command part) => Command.fromPart(
@@ -36,7 +36,7 @@ final commandsFactory = ({int Function() seq}) {
       systemInfo: SystemInfo(gen),
       userIO: UserIO(gen),
       sensor: Sensor(gen));
-};
+}
 
 class Device {
   final API api;

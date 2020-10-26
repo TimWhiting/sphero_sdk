@@ -12,7 +12,7 @@ class LightningMcQueen extends RollableToy {
 
   Future<QueuePayload> driveAsRc(int heading, int speed) {
     final cmd = commands.driving.driveAsRc(heading, speed);
-    // prtin(cmd.raw.map((x) => x.toString(16).padStart(2, '0')).join(':'));
+    // print(cmd.raw.map((x) => x.toString(16).padStart(2, '0')).join(':'));
     return queueCommand(cmd);
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:buffer/buffer.dart';
 import 'package:sphero_sdk/src/commands/types.dart';
 

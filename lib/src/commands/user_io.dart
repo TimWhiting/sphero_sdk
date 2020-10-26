@@ -29,26 +29,32 @@ class UserIO {
   Command playAnimation(int animation) => _encodeAnimatronics(CommandPartial(
       commandId: AnimatronicsCommandIds.animationBundle,
       payload: [0x00, animation]));
-  // Set R2D2 main LED color based on RGB vales (each can range between 0 and 255)
-  // same like front LED color
+
+  /// Set R2D2 main LED color based on RGB vales (each can range between 0 and 255)
+  /// same like front LED color
   Command setR2D2LEDColor(int r, int g, int b) => _encode(CommandPartial(
       commandId: UserIOCommandIds.allLEDs,
       payload: [0x00, 0x77, r, g, b, r, g, b]));
-  // Set R2D2 front LED color based on RGB vales (each can range between 0 and 255)
-  // same like main LED color
+
+  /// Set R2D2 front LED color based on RGB vales (each can range between 0 and 255)
+  /// same like main LED color
   Command setR2D2FrontLEDColor(int r, int g, int b) => _encode(CommandPartial(
       commandId: UserIOCommandIds.allLEDs, payload: [0x00, 0x07, r, g, b]));
-  // Set R2D2 back LED color based on RGB vales (each can range between 0 and 255)
+
+  /// Set R2D2 back LED color based on RGB vales (each can range between 0 and 255)
   Command setR2D2BackLEDcolor(int r, int g, int b) => _encode(CommandPartial(
       commandId: UserIOCommandIds.allLEDs, payload: [0x00, 0x70, r, g, b]));
-  // Set R2D2 the holo projector intensity based on 0-255 values
+
+  /// Set R2D2 the holo projector intensity based on 0-255 values
   Command setR2D2HoloProjectorIntensity(int i) => _encode(CommandPartial(
       commandId: UserIOCommandIds.allLEDs, payload: [0x00, 0x80, i]));
-  // Set R2D2 the logic displays intensity based on 0-255 values
+
+  /// Set R2D2 the logic displays intensity based on 0-255 values
   Command setR2D2LogicDisplaysIntensity(int i) => _encode(CommandPartial(
       commandId: UserIOCommandIds.allLEDs, payload: [0x00, 0x08, i]));
-  // R2D2 Waddle
-  // R2D2 waddles 3 = start waddle, 0 = stop waddle
+
+  /// R2D2 Waddle
+  /// R2D2 waddles 3 = start waddle, 0 = stop waddle
   Command setR2D2Waddle(int waddle) => _encodeAnimatronics(CommandPartial(
       commandId: AnimatronicsCommandIds.shoulderAction, payload: [waddle]));
   Command playR2D2Sound(int hex1, int hex2) => _encode(CommandPartial(
