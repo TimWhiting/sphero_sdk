@@ -22,7 +22,7 @@ class Event {
 }
 
 /// The core class handling most basic functionality
-abstract class Core {
+class Core {
   /// Override in child class to get right percent
   double maxVoltage = 0;
   double minVoltage = 1;
@@ -71,7 +71,7 @@ abstract class Core {
   Future<void> start() async {
     print('start-start');
     // start
-    init();
+    await init();
 
     print('start-usetheforce...band');
     await write(antiDoSCharacteristic, 'usetheforce...band');
@@ -82,8 +82,6 @@ abstract class Core {
     print('start-apiV2Characteristic-subscribe');
     apiV2Characteristic.monitor();
 
-    print('start-initPromise');
-    await initCompleter.future;
     started = true;
 
     try {
@@ -135,13 +133,14 @@ abstract class Core {
     return queueCommand(commands.sensor.enableCollisionAsync());
   }
 
-  Future<QueuePayload> configureCollisionDetection(
-      {int xThreshold = 100,
-      int yThreshold = 100,
-      int xSpeed = 100,
-      int ySpeed = 100,
-      int deadTime = 10,
-      int method = 0x01}) async {
+  Future<QueuePayload> configureCollisionDetection({
+    int xThreshold = 100,
+    int yThreshold = 100,
+    int xSpeed = 100,
+    int ySpeed = 100,
+    int deadTime = 10,
+    int method = 0x01,
+  }) async {
     return queueCommand(commands.sensor.configureCollision(
         xThreshold, yThreshold, xSpeed, ySpeed, deadTime,
         method: method));
@@ -197,7 +196,7 @@ abstract class Core {
   Future<void> bindServices() async {
     print('bindServices');
     final services = await peripheral.services();
-    services.forEach((s) async {
+    for (final s in services) {
       final characteristics = await s.characteristics();
       characteristics.forEach((c) {
         if (c.uuid == CharacteristicUUID.antiDoSCharacteristic) {
@@ -213,12 +212,14 @@ abstract class Core {
           subsCharacteristic = c;
         }
       });
-    });
+    }
   }
 
   Future<void> bindListeners() async {
     print('bindListeners');
     // TODO: Figure this out
+    assert(apiV2Characteristic != null);
+    assert(dfuControlCharacteristic != null);
     apiV2Characteristic
         .monitor(transactionId: 'read')
         .listen((Uint8List data) => onApiRead(data));

@@ -12,9 +12,18 @@ dependencies:
   basics: any
   buffer: any
   dartx: any
+  freezed_annotation: any
 
 dev_dependencies:
+  freezed: any
+  derry: any
+  build_runner: any
+  mockito: any
   flutter_test:
     sdk: flutter
 
 flutter:
+
+scripts:
+  gen: flutter pub run build_runner build --delete-conflicting-outputs
+  genw: flutter pub run build_runner watch --delete-conflicting-outputs

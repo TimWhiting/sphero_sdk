@@ -27,7 +27,8 @@ class Driving {
     int heading,
     List<int> flags,
   ) =>
-      _encode(CommandPartial(
+      _encode(
+        CommandPartial(
           commandId: DrivingCommandIds.driveWithHeading,
           targetId: 0x12,
           payload: [
@@ -35,7 +36,9 @@ class Driving {
             (heading >> 8) & 0xff,
             heading & 0xff,
             combineFlags(flags)
-          ]));
+          ],
+        ),
+      );
   Command driveAsRc(int heading, int speed) => _encode(CommandPartial(
       // Value: 8d 08 16 02 8b bf 72 93 de 00 00 00 00 b2 d8
       commandId: DrivingCommandIds.driveAsRc,

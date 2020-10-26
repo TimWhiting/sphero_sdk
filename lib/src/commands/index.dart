@@ -19,10 +19,10 @@ int Function() sequencer() {
   };
 }
 
-Device commandsFactory({int Function() seq}) {
+Device commandsFactory([int Function() seq]) {
   final getSequence = seq ?? sequencer();
 
-  final gen = (int deviceId) => (Command part) => Command.fromPart(
+  final gen = (int deviceId) => (CommandPartial part) => Command.fromPart(
       commandFlags: [Flags.requestsResponse, Flags.resetsInactivityTimeout],
       deviceId: deviceId,
       sequenceNumber: getSequence(),

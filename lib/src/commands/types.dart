@@ -1,6 +1,10 @@
 import 'dart:typed_data';
-import 'encoder.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'encoder.dart';
+part 'types.freezed.dart';
+
+// TODO: Make some things enums and have extensions to get the int values
 class DeviceId {
   static const int apiProcessor = 0x10;
   static const int systemInfo = 0x11;
@@ -200,40 +204,30 @@ typedef CommandGenerator = CommandEncoder Function(int deviceId);
 
 typedef CommandEncoder = Command Function(CommandPartial partial);
 
-class ThreeAxisSensor {
-  final double x;
-  final double y;
-  final double z;
-
-  ThreeAxisSensor({this.x, this.y, this.z});
+@freezed
+abstract class ThreeAxisSensor with _$ThreeAxisSensor {
+  const factory ThreeAxisSensor({double x, double y, double z}) =
+      _ThreeAxisSensor;
 }
 
-class TwoAxisSensor {
-  final double x;
-  final double y;
-
-  TwoAxisSensor({this.x, this.y});
+@freezed
+abstract class TwoAxisSensor with _$TwoAxisSensor {
+  const factory TwoAxisSensor({double x, double y}) = _TwoAxisSensor;
 }
 
-class AngleSensor {
-  final double pitch;
-  final double roll;
-  final double yaw;
-
-  AngleSensor({this.pitch, this.roll, this.yaw});
+@freezed
+abstract class AngleSensor with _$AngleSensor {
+  const factory AngleSensor({double pitch, double roll, double yaw}) =
+      _AngleSensor;
 }
 
-class SensorResponse {
-  AngleSensor angles;
-  ThreeAxisSensor accelerometer;
-  ThreeAxisSensor gyro;
-  TwoAxisSensor position;
-  TwoAxisSensor velocity;
-
-  SensorResponse(
-      {this.angles,
-      this.accelerometer,
-      this.gyro,
-      this.position,
-      this.velocity});
+@freezed
+abstract class SensorResponse with _$SensorResponse {
+  const factory SensorResponse({
+    @nullable AngleSensor angles,
+    @nullable ThreeAxisSensor accelerometer,
+    @nullable ThreeAxisSensor gyro,
+    @nullable TwoAxisSensor position,
+    @nullable TwoAxisSensor velocity,
+  }) = _SensorResponse;
 }

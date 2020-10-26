@@ -54,8 +54,6 @@ extension Encoding on Command {
       default:
         out.bytes.add(byte);
     }
-
-    // tslint:disable-next-line:no-bitwise
     out.checksum = (out.checksum + byte) & 0xff;
   }
 }

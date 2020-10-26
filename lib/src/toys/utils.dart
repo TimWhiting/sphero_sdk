@@ -81,13 +81,14 @@ class ParserState {
 ParserState fillAngles(ParserState state) {
   final floats = state.floats;
   final sensorMask = state.sensorMask;
-  final response = state.response;
+  var response = state.response;
   final location = state.location;
   if (sensorMask.v2.indexOf(SensorMaskV2.imuAnglesFilteredAll) >= 0) {
-    response.angles = AngleSensor(
-        pitch: floats[location],
-        roll: floats[location + 1],
-        yaw: floats[location + 2]);
+    response = response.copyWith(
+        angles: AngleSensor(
+            pitch: floats[location],
+            roll: floats[location + 1],
+            yaw: floats[location + 2]));
 
     return ParserState(
         floats: floats,
@@ -101,11 +102,14 @@ ParserState fillAngles(ParserState state) {
 ParserState fillAccelerometer(ParserState state) {
   final floats = state.floats;
   final sensorMask = state.sensorMask;
-  final response = state.response;
+  var response = state.response;
   final location = state.location;
   if (state.sensorMask.v2.indexOf(SensorMaskV2.accelerometerFilteredAll) >= 0) {
-    response.accelerometer = ThreeAxisSensor(
-        x: floats[location], y: floats[location + 1], z: floats[location + 2]);
+    response = response.copyWith(
+        accelerometer: ThreeAxisSensor(
+            x: floats[location],
+            y: floats[location + 1],
+            z: floats[location + 2]));
     return ParserState(
         floats: floats,
         sensorMask: sensorMask,
@@ -118,16 +122,19 @@ ParserState fillAccelerometer(ParserState state) {
 ParserState fillLocator(ParserState state) {
   final floats = state.floats;
   final sensorMask = state.sensorMask;
-  final response = state.response;
+  var response = state.response;
   final location = state.location;
   if (sensorMask.v2.indexOf(SensorMaskV2.locatorAll) >= 0) {
     final metersToCentimeters = 100.0;
-    response.position = TwoAxisSensor(
-        x: floats[location] * metersToCentimeters,
-        y: floats[location + 1] * metersToCentimeters);
-    response.velocity = TwoAxisSensor(
-        x: floats[location + 2] * metersToCentimeters,
-        y: floats[location + 3] * metersToCentimeters);
+    response = response.copyWith(
+        position: TwoAxisSensor(
+            x: floats[location] * metersToCentimeters,
+            y: floats[location + 1] * metersToCentimeters));
+    response = response.copyWith(
+      velocity: TwoAxisSensor(
+          x: floats[location + 2] * metersToCentimeters,
+          y: floats[location + 3] * metersToCentimeters),
+    );
     return ParserState(
         floats: floats,
         response: response,
@@ -141,14 +148,15 @@ ParserState fillLocator(ParserState state) {
 ParserState fillGyroV2(ParserState state) {
   final floats = state.floats;
   final sensorMask = state.sensorMask;
-  final response = state.response;
+  var response = state.response;
   final location = state.location;
   if (sensorMask.v2.indexOf(SensorMaskV2.gyroFilteredAllV2) >= 0) {
     final multiplier = 2000.0 / 32767.0;
-    response.gyro = ThreeAxisSensor(
-        x: floats[location] * multiplier,
-        y: floats[location + 1] * multiplier,
-        z: floats[location + 2] * multiplier);
+    response = response.copyWith(
+        gyro: ThreeAxisSensor(
+            x: floats[location] * multiplier,
+            y: floats[location + 1] * multiplier,
+            z: floats[location + 2] * multiplier));
 
     return ParserState(
         floats: floats,
@@ -162,11 +170,14 @@ ParserState fillGyroV2(ParserState state) {
 ParserState fillGyroV21(ParserState state) {
   final floats = state.floats;
   final sensorMask = state.sensorMask;
-  final response = state.response;
+  var response = state.response;
   final location = state.location;
   if (sensorMask.v21.indexOf(SensorMaskV2.gyroFilteredAllV21) >= 0) {
-    response.gyro = ThreeAxisSensor(
-        x: floats[location], y: floats[location + 1], z: floats[location + 2]);
+    response = response.copyWith(
+        gyro: ThreeAxisSensor(
+            x: floats[location],
+            y: floats[location + 1],
+            z: floats[location + 2]));
 
     return ParserState(
         floats: floats,
