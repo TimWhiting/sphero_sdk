@@ -1,0 +1,172 @@
+[NEW] Primary Service
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service003c
+        0000180a-0000-1000-8000-00805f9b34fb
+        Device Information
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service003c/char0046
+        00002a26-0000-1000-8000-00805f9b34fb
+        Firmware Revision String
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service003c/char0046/desc0048
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service003c/char0044
+        00002a29-0000-1000-8000-00805f9b34fb
+        Manufacturer Name String
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service003c/char0042
+        00002a24-0000-1000-8000-00805f9b34fb
+        Model Number String
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service003c/char003f
+        00002a25-0000-1000-8000-00805f9b34fb
+        Serial Number String
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service003c/char003f/desc0041
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service003c/char003d
+        00002a27-0000-1000-8000-00805f9b34fb
+        Hardware Revision String
+[NEW] Primary Service
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0034
+        00001016-d102-11e1-9b23-00025b00a5a5
+        Vendor specific
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0034/char0039
+        00001014-d102-11e1-9b23-00025b00a5a5
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0034/char0039/desc003b
+        00002902-0000-1000-8000-00805f9b34fb
+        Client Characteristic Configuration
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0034/char0037
+        00001017-d102-11e1-9b23-00025b00a5a5
+        Vendor specific
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0034/char0035
+        00001013-d102-11e1-9b23-00025b00a5a5
+        Vendor specific
+[NEW] Primary Service
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012
+        22bb746f-2bb0-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0031
+        22bb746f-3bba-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0031/desc0033
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char002e
+        22bb746f-2bbf-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char002e/desc0030
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char002b
+        22bb746f-2bbe-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char002b/desc002d
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0029
+        22bb746f-2bbd-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0026
+        22bb746f-2bba-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0026/desc0028
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0023
+        22bb746f-2bb9-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0023/desc0025
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0020
+        22bb746f-2bb8-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0020/desc0022
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char001d
+        22bb746f-2bb7-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char001d/desc001f
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0019
+        22bb746f-2bb6-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0019/desc001c
+        00002902-0000-1000-8000-00805f9b34fb
+        Client Characteristic Configuration
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0019/desc001b
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0016
+        22bb746f-2bb2-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0016/desc0018
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0013
+        22bb746f-2bb1-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0012/char0013/desc0015
+        00002904-0000-1000-8000-00805f9b34fb
+        Characteristic Format
+[NEW] Primary Service
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service000c
+        22bb746f-2ba0-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service000c/char000f
+        22bb746f-2ba6-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service000c/char000f/desc0011
+        00002902-0000-1000-8000-00805f9b34fb
+        Client Characteristic Configuration
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service000c/char000d
+        22bb746f-2ba1-7554-2d6f-726568705327
+        Vendor specific
+[NEW] Primary Service
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0008
+        00001801-0000-1000-8000-00805f9b34fb
+        Generic Attribute Profile
+[NEW] Characteristic
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0008/char0009
+        00002a05-0000-1000-8000-00805f9b34fb
+        Service Changed
+[NEW] Descriptor
+        /org/bluez/hci0/dev_D6_76_3E_C5_5C_BE/service0008/char0009/desc000b
+        00002902-0000-1000-8000-00805f9b34fb
+        Client Characteristic Configuration
