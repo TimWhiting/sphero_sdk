@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import '../utils.dart';
-import '../command.dart';
+import 'command.dart';
 import 'core.dart';
 
 class Sphero extends Core {

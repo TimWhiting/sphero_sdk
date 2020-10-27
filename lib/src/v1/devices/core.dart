@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import '../command.dart';
+import 'command.dart';
 import '../utils.dart';
 
 class Device {
