@@ -4,6 +4,7 @@ import 'r2d2.dart';
 import 'r2q5.dart';
 import 'sphero_mini.dart';
 import 'sphero_bolt.dart';
+export '../commands/index.dart';
 export 'core.dart';
 export 'bb9e.dart';
 export 'lightning_mcqueen.dart';
@@ -11,6 +12,7 @@ export 'r2d2.dart';
 export 'r2q5.dart';
 export 'sphero_mini.dart';
 export 'sphero_bolt.dart';
+export 'types.dart';
 
 final allToys = [
   BB9E.advertisement,

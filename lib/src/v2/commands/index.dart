@@ -7,6 +7,17 @@ import 'system_info.dart';
 import 'types.dart';
 import 'user_io.dart';
 
+export 'api.dart';
+export 'decoder.dart';
+export 'driving.dart';
+export 'encoder.dart';
+export 'power.dart';
+export 'sensor.dart';
+export 'something_api.dart';
+export 'system_info.dart';
+export 'types.dart';
+export 'user_io.dart';
+
 int Function() sequencer() {
   var s = 0;
   return () {

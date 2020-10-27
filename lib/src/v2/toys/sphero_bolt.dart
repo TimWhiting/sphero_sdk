@@ -1,7 +1,6 @@
-import 'package:sphero_sdk/src/toys/core.dart';
-import 'package:sphero_sdk/src/toys/types.dart';
-
+import 'core.dart';
 import 'rollable_toy.dart';
+import 'types.dart';
 
 class SpheroBolt extends RollableToy {
   static final advertisement = ToyAdvertisement(

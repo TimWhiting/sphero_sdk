@@ -3,8 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:sphero_sdk/src/toys/core.dart';
-import 'package:sphero_sdk/src/toys/types.dart';
+import 'package:sphero_sdk/src/v2/toys/index.dart';
 
 class PeripheralMock extends Mock implements Peripheral {
   final _services = [

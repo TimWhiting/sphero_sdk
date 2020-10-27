@@ -1,5 +1,4 @@
-import 'package:sphero_sdk/src/toys/core.dart';
-
+import 'core.dart';
 import 'r2d2.dart';
 import 'types.dart';
 

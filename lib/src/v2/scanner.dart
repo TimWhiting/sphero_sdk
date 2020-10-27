@@ -1,7 +1,6 @@
 import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:dartx/dartx.dart';
 import 'toys/index.dart';
-import 'toys/types.dart';
 
 class ToyDiscovered extends ToyAdvertisement {
   final ScanResult peripheral;

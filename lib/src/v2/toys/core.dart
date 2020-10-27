@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-export 'package:flutter_ble_lib/flutter_ble_lib.dart' show Peripheral;
 import 'package:flutter_ble_lib/flutter_ble_lib.dart';
-import 'package:sphero_sdk/src/commands/decoder.dart';
-import 'package:sphero_sdk/src/commands/index.dart';
-import 'package:sphero_sdk/src/commands/types.dart';
-import 'package:sphero_sdk/src/toys/queue.dart';
-import 'package:sphero_sdk/src/toys/types.dart';
-import 'package:sphero_sdk/src/toys/utils.dart';
+
+import '../commands/index.dart';
+import 'types.dart';
+import 'queue.dart';
+import 'utils.dart';
+
+export 'package:flutter_ble_lib/flutter_ble_lib.dart' show Peripheral;
+export '../commands/index.dart';
+export 'utils.dart';
 
 class QueuePayload {
   Command command;

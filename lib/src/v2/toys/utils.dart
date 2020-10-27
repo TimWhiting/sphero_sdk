@@ -1,6 +1,6 @@
 import 'package:buffer/buffer.dart';
-import 'package:sphero_sdk/src/commands/types.dart';
 
+import 'core.dart';
 import 'types.dart';
 
 List<int> sensorValuesToRawV2(List<int> sensorMask,

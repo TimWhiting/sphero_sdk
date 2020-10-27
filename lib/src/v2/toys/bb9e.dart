@@ -1,5 +1,4 @@
-import 'package:sphero_sdk/src/toys/core.dart';
-
+import 'core.dart';
 import 'rollable_toy.dart';
 import 'types.dart';
 

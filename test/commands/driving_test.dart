@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sphero_sdk/src/commands/index.dart';
+import 'package:sphero_sdk/src/v2/toys/index.dart';
 
 void main() {
   test('Drive', () {
