@@ -375,4 +375,6 @@ class ResponseV1 {
   final Uint8List list;
 
   ResponseV1(this.list);
+
+  RGB toRGB() {}
 }
