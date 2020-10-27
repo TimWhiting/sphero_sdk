@@ -4,7 +4,10 @@ import '../command.dart';
 import '../utils.dart';
 
 class Core {
+  Core(Future<ResponseV1> Function(int, Uint8List) Function(int) commandGen)
+      : command = commandGen(0x00);
   Future<ResponseV1> Function(int command, Uint8List data) command;
+
   Future<ResponseV1> ping() => command(CoreV1.ping, null);
   Future<ResponseV1> version() => command(CoreV1.version, null);
 
