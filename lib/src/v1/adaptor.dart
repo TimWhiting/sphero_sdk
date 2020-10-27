@@ -30,7 +30,6 @@ class AdaptorV1 {
           _connectPeripheral();
         }
       });
-      await bleManager.destroyClient();
     }
   }
 
@@ -48,12 +47,53 @@ class AdaptorV1 {
     await setAntiDos();
     await setTXPower(7);
     await wake();
+    final cwithValue = await peripheral.readCharacteristic(
+        RobotControlService, ResponseCharacteristic);
+    final data = cwithValue.value;
+    if (data != null && data.length > 5) {
+      readHandler(data);
+    }
   }
 
-  void _connectPeripheral() {}
+  void readHandler(Uint8List data) {
+    // TODO:
+    throw UnimplementedError();
+  }
+
+  Future<void> wake() {
+    return writeServiceCharacteristic(
+        BLEService, WakeCharacteristic, Uint8List.fromList([1]));
+  }
+
+  Future<void> setTXPower(int level) {
+    return writeServiceCharacteristic(
+        BLEService, TXPowerCharacteristic, Uint8List.fromList([level]));
+  }
+
+  Future<void> setAntiDos() {
+    final str = '011i3';
+    final bytes = Uint8List.fromList(str.codeUnits);
+    return writeServiceCharacteristic(BLEService, AntiDosCharacteristic, bytes);
+  }
+
+  Future<void> _connectPeripheral() async {
+    await peripheral.discoverAllServicesAndCharacteristics();
+    return await devModeOn();
+  }
+
+  Future<void> _connectBLE() async {
+    if (!await peripheral.isConnected()) {
+      await peripheral.connect();
+      isConnected = true;
+    }
+  }
+
   Future<void> writeServiceCharacteristic(
-    String robotControlService,
-    String commandsCharacteristic,
+    String serviceId,
+    String characteristicId,
     Uint8List data,
-  ) {}
+  ) async {
+    await peripheral.writeCharacteristic(
+        serviceId, characteristicId, data, true);
+  }
 }

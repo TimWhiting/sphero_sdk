@@ -25,28 +25,34 @@ RGB randomColor() {
   return RGB(red: rand(), green: rand(), blue: rand());
 }
 
-/// Calculates an Uint8List-like [data] object's checksum through mod-256ing it's contents
-/// then ones-complimenting the result.
-int checksum(List<int> data) {
-  int value = 0x00;
+extension Checksum on List<int> {
+  /// Calculates an Uint8List-like [data] object's checksum through mod-256ing it's contents
+  /// then ones-complimenting the result.
+  int get checksum {
+    final data = toList();
+    int value = 0x00;
 
-  for (var i = 0; i < data.length; i++) {
-    value += data[i];
+    for (var i = 0; i < data.length; i++) {
+      value += data[i];
+    }
+
+    return (value % 256) ^ 0xFF;
   }
-
-  return (value % 256) ^ 0xFF;
 }
 
-/// Converts a number to an array of hex values within the provided byte frame.
-Uint8List intToHexArray(int value, int numBytes) {
-  var hexArray = Uint8List(numBytes);
+extension Hex on int {
+  /// Converts a number to an array of hex values within the provided byte frame.
+  Uint8List toHexArray(int numBytes) {
+    var value = this;
+    final hexArray = Uint8List(numBytes);
 
-  for (var i = numBytes - 1; i >= 0; i--) {
-    hexArray[i] = value & 0xFF;
-    value >>= 8;
+    for (var i = numBytes - 1; i >= 0; i--) {
+      hexArray[i] = value & 0xFF;
+      value >>= 8;
+    }
+
+    return hexArray;
   }
-
-  return hexArray;
 }
 
 /// Converts [buffer] to integer.
@@ -74,11 +80,19 @@ int twosToInt(int value, [int numBytes = 2]) {
 
 /// Applies bit Xor to 32 bit [value] with a [mask] to each 8 bits
 int xor32bit(int value, [int mask = 0xff]) {
-  var bytes = intToHexArray(value, 4);
+  var bytes = value.toHexArray(4);
 
   for (var i = 0; i < bytes.length; i++) {
     bytes[i] ^= mask;
   }
 
   return bufferToInt(bytes);
+}
+
+extension StringXX on String {
+  Uint8List get asUint8List => Uint8List.fromList(codeUnits);
+}
+
+extension BoolAsIntX on bool {
+  int get intFlag => this ? 1 : 0;
 }
