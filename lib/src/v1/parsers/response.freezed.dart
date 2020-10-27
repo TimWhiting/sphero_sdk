@@ -15,14 +15,14 @@ class _$APIV1TearOff {
 
 // ignore: unused_element
   _APIV1 call(
-      {String key,
+      {int idCode,
       String desc,
       int did,
       int cid,
       String event,
       List<APIField> fields}) {
     return _APIV1(
-      key: key,
+      idCode: idCode,
       desc: desc,
       did: did,
       cid: cid,
@@ -38,7 +38,7 @@ const $APIV1 = _$APIV1TearOff();
 
 /// @nodoc
 mixin _$APIV1 {
-  String get key;
+  int get idCode;
   String get desc;
   int get did;
   int get cid;
@@ -53,7 +53,7 @@ abstract class $APIV1CopyWith<$Res> {
   factory $APIV1CopyWith(APIV1 value, $Res Function(APIV1) then) =
       _$APIV1CopyWithImpl<$Res>;
   $Res call(
-      {String key,
+      {int idCode,
       String desc,
       int did,
       int cid,
@@ -71,7 +71,7 @@ class _$APIV1CopyWithImpl<$Res> implements $APIV1CopyWith<$Res> {
 
   @override
   $Res call({
-    Object key = freezed,
+    Object idCode = freezed,
     Object desc = freezed,
     Object did = freezed,
     Object cid = freezed,
@@ -79,7 +79,7 @@ class _$APIV1CopyWithImpl<$Res> implements $APIV1CopyWith<$Res> {
     Object fields = freezed,
   }) {
     return _then(_value.copyWith(
-      key: key == freezed ? _value.key : key as String,
+      idCode: idCode == freezed ? _value.idCode : idCode as int,
       desc: desc == freezed ? _value.desc : desc as String,
       did: did == freezed ? _value.did : did as int,
       cid: cid == freezed ? _value.cid : cid as int,
@@ -95,7 +95,7 @@ abstract class _$APIV1CopyWith<$Res> implements $APIV1CopyWith<$Res> {
       __$APIV1CopyWithImpl<$Res>;
   @override
   $Res call(
-      {String key,
+      {int idCode,
       String desc,
       int did,
       int cid,
@@ -114,7 +114,7 @@ class __$APIV1CopyWithImpl<$Res> extends _$APIV1CopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object key = freezed,
+    Object idCode = freezed,
     Object desc = freezed,
     Object did = freezed,
     Object cid = freezed,
@@ -122,7 +122,7 @@ class __$APIV1CopyWithImpl<$Res> extends _$APIV1CopyWithImpl<$Res>
     Object fields = freezed,
   }) {
     return _then(_APIV1(
-      key: key == freezed ? _value.key : key as String,
+      idCode: idCode == freezed ? _value.idCode : idCode as int,
       desc: desc == freezed ? _value.desc : desc as String,
       did: did == freezed ? _value.did : did as int,
       cid: cid == freezed ? _value.cid : cid as int,
@@ -135,10 +135,10 @@ class __$APIV1CopyWithImpl<$Res> extends _$APIV1CopyWithImpl<$Res>
 /// @nodoc
 class _$_APIV1 implements _APIV1 {
   const _$_APIV1(
-      {this.key, this.desc, this.did, this.cid, this.event, this.fields});
+      {this.idCode, this.desc, this.did, this.cid, this.event, this.fields});
 
   @override
-  final String key;
+  final int idCode;
   @override
   final String desc;
   @override
@@ -152,15 +152,15 @@ class _$_APIV1 implements _APIV1 {
 
   @override
   String toString() {
-    return 'APIV1(key: $key, desc: $desc, did: $did, cid: $cid, event: $event, fields: $fields)';
+    return 'APIV1(idCode: $idCode, desc: $desc, did: $did, cid: $cid, event: $event, fields: $fields)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _APIV1 &&
-            (identical(other.key, key) ||
-                const DeepCollectionEquality().equals(other.key, key)) &&
+            (identical(other.idCode, idCode) ||
+                const DeepCollectionEquality().equals(other.idCode, idCode)) &&
             (identical(other.desc, desc) ||
                 const DeepCollectionEquality().equals(other.desc, desc)) &&
             (identical(other.did, did) ||
@@ -176,7 +176,7 @@ class _$_APIV1 implements _APIV1 {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(key) ^
+      const DeepCollectionEquality().hash(idCode) ^
       const DeepCollectionEquality().hash(desc) ^
       const DeepCollectionEquality().hash(did) ^
       const DeepCollectionEquality().hash(cid) ^
@@ -190,7 +190,7 @@ class _$_APIV1 implements _APIV1 {
 
 abstract class _APIV1 implements APIV1 {
   const factory _APIV1(
-      {String key,
+      {int idCode,
       String desc,
       int did,
       int cid,
@@ -198,7 +198,7 @@ abstract class _APIV1 implements APIV1 {
       List<APIField> fields}) = _$_APIV1;
 
   @override
-  String get key;
+  int get idCode;
   @override
   String get desc;
   @override
@@ -221,6 +221,13 @@ class _$APIFieldTearOff {
   _APIField call(
       {String name,
       String type,
+      int bitmask,
+      String maskField,
+      String sensor,
+      int range_bottom,
+      int range_top,
+      String units,
+      int mask,
       int from,
       int to,
       String format,
@@ -228,6 +235,13 @@ class _$APIFieldTearOff {
     return _APIField(
       name: name,
       type: type,
+      bitmask: bitmask,
+      maskField: maskField,
+      sensor: sensor,
+      range_bottom: range_bottom,
+      range_top: range_top,
+      units: units,
+      mask: mask,
       from: from,
       to: to,
       format: format,
@@ -244,6 +258,13 @@ const $APIField = _$APIFieldTearOff();
 mixin _$APIField {
   String get name;
   String get type;
+  int get bitmask;
+  String get maskField;
+  String get sensor;
+  int get range_bottom;
+  int get range_top;
+  String get units;
+  int get mask;
   int get from;
   int get to;
   String get format;
@@ -259,6 +280,13 @@ abstract class $APIFieldCopyWith<$Res> {
   $Res call(
       {String name,
       String type,
+      int bitmask,
+      String maskField,
+      String sensor,
+      int range_bottom,
+      int range_top,
+      String units,
+      int mask,
       int from,
       int to,
       String format,
@@ -277,6 +305,13 @@ class _$APIFieldCopyWithImpl<$Res> implements $APIFieldCopyWith<$Res> {
   $Res call({
     Object name = freezed,
     Object type = freezed,
+    Object bitmask = freezed,
+    Object maskField = freezed,
+    Object sensor = freezed,
+    Object range_bottom = freezed,
+    Object range_top = freezed,
+    Object units = freezed,
+    Object mask = freezed,
     Object from = freezed,
     Object to = freezed,
     Object format = freezed,
@@ -285,6 +320,14 @@ class _$APIFieldCopyWithImpl<$Res> implements $APIFieldCopyWith<$Res> {
     return _then(_value.copyWith(
       name: name == freezed ? _value.name : name as String,
       type: type == freezed ? _value.type : type as String,
+      bitmask: bitmask == freezed ? _value.bitmask : bitmask as int,
+      maskField: maskField == freezed ? _value.maskField : maskField as String,
+      sensor: sensor == freezed ? _value.sensor : sensor as String,
+      range_bottom:
+          range_bottom == freezed ? _value.range_bottom : range_bottom as int,
+      range_top: range_top == freezed ? _value.range_top : range_top as int,
+      units: units == freezed ? _value.units : units as String,
+      mask: mask == freezed ? _value.mask : mask as int,
       from: from == freezed ? _value.from : from as int,
       to: to == freezed ? _value.to : to as int,
       format: format == freezed ? _value.format : format as String,
@@ -301,6 +344,13 @@ abstract class _$APIFieldCopyWith<$Res> implements $APIFieldCopyWith<$Res> {
   $Res call(
       {String name,
       String type,
+      int bitmask,
+      String maskField,
+      String sensor,
+      int range_bottom,
+      int range_top,
+      String units,
+      int mask,
       int from,
       int to,
       String format,
@@ -320,6 +370,13 @@ class __$APIFieldCopyWithImpl<$Res> extends _$APIFieldCopyWithImpl<$Res>
   $Res call({
     Object name = freezed,
     Object type = freezed,
+    Object bitmask = freezed,
+    Object maskField = freezed,
+    Object sensor = freezed,
+    Object range_bottom = freezed,
+    Object range_top = freezed,
+    Object units = freezed,
+    Object mask = freezed,
     Object from = freezed,
     Object to = freezed,
     Object format = freezed,
@@ -328,6 +385,14 @@ class __$APIFieldCopyWithImpl<$Res> extends _$APIFieldCopyWithImpl<$Res>
     return _then(_APIField(
       name: name == freezed ? _value.name : name as String,
       type: type == freezed ? _value.type : type as String,
+      bitmask: bitmask == freezed ? _value.bitmask : bitmask as int,
+      maskField: maskField == freezed ? _value.maskField : maskField as String,
+      sensor: sensor == freezed ? _value.sensor : sensor as String,
+      range_bottom:
+          range_bottom == freezed ? _value.range_bottom : range_bottom as int,
+      range_top: range_top == freezed ? _value.range_top : range_top as int,
+      units: units == freezed ? _value.units : units as String,
+      mask: mask == freezed ? _value.mask : mask as int,
       from: from == freezed ? _value.from : from as int,
       to: to == freezed ? _value.to : to as int,
       format: format == freezed ? _value.format : format as String,
@@ -339,12 +404,38 @@ class __$APIFieldCopyWithImpl<$Res> extends _$APIFieldCopyWithImpl<$Res>
 /// @nodoc
 class _$_APIField implements _APIField {
   const _$_APIField(
-      {this.name, this.type, this.from, this.to, this.format, this.values});
+      {this.name,
+      this.type,
+      this.bitmask,
+      this.maskField,
+      this.sensor,
+      this.range_bottom,
+      this.range_top,
+      this.units,
+      this.mask,
+      this.from,
+      this.to,
+      this.format,
+      this.values});
 
   @override
   final String name;
   @override
   final String type;
+  @override
+  final int bitmask;
+  @override
+  final String maskField;
+  @override
+  final String sensor;
+  @override
+  final int range_bottom;
+  @override
+  final int range_top;
+  @override
+  final String units;
+  @override
+  final int mask;
   @override
   final int from;
   @override
@@ -356,7 +447,7 @@ class _$_APIField implements _APIField {
 
   @override
   String toString() {
-    return 'APIField(name: $name, type: $type, from: $from, to: $to, format: $format, values: $values)';
+    return 'APIField(name: $name, type: $type, bitmask: $bitmask, maskField: $maskField, sensor: $sensor, range_bottom: $range_bottom, range_top: $range_top, units: $units, mask: $mask, from: $from, to: $to, format: $format, values: $values)';
   }
 
   @override
@@ -367,6 +458,24 @@ class _$_APIField implements _APIField {
                 const DeepCollectionEquality().equals(other.name, name)) &&
             (identical(other.type, type) ||
                 const DeepCollectionEquality().equals(other.type, type)) &&
+            (identical(other.bitmask, bitmask) ||
+                const DeepCollectionEquality()
+                    .equals(other.bitmask, bitmask)) &&
+            (identical(other.maskField, maskField) ||
+                const DeepCollectionEquality()
+                    .equals(other.maskField, maskField)) &&
+            (identical(other.sensor, sensor) ||
+                const DeepCollectionEquality().equals(other.sensor, sensor)) &&
+            (identical(other.range_bottom, range_bottom) ||
+                const DeepCollectionEquality()
+                    .equals(other.range_bottom, range_bottom)) &&
+            (identical(other.range_top, range_top) ||
+                const DeepCollectionEquality()
+                    .equals(other.range_top, range_top)) &&
+            (identical(other.units, units) ||
+                const DeepCollectionEquality().equals(other.units, units)) &&
+            (identical(other.mask, mask) ||
+                const DeepCollectionEquality().equals(other.mask, mask)) &&
             (identical(other.from, from) ||
                 const DeepCollectionEquality().equals(other.from, from)) &&
             (identical(other.to, to) ||
@@ -382,6 +491,13 @@ class _$_APIField implements _APIField {
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(type) ^
+      const DeepCollectionEquality().hash(bitmask) ^
+      const DeepCollectionEquality().hash(maskField) ^
+      const DeepCollectionEquality().hash(sensor) ^
+      const DeepCollectionEquality().hash(range_bottom) ^
+      const DeepCollectionEquality().hash(range_top) ^
+      const DeepCollectionEquality().hash(units) ^
+      const DeepCollectionEquality().hash(mask) ^
       const DeepCollectionEquality().hash(from) ^
       const DeepCollectionEquality().hash(to) ^
       const DeepCollectionEquality().hash(format) ^
@@ -396,6 +512,13 @@ abstract class _APIField implements APIField {
   const factory _APIField(
       {String name,
       String type,
+      int bitmask,
+      String maskField,
+      String sensor,
+      int range_bottom,
+      int range_top,
+      String units,
+      int mask,
       int from,
       int to,
       String format,
@@ -405,6 +528,20 @@ abstract class _APIField implements APIField {
   String get name;
   @override
   String get type;
+  @override
+  int get bitmask;
+  @override
+  String get maskField;
+  @override
+  String get sensor;
+  @override
+  int get range_bottom;
+  @override
+  int get range_top;
+  @override
+  String get units;
+  @override
+  int get mask;
   @override
   int get from;
   @override
