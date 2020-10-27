@@ -17,7 +17,7 @@ abstract class RGB with _$RGB {
 }
 
 /// Generates a random rgb color
-RGB randomColor() {
+RGB randomRGBColor() {
   rand() {
     return _rand.nextInt(255);
   }

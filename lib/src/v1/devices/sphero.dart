@@ -3,9 +3,10 @@ import '../utils.dart';
 import '../command.dart';
 import 'core.dart';
 
-class Core {
-  Core(Future<ResponseV1> Function(int, Uint8List) Function(int) commandGen)
-      : command = commandGen(0x02);
+class Sphero extends Core {
+  Sphero(Future<ResponseV1> Function(int, Uint8List) Function(int) commandGen)
+      : command = commandGen(0x02),
+        super(commandGen);
 
   Future<ResponseV1> Function(int command, Uint8List data) command;
 
@@ -148,11 +149,8 @@ class Core {
   /// }
   Future<ResponseV1> setDataStreaming(
       int n, int m, int mask1, int mask2, int pcnt) {
-    //TODO: This
-    // devices.ds = {
-    //   'mask1': mask1,
-    //   'mask2': mask2
-    // };
+    ds['mask1'] = mask1;
+    ds['mask2'] = mask2;
 
     return command(
         SpheroV1.setDataStreaming,
@@ -199,7 +197,7 @@ class Core {
   ///   print(err || "data: " + data);
   /// }
   Future<ResponseV1> configureCollisions(
-      int meth, int xt, int xs, int yt, int ys, int dead) {
+      {int meth, int xt, int xs, int yt, int ys, int dead}) {
     final data = [meth, xt, xs, yt, ys, dead];
     return command(SpheroV1.setCollisionDetection, data);
   }

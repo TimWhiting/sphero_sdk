@@ -3,10 +3,14 @@ import 'dart:typed_data';
 import '../command.dart';
 import '../utils.dart';
 
-class Core {
+class Device {
+  final Map<String, int> ds = {};
+}
+
+class Core extends Device {
   Core(Future<ResponseV1> Function(int, Uint8List) Function(int) commandGen)
-      : command = commandGen(0x00);
-  Future<ResponseV1> Function(int command, Uint8List data) command;
+      : _coreCommand = commandGen(0x00);
+  Future<ResponseV1> Function(int command, Uint8List data) _coreCommand;
 
   ///
   /// The Ping command verifies the Sphero is awake and receiving commands.
@@ -17,7 +21,7 @@ class Core {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> ping() => command(CoreV1.ping, null);
+  Future<ResponseV1> ping() => _coreCommand(CoreV1.ping, null);
 
   ///
   /// The Version command returns a batch of software and hardware information
@@ -43,11 +47,12 @@ class Core {
   ///   }
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> version() => command(CoreV1.version, null);
+  Future<ResponseV1> version() => _coreCommand(CoreV1.version, null);
 
   /// The Control UART Tx command enables or disables the CPU's UART transmit
   /// line so another client can configure the Bluetooth module.
-  Future<ResponseV1> controlUartTX() => command(CoreV1.controlUARTTx, null);
+  Future<ResponseV1> controlUartTX() =>
+      _coreCommand(CoreV1.controlUARTTx, null);
 
   ///
   /// The Set Device Name command assigns Sphero an internal name. This value is
@@ -66,7 +71,7 @@ class Core {
   /// }
   /// @return {object} promise for command
   Future<ResponseV1> setDeviceName(String name) =>
-      command(CoreV1.setDeviceName, name.asUint8List);
+      _coreCommand(CoreV1.setDeviceName, name.asUint8List);
 
   ///
   /// Triggers the callback with a structure containing
@@ -89,11 +94,12 @@ class Core {
   ///   }
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> getBluetoothInfo() => command(CoreV1.getBtInfo, null);
+  Future<ResponseV1> getBluetoothInfo() => _coreCommand(CoreV1.getBtInfo, null);
 
   /// Sets auto reconnect feature to [enabled] for reconnecting to device after [seconds]
-  Future<ResponseV1> setAutoReconnect(bool enabled, int seconds) => command(
-      CoreV1.setAutoReconnect, Uint8List.fromList([enabled.intFlag, seconds]));
+  Future<ResponseV1> setAutoReconnect(bool enabled, int seconds) =>
+      _coreCommand(CoreV1.setAutoReconnect,
+          Uint8List.fromList([enabled.intFlag, seconds]));
 
   ///
   /// The Get Auto Reconnect command returns the Bluetooth auto reconnect values
@@ -112,7 +118,7 @@ class Core {
   /// }
   /// @return {object} promise for command
   Future<ResponseV1> getAutoReconnect() =>
-      command(CoreV1.getAutoReconnect, null);
+      _coreCommand(CoreV1.getAutoReconnect, null);
 
   /// The Get Power State command returns Sphero's current power state, and some additional parameters:
   ///
@@ -129,7 +135,7 @@ class Core {
   /// - 0x02 - Battery OK
   /// - 0x03 - Battery Low
   /// - 0x04 - Battery Critical
-  Future<ResponseV1> getPowerState() => command(CoreV1.getPwrState, null);
+  Future<ResponseV1> getPowerState() => _coreCommand(CoreV1.getPwrState, null);
 
   ///
   /// The Set Power Notification command enables sphero to asynchronously notify
@@ -146,7 +152,7 @@ class Core {
   /// }
   /// @return {object} promise for command
   Future<ResponseV1> setPowerNotification(bool enabled) =>
-      command(CoreV1.setPwrNotify, Uint8List.fromList([enabled.intFlag]));
+      _coreCommand(CoreV1.setPwrNotify, Uint8List.fromList([enabled.intFlag]));
 
   ///
   /// The Sleep command puts Sphero to sleep immediately.
@@ -165,7 +171,7 @@ class Core {
   /// }
   /// @return {object} promise for command
   Future<ResponseV1> sleep(int wakeup, int startMacro, int orbBasicLine) =>
-      command(
+      _coreCommand(
         CoreV1.sleep,
         Uint8List.fromList(
           [...wakeup.toHexArray(2), startMacro, ...orbBasicLine.toHexArray(2)],
@@ -192,7 +198,7 @@ class Core {
   /// }
   /// @return {object} promise for command
   Future<ResponseV1> getVoltageTripPoints() =>
-      command(CoreV1.getPowerTrips, null);
+      _coreCommand(CoreV1.getPowerTrips, null);
 
   ///
   /// The Set Voltage Trip Points command assigns the voltage trip points for Low
@@ -217,7 +223,7 @@ class Core {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> setVoltageTripPoints(int vLow, int vCrit) => command(
+  Future<ResponseV1> setVoltageTripPoints(int vLow, int vCrit) => _coreCommand(
       CoreV1.setPowerTrips,
       Uint8List.fromList([...vLow.toHexArray(2), ...vCrit.toHexArray(2)]));
 
@@ -236,7 +242,7 @@ class Core {
   /// }
   /// @return {object} promise for command
   Future<ResponseV1> setInactivityTimeout(int seconds) =>
-      command(CoreV1.setInactiveTimer, seconds.toHexArray(2));
+      _coreCommand(CoreV1.setInactiveTimer, seconds.toHexArray(2));
 
   ///
   /// The Jump To Bootloader command requests a jump into the Bootloader to
@@ -251,7 +257,7 @@ class Core {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> jumpToBootloader() => command(CoreV1.goToBl, null);
+  Future<ResponseV1> jumpToBootloader() => _coreCommand(CoreV1.goToBl, null);
 
   ///
   /// The Perform Level 1 Diagnostics command is a developer-level command to
@@ -268,7 +274,7 @@ class Core {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> runL1Diag() => command(CoreV1.runL1Diags, null);
+  Future<ResponseV1> runL1Diag() => _coreCommand(CoreV1.runL1Diags, null);
 
   ///
   /// The Perform Level 2 Diagnostics command is a developer-level command to
@@ -306,7 +312,7 @@ class Core {
   ///   }
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> runL2Diag() => command(CoreV1.runL2Diags, null);
+  Future<ResponseV1> runL2Diag() => _coreCommand(CoreV1.runL2Diags, null);
 
   ///
   /// The Clear Counters command is a developer-only command to clear the various
@@ -321,10 +327,11 @@ class Core {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> clearCounters() => command(CoreV1.clearCounters, null);
+  Future<ResponseV1> clearCounters() =>
+      _coreCommand(CoreV1.clearCounters, null);
 
   Future<ResponseV1> _coreTimeCmd(int cmd, int time) =>
-      command(cmd, time.toHexArray(4));
+      _coreCommand(cmd, time.toHexArray(4));
 
   ///
   /// The Assign Time command sets a specific value to Sphero's internal 32-bit
