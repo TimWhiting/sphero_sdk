@@ -41,7 +41,7 @@ class AdaptorV1 {
   }
 
   void Function(Uint8List) onRead;
-  void Function() close;
+  Future<void> Function() close;
 
   Future<void> devModeOn() async {
     await setAntiDos();

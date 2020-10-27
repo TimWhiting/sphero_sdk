@@ -1,16 +1,19 @@
 import 'dart:typed_data';
 
+import '../packet.dart';
+import '../sphero.dart';
 import 'command.dart';
 import '../utils.dart';
 
-class Device {
+abstract class SpheroBase {
   final Map<String, int> ds = {};
+  Future<Map<String, dynamic>> baseCommand(
+      int deviceId, int command, Uint8List data);
 }
 
-class Core extends Device {
-  Core(Future<ResponseV1> Function(int, Uint8List) Function(int) commandGen)
-      : _coreCommand = commandGen(0x00);
-  Future<ResponseV1> Function(int command, Uint8List data) _coreCommand;
+mixin Core on SpheroBase {
+  Future<Map<String, dynamic>> _coreCommand(int command, Uint8List data) =>
+      baseCommand(0x00, command, data);
 
   ///
   /// The Ping command verifies the Sphero is awake and receiving commands.
@@ -21,7 +24,7 @@ class Core extends Device {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> ping() => _coreCommand(CoreV1.ping, null);
+  Future<Map<String, dynamic>> ping() => _coreCommand(CoreV1.ping, null);
 
   ///
   /// The Version command returns a batch of software and hardware information
@@ -47,11 +50,11 @@ class Core extends Device {
   ///   }
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> version() => _coreCommand(CoreV1.version, null);
+  Future<Map<String, dynamic>> version() => _coreCommand(CoreV1.version, null);
 
   /// The Control UART Tx command enables or disables the CPU's UART transmit
   /// line so another client can configure the Bluetooth module.
-  Future<ResponseV1> controlUartTX() =>
+  Future<Map<String, dynamic>> controlUartTX() =>
       _coreCommand(CoreV1.controlUARTTx, null);
 
   ///
@@ -70,7 +73,7 @@ class Core extends Device {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> setDeviceName(String name) =>
+  Future<Map<String, dynamic>> setDeviceName(String name) =>
       _coreCommand(CoreV1.setDeviceName, name.asUint8List);
 
   ///
@@ -94,10 +97,11 @@ class Core extends Device {
   ///   }
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> getBluetoothInfo() => _coreCommand(CoreV1.getBtInfo, null);
+  Future<Map<String, dynamic>> getBluetoothInfo() =>
+      _coreCommand(CoreV1.getBtInfo, null);
 
   /// Sets auto reconnect feature to [enabled] for reconnecting to device after [seconds]
-  Future<ResponseV1> setAutoReconnect(bool enabled, int seconds) =>
+  Future<Map<String, dynamic>> setAutoReconnect(bool enabled, int seconds) =>
       _coreCommand(CoreV1.setAutoReconnect,
           Uint8List.fromList([enabled.intFlag, seconds]));
 
@@ -117,7 +121,7 @@ class Core extends Device {
   ///   }
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> getAutoReconnect() =>
+  Future<Map<String, dynamic>> getAutoReconnect() =>
       _coreCommand(CoreV1.getAutoReconnect, null);
 
   /// The Get Power State command returns Sphero's current power state, and some additional parameters:
@@ -135,7 +139,8 @@ class Core extends Device {
   /// - 0x02 - Battery OK
   /// - 0x03 - Battery Low
   /// - 0x04 - Battery Critical
-  Future<ResponseV1> getPowerState() => _coreCommand(CoreV1.getPwrState, null);
+  Future<Map<String, dynamic>> getPowerState() =>
+      _coreCommand(CoreV1.getPwrState, null);
 
   ///
   /// The Set Power Notification command enables sphero to asynchronously notify
@@ -151,7 +156,7 @@ class Core extends Device {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> setPowerNotification(bool enabled) =>
+  Future<Map<String, dynamic>> setPowerNotification(bool enabled) =>
       _coreCommand(CoreV1.setPwrNotify, Uint8List.fromList([enabled.intFlag]));
 
   ///
@@ -170,7 +175,8 @@ class Core extends Device {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> sleep(int wakeup, int startMacro, int orbBasicLine) =>
+  Future<Map<String, dynamic>> sleep(
+          int wakeup, int startMacro, int orbBasicLine) =>
       _coreCommand(
         CoreV1.sleep,
         Uint8List.fromList(
@@ -197,7 +203,7 @@ class Core extends Device {
   ///   }
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> getVoltageTripPoints() =>
+  Future<Map<String, dynamic>> getVoltageTripPoints() =>
       _coreCommand(CoreV1.getPowerTrips, null);
 
   ///
@@ -223,9 +229,9 @@ class Core extends Device {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> setVoltageTripPoints(int vLow, int vCrit) => _coreCommand(
-      CoreV1.setPowerTrips,
-      Uint8List.fromList([...vLow.toHexArray(2), ...vCrit.toHexArray(2)]));
+  Future<Map<String, dynamic>> setVoltageTripPoints(int vLow, int vCrit) =>
+      _coreCommand(CoreV1.setPowerTrips,
+          Uint8List.fromList([...vLow.toHexArray(2), ...vCrit.toHexArray(2)]));
 
   ///
   /// The Set Inactivity Timeout command sets the timeout delay before Sphero
@@ -241,7 +247,7 @@ class Core extends Device {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> setInactivityTimeout(int seconds) =>
+  Future<Map<String, dynamic>> setInactivityTimeout(int seconds) =>
       _coreCommand(CoreV1.setInactiveTimer, seconds.toHexArray(2));
 
   ///
@@ -257,7 +263,8 @@ class Core extends Device {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> jumpToBootloader() => _coreCommand(CoreV1.goToBl, null);
+  Future<Map<String, dynamic>> jumpToBootloader() =>
+      _coreCommand(CoreV1.goToBl, null);
 
   ///
   /// The Perform Level 1 Diagnostics command is a developer-level command to
@@ -274,7 +281,8 @@ class Core extends Device {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> runL1Diag() => _coreCommand(CoreV1.runL1Diags, null);
+  Future<Map<String, dynamic>> runL1Diag() =>
+      _coreCommand(CoreV1.runL1Diags, null);
 
   ///
   /// The Perform Level 2 Diagnostics command is a developer-level command to
@@ -312,7 +320,8 @@ class Core extends Device {
   ///   }
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> runL2Diag() => _coreCommand(CoreV1.runL2Diags, null);
+  Future<Map<String, dynamic>> runL2Diag() =>
+      _coreCommand(CoreV1.runL2Diags, null);
 
   ///
   /// The Clear Counters command is a developer-only command to clear the various
@@ -327,10 +336,10 @@ class Core extends Device {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> clearCounters() =>
+  Future<Map<String, dynamic>> clearCounters() =>
       _coreCommand(CoreV1.clearCounters, null);
 
-  Future<ResponseV1> _coreTimeCmd(int cmd, int time) =>
+  Future<Map<String, dynamic>> _coreTimeCmd(int cmd, int time) =>
       _coreCommand(cmd, time.toHexArray(4));
 
   ///
@@ -344,7 +353,7 @@ class Core extends Device {
   ///   print(err || "data: " + data);
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> assignTime(int time) =>
+  Future<Map<String, dynamic>> assignTime(int time) =>
       _coreTimeCmd(CoreV1.assignTime, time);
 
   ///
@@ -367,14 +376,6 @@ class Core extends Device {
   ///   }
   /// }
   /// @return {object} promise for command
-  Future<ResponseV1> pollPacketTimes(int time) =>
+  Future<Map<String, dynamic>> pollPacketTimes(int time) =>
       _coreTimeCmd(CoreV1.pollTimes, time);
-}
-
-class ResponseV1 {
-  final Uint8List list;
-
-  ResponseV1(this.list);
-
-  RGB toRGB() {}
 }

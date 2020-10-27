@@ -1,6 +1,8 @@
 // regular expression to match hex strings
 import 'dart:math';
 import 'dart:typed_data';
+import '../packet.dart';
+import '../sphero.dart';
 import '../utils.dart';
 import 'core.dart';
 import 'sphero.dart';
@@ -43,10 +45,8 @@ RGB adjustLuminance(RGB rgb, int lum) {
   return RGB(red: newR, green: newG, blue: newB);
 }
 
-class Custom extends Sphero {
+mixin Custom on SpheroDevice {
   RGB originalColor = RGB(red: 0, green: 0, blue: 0);
-  Custom(Future<ResponseV1> Function(int, Uint8List) Function(int) commandGen)
-      : super(commandGen);
 
   int mergeMasks(String id, int mask, [bool remove = false]) {
     if (remove) {
@@ -68,7 +68,7 @@ class Custom extends Sphero {
   ///
   /// @private
   /// @param {Object} args event, masks, fields, and sps data
-  Future<ResponseV1> streamData({
+  Future<Map<String, dynamic>> streamData({
     String event,
     int mask1,
     int mask2,
@@ -114,7 +114,7 @@ class Custom extends Sphero {
   /// orb.color({ red: 0, green: 0, blue: 255 }, function(err, data) {
   ///   print(err || "Color Changed!");
   /// });
-  Future<ResponseV1> color(int color, [int luminance]) {
+  Future<Map<String, dynamic>> color(int color, [int luminance]) {
     RGB c = hexToRgb(color);
     if (luminance != null) {
       c = adjustLuminance(c, luminance);
@@ -130,7 +130,7 @@ class Custom extends Sphero {
   /// orb.randomColor(function(err, data) {
   ///   print(err || "Random Color!");
   /// });
-  Future<ResponseV1> randomColor() {
+  Future<Map<String, dynamic>> randomColor() {
     final rgb = randomRGBColor();
     return setRgbLed(rgb.red, rgb.green, rgb.blue);
   }
@@ -150,7 +150,7 @@ class Custom extends Sphero {
   ///     print("  blue:", data.blue);
   ///   }
   /// });
-  Future<ResponseV1> getColor() {
+  Future<Map<String, dynamic>> getColor() {
     return getRgbLed();
   }
 
@@ -175,7 +175,7 @@ class Custom extends Sphero {
   ///   print("  speed:", data.timeStamp);
   ///   print("  timeStamp:", data.timeStamp);
   /// });
-  Future<ResponseV1> detectCollisions(bool isBB8) {
+  Future<Map<String, dynamic>> detectCollisions(bool isBB8) {
     final t = isBB8 ? 0x20 : 0x40;
     final s = isBB8 ? 0x20 : 0x50;
     final dead = isBB8 ? 0x01 : 0x50;
@@ -200,7 +200,7 @@ class Custom extends Sphero {
   ///   print("landing:");
   ///   print("  value:", data.value);
   /// });
-  Future<ResponseV1> detectFreefall() {
+  Future<Map<String, dynamic>> detectFreefall() {
     var falling = false;
     on("accelOne", (data) {
       if (data.accelOne.value[0] < 70 && !falling) {
@@ -229,8 +229,10 @@ class Custom extends Sphero {
   /// @param {Function} callback (err, data) to be triggered with response
   /// @example
   /// orb.startCalibration();
-  Future<ResponseV1> startCalibration() async {
-    originalColor = (await getColor()).toRGB();
+  Future<Map<String, dynamic>> startCalibration() async {
+    final color = await getColor();
+    originalColor =
+        RGB(red: color['red'], green: color['green'], blue: color['blue']);
     setRgbLed(0, 0, 0);
     setBackLed(127);
     return setStabiliation(false);
@@ -242,7 +244,7 @@ class Custom extends Sphero {
   ///
   /// @example
   /// orb.finishCalibration();
-  Future<ResponseV1> finishCalibration() {
+  Future<Map<String, dynamic>> finishCalibration() {
     setHeading(0);
     setRgbLed(originalColor.red, originalColor.green, originalColor.blue);
     return setDefaultSettings();
@@ -255,7 +257,7 @@ class Custom extends Sphero {
   ///
   /// @example
   /// orb.setDefaultSettings();
-  Future<ResponseV1> setDefaultSettings() {
+  Future<Map<String, dynamic>> setDefaultSettings() {
     setBackLed(0);
     return setStabiliation(true);
   }
@@ -276,7 +278,8 @@ class Custom extends Sphero {
   ///   print("  xOdomoter:", data.xOdomoter);
   ///   print("  yOdomoter:", data.yOdomoter);
   /// });
-  Future<ResponseV1> streamOdometer([int sps, bool remove]) => streamData(
+  Future<Map<String, dynamic>> streamOdometer([int sps, bool remove]) =>
+      streamData(
         event: "odometer",
         mask2: 0x0C000000,
         fields: ["xOdometer", "yOdometer"],
@@ -300,7 +303,8 @@ class Custom extends Sphero {
   ///   print("  xVelocity:", data.xVelocity);
   ///   print("  yVelocity:", data.yVelocity);
   /// });
-  Future<ResponseV1> streamVelocity([int sps, bool remove]) => streamData(
+  Future<Map<String, dynamic>> streamVelocity([int sps, bool remove]) =>
+      streamData(
         event: "velocity",
         mask2: 0x01800000,
         fields: ["xVelocity", "yVelocity"],
@@ -323,7 +327,8 @@ class Custom extends Sphero {
   ///   print("data:");
   ///   print("  accelOne:", data.accelOne);
   /// });
-  Future<ResponseV1> streamAccelOne([int sps, bool remove]) => streamData(
+  Future<Map<String, dynamic>> streamAccelOne([int sps, bool remove]) =>
+      streamData(
         event: "accelOne",
         mask2: 0x02000000,
         fields: ["accelOne"],
@@ -348,7 +353,8 @@ class Custom extends Sphero {
   ///   print("  rollAngle:", data.rollAngle);
   ///   print("  yawAngle:", data.yawAngle);
   /// });
-  Future<ResponseV1> streamImuAngles([int sps, bool remove]) => streamData(
+  Future<Map<String, dynamic>> streamImuAngles([int sps, bool remove]) =>
+      streamData(
         event: "imuAngles",
         mask1: 0x00070000,
         fields: ["pitchAngle", "rollAngle", "yawAngle"],
@@ -373,7 +379,8 @@ class Custom extends Sphero {
   ///   print("  yAccel:", data.yAccel);
   ///   print("  zAccel:", data.zAccel);
   /// });
-  Future<ResponseV1> streamAccelerometer([int sps, bool remove]) => streamData(
+  Future<Map<String, dynamic>> streamAccelerometer([int sps, bool remove]) =>
+      streamData(
         event: "accelerometer",
         mask1: 0x0000E000,
         fields: ["xAccel", "yAccel", "zAccel"],
@@ -398,7 +405,8 @@ class Custom extends Sphero {
   ///   print("  yGyro:", data.yGyro);
   ///   print("  zGyro:", data.zGyro);
   /// });
-  Future<ResponseV1> streamGyroscope([int sps, bool remove]) => streamData(
+  Future<Map<String, dynamic>> streamGyroscope([int sps, bool remove]) =>
+      streamData(
         event: "gyroscope",
         mask1: 0x00001C00,
         fields: ["xGyro", "yGyro", "zGyro"],
@@ -422,7 +430,8 @@ class Custom extends Sphero {
   ///   print("  rMotorBackEmf:", data.rMotorBackEmf);
   ///   print("  lMotorBackEmf:", data.lMotorBackEmf);
   /// });
-  Future<ResponseV1> streamMotorsBackEmf([int sps, bool remove]) => streamData(
+  Future<Map<String, dynamic>> streamMotorsBackEmf([int sps, bool remove]) =>
+      streamData(
         event: "motorsBackEmf",
         mask1: 0x00000060,
         fields: ["rMotorBackEmf", "lMotorBackEmf"],
@@ -441,7 +450,7 @@ class Custom extends Sphero {
   /// orb.stopOnDisconnect(function(err, data) {
   ///   print(err || "data" + data);
   /// });
-  Future<ResponseV1> stopOnDisconnect([bool remove = false]) =>
+  Future<Map<String, dynamic>> stopOnDisconnect([bool remove = false]) =>
       setTempOptionFlags(remove.intFlag);
 
   ///
@@ -453,5 +462,5 @@ class Custom extends Sphero {
   /// sphero.stop(function(err, data) {
   ///   print(err || "data" + data);
   /// });
-  Future<ResponseV1> stop() => roll(0, 0, 0);
+  Future<Map<String, dynamic>> stop() => roll(0, 0, 0);
 }

@@ -1,14 +1,12 @@
 import 'dart:typed_data';
+import '../packet.dart';
 import '../utils.dart';
 import 'command.dart';
 import 'core.dart';
 
-class Sphero extends Core {
-  Sphero(Future<ResponseV1> Function(int, Uint8List) Function(int) commandGen)
-      : command = commandGen(0x02),
-        super(commandGen);
-
-  Future<ResponseV1> Function(int command, Uint8List data) command;
+mixin SpheroDevice on Core {
+  Future<Map<String, dynamic>> _command(int command, Uint8List data) =>
+      baseCommand(0x02, command, data);
 
   /// The Set Heading command tells Sphero to adjust it's orientation, by
   /// commanding a new reference heading (in degrees).
@@ -20,8 +18,8 @@ class Sphero extends Core {
   /// orb.setHeading(180, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setHeading(int heading) =>
-      command(SpheroV1.setHeading, heading.toHexArray(2));
+  Future<Map<String, dynamic>> setHeading(int heading) =>
+      _command(SpheroV1.setHeading, heading.toHexArray(2));
 
   /// The Set Stabilization command turns Sphero's internal stabilization on or
   /// off, depending on the flag provided.
@@ -31,8 +29,8 @@ class Sphero extends Core {
   /// orb.setStabilization(1, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setStabiliation(bool enabled) =>
-      command(SpheroV1.setStabilization, Uint8List.fromList([enabled.intFlag]));
+  Future<Map<String, dynamic>> setStabiliation(bool enabled) => _command(
+      SpheroV1.setStabilization, Uint8List.fromList([enabled.intFlag]));
 
   /// The Set Rotation Rate command allows control of the rotation rate Sphero
   /// uses to meet new heading commands.
@@ -48,8 +46,8 @@ class Sphero extends Core {
   /// orb.setRotationRate(180, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setRotationRate(int rotation) =>
-      command(SpheroV1.setRotationRate, Uint8List.fromList([rotation]));
+  Future<Map<String, dynamic>> setRotationRate(int rotation) =>
+      _command(SpheroV1.setRotationRate, Uint8List.fromList([rotation]));
 
   /// The Get Chassis ID command returns the 16-bit chassis ID Sphero was
   /// assigned at the factory.
@@ -64,7 +62,8 @@ class Sphero extends Core {
   ///     print("  chassisId:", data.chassisId);
   ///   }
   /// }
-  Future<ResponseV1> getChassisId() => command(SpheroV1.getChassisId, null);
+  Future<Map<String, dynamic>> getChassisId() =>
+      _command(SpheroV1.getChassisId, null);
 
   ///
   /// The Set Chassis ID command assigns Sphero's chassis ID, a 16-bit value.
@@ -76,8 +75,8 @@ class Sphero extends Core {
   /// orb.setChassisId(0xFE75, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setChassisId(int id) =>
-      command(SpheroV1.setChassisId, id.toHexArray(2));
+  Future<Map<String, dynamic>> setChassisId(int id) =>
+      _command(SpheroV1.setChassisId, id.toHexArray(2));
 
   /// The Self Level command controls Sphero's self-level routine.
   ///
@@ -109,12 +108,12 @@ class Sphero extends Core {
   /// orb.selfLevel(opts, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> selfLevel(
+  Future<Map<String, dynamic>> selfLevel(
           {int angleLimit = 0,
           int timeout = 0,
           int trueTime = 0,
           int options = 0}) =>
-      command(SpheroV1.selfLevel,
+      _command(SpheroV1.selfLevel,
           Uint8List.fromList([options, angleLimit, timeout, trueTime]));
 
   /// The Set Data Streaming command configures Sphero's built-in support for
@@ -147,12 +146,12 @@ class Sphero extends Core {
   /// orb.setDataStreaming(opts, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setDataStreaming(
+  Future<Map<String, dynamic>> setDataStreaming(
       int n, int m, int mask1, int mask2, int pcnt) {
     ds['mask1'] = mask1;
     ds['mask2'] = mask2;
 
-    return command(
+    return _command(
         SpheroV1.setDataStreaming,
         Uint8List.fromList([
           ...n.toHexArray(2),
@@ -196,10 +195,10 @@ class Sphero extends Core {
   /// orb.configureCollisions(opts, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> configureCollisions(
+  Future<Map<String, dynamic>> configureCollisions(
       {int meth, int xt, int xs, int yt, int ys, int dead}) {
     final data = [meth, xt, xs, yt, ys, dead];
-    return command(SpheroV1.setCollisionDetection, data);
+    return _command(SpheroV1.setCollisionDetection, data);
   }
 
   ///
@@ -229,8 +228,9 @@ class Sphero extends Core {
   /// orb.configureLocator(opts, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> configureLocator(int flags, int x, int y, int yawTare) =>
-      command(
+  Future<Map<String, dynamic>> configureLocator(
+          int flags, int x, int y, int yawTare) =>
+      _command(
           SpheroV1.locator,
           Uint8List.fromList([
             flags,
@@ -258,8 +258,8 @@ class Sphero extends Core {
   /// orb.setAccelRange(0x02, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setAccelRange(int idx) =>
-      command(SpheroV1.setAccelerometer, Uint8List.fromList([idx & idx]));
+  Future<Map<String, dynamic>> setAccelRange(int idx) =>
+      _command(SpheroV1.setAccelerometer, Uint8List.fromList([idx & idx]));
 
   ///
   /// The Read Locator command gets Sphero's current position (X,Y), component
@@ -282,7 +282,8 @@ class Sphero extends Core {
   ///     print("  sog:", data.sog);
   ///   }
   /// }
-  Future<ResponseV1> readLocator() => command(SpheroV1.readLocator, null);
+  Future<Map<String, dynamic>> readLocator() =>
+      _command(SpheroV1.readLocator, null);
 
   ///
   /// The Set RGB LED command sets the colors of Sphero's RGB LED.
@@ -297,9 +298,10 @@ class Sphero extends Core {
   /// orb.setRgbLed({ red: 0, green: 0, blue: 255 }, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setRgbLed(int red, int green, int blue,
+  Future<Map<String, dynamic>> setRgbLed(int red, int green, int blue,
           [int flag = 0x01]) =>
-      command(SpheroV1.setRgbLed, Uint8List.fromList([red, green, blue, flag]));
+      _command(
+          SpheroV1.setRgbLed, Uint8List.fromList([red, green, blue, flag]));
 
   ///
   /// The Set Back LED command allows brightness adjustment of Sphero's tail
@@ -312,8 +314,8 @@ class Sphero extends Core {
   /// orb.setbackLed(255, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setBackLed(int brightness) =>
-      command(SpheroV1.setBackLed, Uint8List.fromList([brightness]));
+  Future<Map<String, dynamic>> setBackLed(int brightness) =>
+      _command(SpheroV1.setBackLed, Uint8List.fromList([brightness]));
 
   ///
   /// The Get RGB LED command fetches the current "user LED color" value, stored
@@ -333,7 +335,8 @@ class Sphero extends Core {
   ///     print("  blue:", data.blue);
   ///   }
   /// }
-  Future<ResponseV1> getRgbLed() => command(SpheroV1.getRgbLed, null);
+  Future<Map<String, dynamic>> getRgbLed() =>
+      _command(SpheroV1.getRgbLed, null);
 
   ///
   /// The Roll command tells Sphero to roll along the provided vector.
@@ -350,8 +353,9 @@ class Sphero extends Core {
   /// orb.roll(100, 0, function() {
   ///   print("rolling...");
   /// }
-  Future<ResponseV1> roll(int speed, int heading, [int state = 0x01]) =>
-      command(SpheroV1.roll,
+  Future<Map<String, dynamic>> roll(int speed, int heading,
+          [int state = 0x01]) =>
+      _command(SpheroV1.roll,
           Uint8List.fromList([speed, ...heading.toHexArray(2), state & 0x03]));
 
   ///
@@ -364,8 +368,8 @@ class Sphero extends Core {
   /// orb.boost(1, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> boost(bool boost) =>
-      command(SpheroV1.boost, Uint8List.fromList([boost.intFlag]));
+  Future<Map<String, dynamic>> boost(bool boost) =>
+      _command(SpheroV1.boost, Uint8List.fromList([boost.intFlag]));
 
   ///
   /// The Set Raw Motors command allows manual control over one or both of
@@ -396,9 +400,9 @@ class Sphero extends Core {
   /// orb.setRawMotors(opts, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setRawMotors(
+  Future<Map<String, dynamic>> setRawMotors(
           int lmode, int lpower, int rmode, int rpower) =>
-      command(SpheroV1.setRawMotors,
+      _command(SpheroV1.setRawMotors,
           Uint8List.fromList([lmode & 0x07, rmode & 0x07, rpower]));
 
   ///
@@ -414,8 +418,8 @@ class Sphero extends Core {
   /// orb.setMotionTimeout(0x0FFF, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setMotionTimeout(int time) =>
-      command(SpheroV1.setMotionTimeout, time.toHexArray(2));
+  Future<Map<String, dynamic>> setMotionTimeout(int time) =>
+      _command(SpheroV1.setMotionTimeout, time.toHexArray(2));
 
   ///
   /// The Set Permanent Option Flags command assigns Sphero's permanent option
@@ -431,8 +435,8 @@ class Sphero extends Core {
   /// orb.setPermOptionFlags(0x00000008, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setPermOptionFlags(int flags) {
-    return command(SpheroV1.setOptionsFlag, flags.toHexArray(4));
+  Future<Map<String, dynamic>> setPermOptionFlags(int flags) {
+    return _command(SpheroV1.setOptionsFlag, flags.toHexArray(4));
   }
 
   ///
@@ -475,8 +479,8 @@ class Sphero extends Core {
   ///     print("  gyroMaxAsyncMsg:", data.gyroMaxAsyncMsg);
   ///   }
   /// }
-  Future<ResponseV1> getPermOptionFlags() =>
-      command(SpheroV1.getOptionsFlag, null);
+  Future<Map<String, dynamic>> getPermOptionFlags() =>
+      _command(SpheroV1.getOptionsFlag, null);
 
   ///
   /// The Set Temporary Option Flags command assigns Sphero's temporary option
@@ -491,8 +495,8 @@ class Sphero extends Core {
   /// orb.setTempOptionFlags(0x01, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setTempOptionFlags(flags) =>
-      command(SpheroV1.setTempOptionFlags, flags.toHexArray(4));
+  Future<Map<String, dynamic>> setTempOptionFlags(flags) =>
+      _command(SpheroV1.setTempOptionFlags, flags.toHexArray(4));
 
   ///
   /// The Get Temporary Option Flags command returns Sphero's temporary option
@@ -510,8 +514,8 @@ class Sphero extends Core {
   ///     print("  stopOnDisconnect:", data.stopOnDisconnect);
   ///   }
   /// }
-  Future<ResponseV1> getTempOptionFlags() =>
-      command(SpheroV1.getTempOptionFlags, null);
+  Future<Map<String, dynamic>> getTempOptionFlags() =>
+      _command(SpheroV1.getTempOptionFlags, null);
 
   ///
   /// The Get Configuration Block command retrieves one of Sphero's configuration
@@ -531,12 +535,13 @@ class Sphero extends Core {
   /// orb.getConfigBlock(function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> getConfigBlock(int id) {
-    return command(SpheroV1.getConfigBlock, Uint8List.fromList([id]));
+  Future<Map<String, dynamic>> getConfigBlock(int id) {
+    return _command(SpheroV1.getConfigBlock, Uint8List.fromList([id]));
   }
 
-  Future<ResponseV1> _setSsbBlock(int cmd, int pwd, Uint8List block) =>
-      command(cmd, Uint8List.fromList([...pwd.toHexArray(4), ...block]));
+  Future<Map<String, dynamic>> _setSsbBlock(
+          int cmd, int pwd, Uint8List block) =>
+      _command(cmd, Uint8List.fromList([...pwd.toHexArray(4), ...block]));
 
   ///
   /// The Set SSB Modifier Block command allows the SSB to be patched with a new
@@ -551,7 +556,7 @@ class Sphero extends Core {
   /// orb.setSsbModBlock(0x0000000F, data, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setSsbModBlock(int pwd, Uint8List block) =>
+  Future<Map<String, dynamic>> setSsbModBlock(int pwd, Uint8List block) =>
       _setSsbBlock(SpheroV1.setSsbParams, pwd, block);
 
   ///
@@ -568,8 +573,8 @@ class Sphero extends Core {
   /// orb.setDeviceMode(0x00, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setDeviceMode(bool mode) {
-    return command(SpheroV1.setDeviceMode, Uint8List.fromList([mode.intFlag]));
+  Future<Map<String, dynamic>> setDeviceMode(bool mode) {
+    return _command(SpheroV1.setDeviceMode, Uint8List.fromList([mode.intFlag]));
   }
 
   ///
@@ -588,8 +593,8 @@ class Sphero extends Core {
   /// orb.setConfigBlock(dataBlock, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setConfigBlock(Uint8List block) {
-    return command(SpheroV1.setConfigBlock, block);
+  Future<Map<String, dynamic>> setConfigBlock(Uint8List block) {
+    return _command(SpheroV1.setConfigBlock, block);
   }
 
   ///
@@ -610,7 +615,8 @@ class Sphero extends Core {
   ///     print("  mode:", data.mode);
   ///   }
   /// }
-  Future<ResponseV1> getDeviceMode() => command(SpheroV1.getDeviceMode, null);
+  Future<Map<String, dynamic>> getDeviceMode() =>
+      _command(SpheroV1.getDeviceMode, null);
 
   ///
   /// The Get SSB command retrieves Sphero's Soul Block.
@@ -624,7 +630,7 @@ class Sphero extends Core {
   /// orb.getSsb(function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> getSsb() => command(SpheroV1.getSsb, null);
+  Future<Map<String, dynamic>> getSsb() => _command(SpheroV1.getSsb, null);
 
   ///
   /// The Set SSB command sets Sphero's Soul Block.
@@ -642,7 +648,7 @@ class Sphero extends Core {
   /// orb.setSsb(pwd, block, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setSsb(int pwd, Uint8List block) =>
+  Future<Map<String, dynamic>> setSsb(int pwd, Uint8List block) =>
       _setSsbBlock(SpheroV1.setSsb, pwd, block);
 
   ///
@@ -664,8 +670,8 @@ class Sphero extends Core {
   /// orb.refillBank(0x00, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> refillBank(int type) =>
-      command(SpheroV1.ssbRefill, Uint8List.fromList([type]));
+  Future<Map<String, dynamic>> refillBank(int type) =>
+      _command(SpheroV1.ssbRefill, Uint8List.fromList([type]));
 
   ///
   /// The Buy Consumable command attempts to spend cores on consumables.
@@ -689,8 +695,8 @@ class Sphero extends Core {
   /// orb.buyConsumable(0x00, 5, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> buyConsumable(int id, int qty) =>
-      command(SpheroV1.ssbBuy, Uint8List.fromList([id, qty]));
+  Future<Map<String, dynamic>> buyConsumable(int id, int qty) =>
+      _command(SpheroV1.ssbBuy, Uint8List.fromList([id, qty]));
 
   ///
   /// The Use Consumable command attempts to use a consumable if the quantity
@@ -709,8 +715,8 @@ class Sphero extends Core {
   /// orb.useConsumable(0x00, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> useConsumable(int id) =>
-      command(SpheroV1.ssbUseConsumeable, Uint8List.fromList([id]));
+  Future<Map<String, dynamic>> useConsumable(int id) =>
+      _command(SpheroV1.ssbUseConsumeable, Uint8List.fromList([id]));
 
   ///
   /// The Grant Cores command adds the supplied number of cores.
@@ -730,12 +736,15 @@ class Sphero extends Core {
   /// orb.grantCores(pwd, 5, 0x01, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> grantCores(int pw, int qty, int flags) => command(
-      SpheroV1.ssbGrantCores,
-      Uint8List.fromList([...pw.toHexArray(4), ...qty.toHexArray(4), flags]));
+  Future<Map<String, dynamic>> grantCores(
+          int pw, int qty, int flags) =>
+      _command(
+          SpheroV1.ssbGrantCores,
+          Uint8List.fromList(
+              [...pw.toHexArray(4), ...qty.toHexArray(4), flags]));
 
-  Future<ResponseV1> _xpOrLevelUp(int cmd, int pw, int gen) =>
-      command(cmd, Uint8List.fromList([...pw.toHexArray(4), gen]));
+  Future<Map<String, dynamic>> _xpOrLevelUp(int cmd, int pw, int gen) =>
+      _command(cmd, Uint8List.fromList([...pw.toHexArray(4), gen]));
 
   ///
   /// The add XP command increases XP by adding the supplied number of minutes
@@ -750,7 +759,7 @@ class Sphero extends Core {
   /// orb.addXp(pwd, 5, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> addXp(int pw, int qty) =>
+  Future<Map<String, dynamic>> addXp(int pw, int qty) =>
       _xpOrLevelUp(SpheroV1.ssbAddXp, pw, qty);
 
   ///
@@ -781,7 +790,7 @@ class Sphero extends Core {
   /// orb.levelUpAttr(pwd, 0x00, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> levelUpAttr(int pw, int id) =>
+  Future<Map<String, dynamic>> levelUpAttr(int pw, int id) =>
       _xpOrLevelUp(SpheroV1.ssbLevelUpAttr, pw, id);
 
   ///
@@ -796,7 +805,8 @@ class Sphero extends Core {
   /// orb.getPasswordSeed(function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> getPasswordSeed() => command(SpheroV1.getPwSeed, null);
+  Future<Map<String, dynamic>> getPasswordSeed() =>
+      _command(SpheroV1.getPwSeed, null);
 
   ///
   /// The Enable SSB Async Messages command turns on/off soul block related
@@ -814,8 +824,8 @@ class Sphero extends Core {
   /// orb.enableSsbAsyncMsg(0x01, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> enableSsbAsyncMsg(bool flag) =>
-      command(SpheroV1.ssbEnableAsync, Uint8List.fromList([flag.intFlag]));
+  Future<Map<String, dynamic>> enableSsbAsyncMsg(bool flag) =>
+      _command(SpheroV1.ssbEnableAsync, Uint8List.fromList([flag.intFlag]));
 
   ///
   /// The Run Macro command attempts to execute the specified macro.
@@ -842,8 +852,8 @@ class Sphero extends Core {
   /// orb.runMacro(0x01, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> runMacro(int id) =>
-      command(SpheroV1.runMacro, Uint8List.fromList([id]));
+  Future<Map<String, dynamic>> runMacro(int id) =>
+      _command(SpheroV1.runMacro, Uint8List.fromList([id]));
 
   ///
   /// The Save Temporary Macro stores the attached macro definition into the
@@ -858,8 +868,8 @@ class Sphero extends Core {
   /// orb.saveTempMacro(0x01, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> saveTempMacro(Uint8List macro) =>
-      command(SpheroV1.saveTempMacro, macro);
+  Future<Map<String, dynamic>> saveTempMacro(Uint8List macro) =>
+      _command(SpheroV1.saveTempMacro, macro);
 
   /// Save macro
   ///
@@ -878,8 +888,8 @@ class Sphero extends Core {
   /// orb.saveMacro(0x01, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> saveMacro(Uint8List macro) =>
-      command(SpheroV1.saveMacro, macro);
+  Future<Map<String, dynamic>> saveMacro(Uint8List macro) =>
+      _command(SpheroV1.saveMacro, macro);
 
   ///
   /// The Reinit Macro Executive command terminates any running macro, and
@@ -891,8 +901,8 @@ class Sphero extends Core {
   /// orb.reInitMacroExec(function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> reInitMacroExec() =>
-      command(SpheroV1.initMacroExecutive, null);
+  Future<Map<String, dynamic>> reInitMacroExec() =>
+      _command(SpheroV1.initMacroExecutive, null);
 
   ///
   /// The Abort Macro command aborts any executing macro, and returns both it's
@@ -913,7 +923,8 @@ class Sphero extends Core {
   ///     print("  cmdNum:", data.cmdNum);
   ///   }
   /// }
-  Future<ResponseV1> abortMacro() => command(SpheroV1.abortMacro, null);
+  Future<Map<String, dynamic>> abortMacro() =>
+      _command(SpheroV1.abortMacro, null);
 
   ///
   /// The Get Macro Status command returns the ID code and command number of the
@@ -932,7 +943,8 @@ class Sphero extends Core {
   ///     print("  cmdNum:", data.cmdNum);
   ///   }
   /// }
-  Future<ResponseV1> getMacroStatus() => command(SpheroV1.macroStatus, null);
+  Future<Map<String, dynamic>> getMacroStatus() =>
+      _command(SpheroV1.macroStatus, null);
 
   ///
   /// The Set Macro Parameter command allows system globals that influence
@@ -958,8 +970,8 @@ class Sphero extends Core {
   /// orb.setMacroParam(0x02, 0xF0, 0x00, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> setMacroParam(int index, int val1, int val2) =>
-      command(SpheroV1.setMacroParam, Uint8List.fromList([index, val1, val2]));
+  Future<Map<String, dynamic>> setMacroParam(int index, int val1, int val2) =>
+      _command(SpheroV1.setMacroParam, Uint8List.fromList([index, val1, val2]));
 
   ///
   /// The Append Macro Chunk project stores the attached macro definition into
@@ -984,8 +996,8 @@ class Sphero extends Core {
   /// orb.appendMacroChunk(, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> appendMacroChunk(Uint8List chunk) =>
-      command(SpheroV1.appendTempMacroChunk, chunk);
+  Future<Map<String, dynamic>> appendMacroChunk(Uint8List chunk) =>
+      _command(SpheroV1.appendTempMacroChunk, chunk);
 
   ///
   /// The Erase orbBasic Storage command erases any existing program in the
@@ -999,8 +1011,8 @@ class Sphero extends Core {
   /// orb.eraseOrbBasicStorage(0x00, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> eraseOrbBasicStorage(int area) =>
-      command(SpheroV1.eraseOBStorage, Uint8List.fromList([area]));
+  Future<Map<String, dynamic>> eraseOrbBasicStorage(int area) =>
+      _command(SpheroV1.eraseOBStorage, Uint8List.fromList([area]));
 
   ///
   /// The Append orbBasic Fragment command appends a patch of orbBasic code to
@@ -1022,9 +1034,9 @@ class Sphero extends Core {
   /// orb.appendOrbBasicFragment(0x00, OrbBasicCode, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> appendOrbBasicFragment(int area, String code) {
+  Future<Map<String, dynamic>> appendOrbBasicFragment(int area, String code) {
     final data = Uint8List.fromList([area, ...code.asUint8List]);
-    return command(SpheroV1.appendOBFragment, data);
+    return _command(SpheroV1.appendOBFragment, data);
   }
 
   ///
@@ -1040,8 +1052,10 @@ class Sphero extends Core {
   /// orb.executeOrbBasicProgram(0x00, 0x00, 0x00, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> executeOrbBasicProgram(int area, int slMSB, int slLSB) =>
-      command(SpheroV1.execOBProgram, Uint8List.fromList([area, slMSB, slLSB]));
+  Future<Map<String, dynamic>> executeOrbBasicProgram(
+          int area, int slMSB, int slLSB) =>
+      _command(
+          SpheroV1.execOBProgram, Uint8List.fromList([area, slMSB, slLSB]));
 
   ///
   /// The Abort orbBasic Program command aborts execution of any currently
@@ -1051,8 +1065,8 @@ class Sphero extends Core {
   /// orb.abortOrbBasicProgram(function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> abortOrbBasicProgram() =>
-      command(SpheroV1.abortOBProgram, null);
+  Future<Map<String, dynamic>> abortOrbBasicProgram() =>
+      _command(SpheroV1.abortOBProgram, null);
 
   ///
   /// The Submit value To Input command takes the place of the typical user
@@ -1068,8 +1082,8 @@ class Sphero extends Core {
   /// orb.submitValuetoInput(0x0000FFFF, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> submitValueToInput(int val) =>
-      command(SpheroV1.answerInput, val.toHexArray(4));
+  Future<Map<String, dynamic>> submitValueToInput(int val) =>
+      _command(SpheroV1.answerInput, val.toHexArray(4));
 
   ///
   /// The Commit To Flash command copies the current orbBasic RAM program to
@@ -1081,8 +1095,9 @@ class Sphero extends Core {
   /// orb.commitToFlash(function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<ResponseV1> commitToFlash() => command(SpheroV1.commitToFlash, null);
+  Future<Map<String, dynamic>> commitToFlash() =>
+      _command(SpheroV1.commitToFlash, null);
 
-  Future<ResponseV1> _commitToFlashAlias() =>
-      command(SpheroV1.commitToFlashAlias, null);
+  Future<Map<String, dynamic>> _commitToFlashAlias() =>
+      _command(SpheroV1.commitToFlashAlias, null);
 }

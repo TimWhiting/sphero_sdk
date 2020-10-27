@@ -47,6 +47,8 @@ class PacketV1 {
     p.add(checksum);
     return p;
   }
+
+  RGB toRGB() {}
 }
 
 class PacketParser {
@@ -56,6 +58,24 @@ class PacketParser {
   bool emitPacketErrors;
 
   Uint8List partialBuffer = Uint8List(0);
+  PacketV1 create(
+      {int sop1,
+      int sop2,
+      int cid,
+      int did,
+      int seq,
+      int checksum,
+      Uint8List data}) {
+    return PacketV1.create(
+        sop1: sop1,
+        sop2: sop2,
+        cid: cid,
+        did: did,
+        seq: seq,
+        checksum: checksum,
+        data: data);
+  }
+
   parse(Uint8List buffer) {
     var b = buffer;
     if (partialBuffer.length > 0) {
@@ -141,13 +161,14 @@ class PacketParser {
     return _parseData(parser, payload, ds);
   }
 
-  Map<String, dynamic> parseResponseData(APIV1 cmd, PacketV1 payload) {
-    if (cmd == null || cmd.did == null || cmd.cid == null) {
+  Map<String, dynamic> parseResponseData(
+      Map<String, int> cmd, PacketV1 payload) {
+    if (cmd == null || cmd['did'] == null || cmd['cid'] == null) {
       throw Exception(payload);
     }
 
     final parserId =
-            cmd.did.toRadixString(16) + ":" + cmd.cid.toRadixString(16),
+            cmd['did'].toRadixString(16) + ":" + cmd['cid'].toRadixString(16),
         parser = RES_PARSER[parserId];
 
     return _parseData(parser, payload);
