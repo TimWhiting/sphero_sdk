@@ -2,26 +2,24 @@ import 'dart:async';
 import 'package:dartx/dartx.dart';
 
 class CommandQueueItem<T> {
+  CommandQueueItem(this.payload, this.completer);
   final T payload;
   Timer timeout;
   final Completer<T> completer;
-
-  CommandQueueItem(this.payload, this.completer);
 }
 
 class QueueListener<T> {
+  QueueListener({this.onExecute, this.match});
   final Future<dynamic> Function(T command) onExecute;
   final bool Function(T commandA, T commandB) match;
-
-  QueueListener({this.onExecute, this.match});
 }
 
 class Queue<T> {
+  Queue(this.queueListener);
+
   final List<CommandQueueItem<T>> waitingForResponseQueue = [];
   final List<CommandQueueItem<T>> commandQueue = [];
   final QueueListener<T> queueListener;
-
-  Queue(this.queueListener);
 
   void onCommandProcessed(T payloadReceived) {
     final lastCommand = waitingForResponseQueue.firstWhere(

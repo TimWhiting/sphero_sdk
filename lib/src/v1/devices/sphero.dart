@@ -197,7 +197,7 @@ mixin SpheroDevice on Core {
   Future<Map<String, dynamic>> configureCollisions(
       {int meth, int xt, int xs, int yt, int ys, int dead}) {
     final data = [meth, xt, xs, yt, ys, dead];
-    return _command(SpheroV1.setCollisionDetection, data);
+    return _command(SpheroV1.setCollisionDetection, Uint8List.fromList(data));
   }
 
   ///

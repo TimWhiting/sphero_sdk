@@ -176,7 +176,7 @@ class PacketParser {
       [Map<String, int> dsIn]) {
     final data = payload.data;
     Map<String, dynamic> pData;
-    dynamic field;
+    APIField field;
     var ds = dsIn;
     if (parser != null && (data.isNotEmpty)) {
       try {
@@ -205,8 +205,8 @@ class PacketParser {
         dsFlag = _checkDSBit(ds, field);
 
         if (dsFlag == 1) {
-          field.from = dsIndex;
-          field.to = dsIndex = dsIndex + 2;
+          field = field.copyWith(from: dsIndex, to: dsIndex + 2);
+          dsIndex += 2;
         } else if (dsFlag == 0) {
           i = _incParserIndex(i, fields, data, dsFlag, dsIndex);
           continue;
@@ -268,6 +268,7 @@ class PacketParser {
     switch (field.type) {
       case 'number':
         if (field.format == 'hex') {
+          // ignore: prefer_interpolation_to_compose_strings
           pField = '0x' + intField.toRadixString(16).toUpperCase();
         }
         break;
@@ -289,7 +290,7 @@ class PacketParser {
       case 'signed':
         final width = 8 * (field.to - field.from);
         pField = intField;
-        if (pField >= pow(2, width - 1)) {
+        if (intField >= pow(2, width - 1)) {
           pField = pField - pow(2, width);
         }
         break;
@@ -304,19 +305,19 @@ class PacketParser {
 
   Map<String, dynamic> _parseBitmaskField(
       int valIn, APIField field, Map<String, dynamic> pData) {
-    var pField = {};
+    var pField = <String, dynamic>{};
     var val = valIn;
-    if (val > field.range_top) {
+    if (val > field.rangeTop) {
       val = twosToInt(val, 2);
     }
 
     if (pData[field.name] != null) {
-      pField = pData[field.name];
+      pField = pData[field.name] as Map<String, dynamic>;
       pField['value'].add(val);
     } else {
       pField = {
         'sensor': field.sensor,
-        'range': {'top': field.range_top, 'bottom': field.range_bottom},
+        'range': {'top': field.rangeTop, 'bottom': field.rangeBottom},
         'units': field.units,
         'value': [val]
       };
@@ -352,7 +353,7 @@ class PacketParser {
     return (bufferSize < expectedSize) ? -1 : expectedSize;
   }
 
-  bool _checkMinSize(Uint8List buffer) => (buffer.length >= MIN_BUFFER_SIZE);
+  bool _checkMinSize(Uint8List buffer) => buffer.length >= MIN_BUFFER_SIZE;
 
   int _extractDlen(Uint8List buffer) {
     if (buffer[FIELDS.sop2_pos] == FIELDS.sop2_sync) {

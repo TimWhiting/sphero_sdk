@@ -4,8 +4,8 @@ import 'dart:typed_data';
 import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 
 import '../commands/index.dart';
-import 'types.dart';
 import 'queue.dart';
+import 'types.dart';
 import 'utils.dart';
 
 export 'package:flutter_ble_lib/flutter_ble_lib.dart' show Peripheral;
@@ -13,9 +13,9 @@ export '../commands/index.dart';
 export 'utils.dart';
 
 class QueuePayload {
+  QueuePayload({this.characteristic, this.command});
   Command command;
   Characteristic characteristic;
-  QueuePayload({this.characteristic, this.command});
 }
 
 class Event {
@@ -25,6 +25,8 @@ class Event {
 
 /// The core class handling most basic functionality
 class Core {
+  Core(this.peripheral);
+
   /// Override in child class to get right percent
   double maxVoltage = 0;
   double minVoltage = 1;
@@ -43,8 +45,6 @@ class Core {
   Map<String, Future<void> Function(dynamic args)> eventsListeners;
   SensorMaskRaw sensorMask = SensorMaskRaw(v2: [], v21: []);
 
-  Core(this.peripheral);
-
   /// Determines and returns the current battery charging state
   Future<double> batteryVoltage() async {
     final response = await queueCommand(commands.power.batteryVoltage());
@@ -60,14 +60,10 @@ class Core {
   }
 
   /// Wakes up the toy from sleep mode
-  Future<void> wake() {
-    return queueCommand(commands.power.wake());
-  }
+  Future<void> wake() => queueCommand(commands.power.wake());
 
   /// Sets the to into sleep mode
-  Future<void> sleep() {
-    return queueCommand(commands.power.sleep());
-  }
+  Future<void> sleep() => queueCommand(commands.power.sleep());
 
   /// Starts the toy
   Future<void> start() async {
@@ -89,7 +85,7 @@ class Core {
     try {
       print('start-wake');
       await wake();
-    } catch (e) {
+    } on Exception catch (e) {
       print('error $e');
     }
     print('start-end');
@@ -104,7 +100,7 @@ class Core {
     };
   }
 
-  void on(String eventName, void Function(Command) handler) {
+  void on(String eventName, Future<void> Function(dynamic) handler) {
     eventsListeners[eventName] = handler;
   }
 
@@ -125,15 +121,14 @@ class Core {
 
     await queueCommand(commands.sensor.sensorMask(
         flatSensorMask(sensorMask.v2), SensorControlDefaults.interval));
-    if (sensorMask.v21.length > 0) {
+    if (sensorMask.v21.isNotEmpty) {
       await queueCommand(
           commands.sensor.sensorMaskExtended(flatSensorMask(sensorMask.v21)));
     }
   }
 
-  Future<QueuePayload> enableCollisionDetection() {
-    return queueCommand(commands.sensor.enableCollisionAsync());
-  }
+  Future<QueuePayload> enableCollisionDetection() =>
+      queueCommand(commands.sensor.enableCollisionAsync());
 
   Future<QueuePayload> configureCollisionDetection({
     int xThreshold = 100,
@@ -142,16 +137,13 @@ class Core {
     int ySpeed = 100,
     int deadTime = 10,
     int method = 0x01,
-  }) async {
-    return queueCommand(commands.sensor.configureCollision(
-        xThreshold, yThreshold, xSpeed, ySpeed, deadTime,
-        method: method));
-  }
+  }) =>
+      queueCommand(commands.sensor.configureCollision(
+          xThreshold, yThreshold, xSpeed, ySpeed, deadTime,
+          method: method));
 
-  Future<QueuePayload> queueCommand(Command command) async {
-    return queue.queue(
-        QueuePayload(characteristic: apiV2Characteristic, command: command));
-  }
+  Future<QueuePayload> queueCommand(Command command) => queue.queue(
+      QueuePayload(characteristic: apiV2Characteristic, command: command));
 
   Future<void> init() async {
     print('init-start');
@@ -160,12 +152,11 @@ class Core {
     initCompleter = Completer();
 
     queue = Queue<QueuePayload>(
-      QueueListener(
-          match: (cA, cB) => match(cA, cB),
-          onExecute: (item) => onExecute(item)),
+      QueueListener(match: match, onExecute: onExecute),
     );
     eventsListeners = {};
     commands = commandsFactory();
+    // ignore: unnecessary_lambdas
     decoder = decodeFactory((error, [packet]) => onPacketRead(error, packet));
     started = false;
 
@@ -189,18 +180,17 @@ class Core {
     await write(item.characteristic, item.command.raw);
   }
 
-  match(QueuePayload commandA, QueuePayload commandB) {
-    return (commandA.command.deviceId == commandB.command.deviceId &&
-        commandA.command.commandId == commandB.command.commandId &&
-        commandA.command.sequenceNumber == commandB.command.sequenceNumber);
-  }
+  bool match(QueuePayload commandA, QueuePayload commandB) =>
+      commandA.command.deviceId == commandB.command.deviceId &&
+      commandA.command.commandId == commandB.command.commandId &&
+      commandA.command.sequenceNumber == commandB.command.sequenceNumber;
 
   Future<void> bindServices() async {
     print('bindServices');
     final services = await peripheral.services();
     for (final s in services) {
       final characteristics = await s.characteristics();
-      characteristics.forEach((c) {
+      for (final c in characteristics) {
         if (c.uuid == CharacteristicUUID.antiDoSCharacteristic) {
           antiDoSCharacteristic = c;
           print('bindServices antiDoSCharacteristic found $c');
@@ -213,7 +203,7 @@ class Core {
         } else if (c.uuid == CharacteristicUUID.subsCharacteristic) {
           subsCharacteristic = c;
         }
-      });
+      }
     }
   }
 
@@ -222,15 +212,11 @@ class Core {
     // TODO: Figure this out
     assert(apiV2Characteristic != null);
     assert(dfuControlCharacteristic != null);
-    apiV2Characteristic
-        .monitor(transactionId: 'read')
-        .listen((Uint8List data) => onApiRead(data));
-    apiV2Characteristic
-        .monitor(transactionId: 'notify')
-        .listen((Uint8List data) => onApiNotify(data));
+    apiV2Characteristic.monitor(transactionId: 'read').listen(onApiRead);
+    apiV2Characteristic.monitor(transactionId: 'notify').listen(onApiNotify);
     dfuControlCharacteristic
         .monitor(transactionId: 'notify')
-        .listen((Uint8List data) => onDFUControlNotify(data));
+        .listen(onDFUControlNotify);
   }
 
   void onPacketRead(String error, Command command) {
@@ -278,6 +264,7 @@ class Core {
   }
 
   void onApiRead(Uint8List data) {
+    // ignore: avoid_function_literals_in_foreach_calls
     data.forEach((byte) => decoder(byte));
   }
 
@@ -299,9 +286,9 @@ class Core {
     if (data is String) {
       buff = Uint8List.fromList(utf8.encode(data));
     } else {
-      buff = Uint8List.fromList(data);
+      buff = Uint8List.fromList(data as List<int>);
     }
     print('write $data');
-    return await c.write(buff, true);
+    return c.write(buff, true);
   }
 }

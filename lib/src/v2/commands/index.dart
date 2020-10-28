@@ -21,7 +21,7 @@ export 'user_io.dart';
 int Function() sequencer() {
   var s = 0;
   return () {
-    var temp = s;
+    final temp = s;
     s += 1;
     if (s >= 255) {
       s = 0;
@@ -33,11 +33,12 @@ int Function() sequencer() {
 Device commandsFactory([int Function() seq]) {
   final getSequence = seq ?? sequencer();
 
-  final gen = (int deviceId) => (CommandPartial part) => Command.fromPart(
-      commandFlags: [Flags.requestsResponse, Flags.resetsInactivityTimeout],
-      deviceId: deviceId,
-      sequenceNumber: getSequence(),
-      part: part);
+  Command Function(CommandPartial part) gen(int deviceId) =>
+      (part) => Command.fromPart(
+          commandFlags: [Flags.requestsResponse, Flags.resetsInactivityTimeout],
+          deviceId: deviceId,
+          sequenceNumber: getSequence(),
+          part: part);
 
   return Device(
       api: API(gen),
@@ -50,15 +51,7 @@ Device commandsFactory([int Function() seq]) {
 }
 
 class Device {
-  final API api;
-  final Driving driving;
-  final Power power;
-  final SomethingAPI somethingApi;
-  final SystemInfo systemInfo;
-  final UserIO userIO;
-  final Sensor sensor;
-
-  Device(
+  const Device(
       {this.api,
       this.driving,
       this.power,
@@ -66,4 +59,11 @@ class Device {
       this.systemInfo,
       this.userIO,
       this.sensor});
+  final API api;
+  final Driving driving;
+  final Power power;
+  final SomethingAPI somethingApi;
+  final SystemInfo systemInfo;
+  final UserIO userIO;
+  final Sensor sensor;
 }

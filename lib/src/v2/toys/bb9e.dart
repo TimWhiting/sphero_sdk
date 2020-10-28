@@ -3,11 +3,12 @@ import 'rollable_toy.dart';
 import 'types.dart';
 
 class BB9E extends RollableToy {
+  BB9E(Peripheral peripheral) : super(peripheral);
   static final advertisement =
       ToyAdvertisement(name: 'BB-9E', prefix: 'GB-', typeof: (p) => BB9E(p));
 
-  double maxVoltage = 7.8;
-  double minVoltage = 6.5;
-
-  BB9E(Peripheral peripheral) : super(peripheral);
+  @override
+  double get maxVoltage => 7.8;
+  @override
+  double get minVoltage => 6.5;
 }

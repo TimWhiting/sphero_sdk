@@ -224,8 +224,8 @@ class _$APIFieldTearOff {
       int bitmask,
       String maskField,
       String sensor,
-      int range_bottom,
-      int range_top,
+      int rangeBottom,
+      int rangeTop,
       String units,
       int mask,
       int from,
@@ -238,8 +238,8 @@ class _$APIFieldTearOff {
       bitmask: bitmask,
       maskField: maskField,
       sensor: sensor,
-      range_bottom: range_bottom,
-      range_top: range_top,
+      rangeBottom: rangeBottom,
+      rangeTop: rangeTop,
       units: units,
       mask: mask,
       from: from,
@@ -261,8 +261,8 @@ mixin _$APIField {
   int get bitmask;
   String get maskField;
   String get sensor;
-  int get range_bottom;
-  int get range_top;
+  int get rangeBottom;
+  int get rangeTop;
   String get units;
   int get mask;
   int get from;
@@ -283,8 +283,8 @@ abstract class $APIFieldCopyWith<$Res> {
       int bitmask,
       String maskField,
       String sensor,
-      int range_bottom,
-      int range_top,
+      int rangeBottom,
+      int rangeTop,
       String units,
       int mask,
       int from,
@@ -308,8 +308,8 @@ class _$APIFieldCopyWithImpl<$Res> implements $APIFieldCopyWith<$Res> {
     Object bitmask = freezed,
     Object maskField = freezed,
     Object sensor = freezed,
-    Object range_bottom = freezed,
-    Object range_top = freezed,
+    Object rangeBottom = freezed,
+    Object rangeTop = freezed,
     Object units = freezed,
     Object mask = freezed,
     Object from = freezed,
@@ -323,9 +323,9 @@ class _$APIFieldCopyWithImpl<$Res> implements $APIFieldCopyWith<$Res> {
       bitmask: bitmask == freezed ? _value.bitmask : bitmask as int,
       maskField: maskField == freezed ? _value.maskField : maskField as String,
       sensor: sensor == freezed ? _value.sensor : sensor as String,
-      range_bottom:
-          range_bottom == freezed ? _value.range_bottom : range_bottom as int,
-      range_top: range_top == freezed ? _value.range_top : range_top as int,
+      rangeBottom:
+          rangeBottom == freezed ? _value.rangeBottom : rangeBottom as int,
+      rangeTop: rangeTop == freezed ? _value.rangeTop : rangeTop as int,
       units: units == freezed ? _value.units : units as String,
       mask: mask == freezed ? _value.mask : mask as int,
       from: from == freezed ? _value.from : from as int,
@@ -347,8 +347,8 @@ abstract class _$APIFieldCopyWith<$Res> implements $APIFieldCopyWith<$Res> {
       int bitmask,
       String maskField,
       String sensor,
-      int range_bottom,
-      int range_top,
+      int rangeBottom,
+      int rangeTop,
       String units,
       int mask,
       int from,
@@ -373,8 +373,8 @@ class __$APIFieldCopyWithImpl<$Res> extends _$APIFieldCopyWithImpl<$Res>
     Object bitmask = freezed,
     Object maskField = freezed,
     Object sensor = freezed,
-    Object range_bottom = freezed,
-    Object range_top = freezed,
+    Object rangeBottom = freezed,
+    Object rangeTop = freezed,
     Object units = freezed,
     Object mask = freezed,
     Object from = freezed,
@@ -388,9 +388,9 @@ class __$APIFieldCopyWithImpl<$Res> extends _$APIFieldCopyWithImpl<$Res>
       bitmask: bitmask == freezed ? _value.bitmask : bitmask as int,
       maskField: maskField == freezed ? _value.maskField : maskField as String,
       sensor: sensor == freezed ? _value.sensor : sensor as String,
-      range_bottom:
-          range_bottom == freezed ? _value.range_bottom : range_bottom as int,
-      range_top: range_top == freezed ? _value.range_top : range_top as int,
+      rangeBottom:
+          rangeBottom == freezed ? _value.rangeBottom : rangeBottom as int,
+      rangeTop: rangeTop == freezed ? _value.rangeTop : rangeTop as int,
       units: units == freezed ? _value.units : units as String,
       mask: mask == freezed ? _value.mask : mask as int,
       from: from == freezed ? _value.from : from as int,
@@ -409,8 +409,8 @@ class _$_APIField implements _APIField {
       this.bitmask,
       this.maskField,
       this.sensor,
-      this.range_bottom,
-      this.range_top,
+      this.rangeBottom,
+      this.rangeTop,
       this.units,
       this.mask,
       this.from,
@@ -429,9 +429,9 @@ class _$_APIField implements _APIField {
   @override
   final String sensor;
   @override
-  final int range_bottom;
+  final int rangeBottom;
   @override
-  final int range_top;
+  final int rangeTop;
   @override
   final String units;
   @override
@@ -447,7 +447,7 @@ class _$_APIField implements _APIField {
 
   @override
   String toString() {
-    return 'APIField(name: $name, type: $type, bitmask: $bitmask, maskField: $maskField, sensor: $sensor, range_bottom: $range_bottom, range_top: $range_top, units: $units, mask: $mask, from: $from, to: $to, format: $format, values: $values)';
+    return 'APIField(name: $name, type: $type, bitmask: $bitmask, maskField: $maskField, sensor: $sensor, rangeBottom: $rangeBottom, rangeTop: $rangeTop, units: $units, mask: $mask, from: $from, to: $to, format: $format, values: $values)';
   }
 
   @override
@@ -466,12 +466,12 @@ class _$_APIField implements _APIField {
                     .equals(other.maskField, maskField)) &&
             (identical(other.sensor, sensor) ||
                 const DeepCollectionEquality().equals(other.sensor, sensor)) &&
-            (identical(other.range_bottom, range_bottom) ||
+            (identical(other.rangeBottom, rangeBottom) ||
                 const DeepCollectionEquality()
-                    .equals(other.range_bottom, range_bottom)) &&
-            (identical(other.range_top, range_top) ||
+                    .equals(other.rangeBottom, rangeBottom)) &&
+            (identical(other.rangeTop, rangeTop) ||
                 const DeepCollectionEquality()
-                    .equals(other.range_top, range_top)) &&
+                    .equals(other.rangeTop, rangeTop)) &&
             (identical(other.units, units) ||
                 const DeepCollectionEquality().equals(other.units, units)) &&
             (identical(other.mask, mask) ||
@@ -494,8 +494,8 @@ class _$_APIField implements _APIField {
       const DeepCollectionEquality().hash(bitmask) ^
       const DeepCollectionEquality().hash(maskField) ^
       const DeepCollectionEquality().hash(sensor) ^
-      const DeepCollectionEquality().hash(range_bottom) ^
-      const DeepCollectionEquality().hash(range_top) ^
+      const DeepCollectionEquality().hash(rangeBottom) ^
+      const DeepCollectionEquality().hash(rangeTop) ^
       const DeepCollectionEquality().hash(units) ^
       const DeepCollectionEquality().hash(mask) ^
       const DeepCollectionEquality().hash(from) ^
@@ -515,8 +515,8 @@ abstract class _APIField implements APIField {
       int bitmask,
       String maskField,
       String sensor,
-      int range_bottom,
-      int range_top,
+      int rangeBottom,
+      int rangeTop,
       String units,
       int mask,
       int from,
@@ -535,9 +535,9 @@ abstract class _APIField implements APIField {
   @override
   String get sensor;
   @override
-  int get range_bottom;
+  int get rangeBottom;
   @override
-  int get range_top;
+  int get rangeTop;
   @override
   String get units;
   @override

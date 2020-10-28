@@ -1,9 +1,10 @@
 import 'types.dart';
 
 class SystemInfo {
-  final CommandEncoder _encode;
   SystemInfo(CommandGenerator generator)
       : _encode = generator(DeviceId.systemInfo);
+  final CommandEncoder _encode;
+
   Command appVersion() => _encode(
       CommandPartial(commandId: SystemInfoCommandIds.mainApplicationVersion));
   Command something() =>

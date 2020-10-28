@@ -5,72 +5,58 @@ import 'rollable_toy.dart';
 import 'types.dart';
 
 class R2D2 extends RollableToy {
+  R2D2(Peripheral peripheral) : super(peripheral);
   static final advertisement =
       ToyAdvertisement(name: 'R2-D2', prefix: 'D2-', typeof: (p) => R2D2(p));
 
-  double maxVoltage = 3.65;
-  double minVoltage = 3.4;
+  @override
+  double get maxVoltage => 3.65;
+  @override
+  double get minVoltage => 3.4;
 
-  R2D2(Peripheral peripheral) : super(peripheral);
+  Future<QueuePayload> wake() => queueCommand(commands.power.wake());
 
-  Future<QueuePayload> wake() {
-    return queueCommand(commands.power.wake());
-  }
+  Future<QueuePayload> sleep() => queueCommand(commands.power.sleep());
 
-  Future<QueuePayload> sleep() {
-    return queueCommand(commands.power.sleep());
-  }
-
-  Future<QueuePayload> playAudioFile(int idx) {
-    return queueCommand(commands.userIO.playAudioFile(idx));
-  }
+  Future<QueuePayload> playAudioFile(int idx) =>
+      queueCommand(commands.userIO.playAudioFile(idx));
 
   Future<QueuePayload> turnDome(int angle) {
     final res = calculateDomeAngle(angle);
     return queueCommand(commands.userIO.turnDome(res));
   }
 
-  Future<QueuePayload> setStance(int stance) {
-    return queueCommand(commands.userIO.setStance(stance));
-  }
+  Future<QueuePayload> setStance(int stance) =>
+      queueCommand(commands.userIO.setStance(stance));
 
-  Future<QueuePayload> playAnimation(int animation) {
-    return queueCommand(commands.userIO.playAnimation(animation));
-  }
+  Future<QueuePayload> playAnimation(int animation) =>
+      queueCommand(commands.userIO.playAnimation(animation));
 
-  Future<QueuePayload> setR2D2LEDColor(int r, int g, int b) {
-    return queueCommand(commands.userIO.setR2D2LEDColor(r, g, b));
-  }
+  Future<QueuePayload> setR2D2LEDColor(int r, int g, int b) =>
+      queueCommand(commands.userIO.setR2D2LEDColor(r, g, b));
 
-  Future<QueuePayload> setR2D2FrontLEDColor(int r, int g, int b) {
-    return queueCommand(commands.userIO.setR2D2FrontLEDColor(r, g, b));
-  }
+  Future<QueuePayload> setR2D2FrontLEDColor(int r, int g, int b) =>
+      queueCommand(commands.userIO.setR2D2FrontLEDColor(r, g, b));
 
-  Future<QueuePayload> setR2D2BackLEDcolor(int r, int g, int b) {
-    return queueCommand(commands.userIO.setR2D2BackLEDcolor(r, g, b));
-  }
+  Future<QueuePayload> setR2D2BackLEDcolor(int r, int g, int b) =>
+      queueCommand(commands.userIO.setR2D2BackLEDcolor(r, g, b));
 
-  Future<QueuePayload> setR2D2LogicDisplaysIntensity(int i) {
-    return queueCommand(commands.userIO.setR2D2LogicDisplaysIntensity(i));
-  }
+  Future<QueuePayload> setR2D2LogicDisplaysIntensity(int i) =>
+      queueCommand(commands.userIO.setR2D2LogicDisplaysIntensity(i));
 
-  Future<QueuePayload> setR2D2HoloProjectorIntensity(int i) {
-    return queueCommand(commands.userIO.setR2D2HoloProjectorIntensity(i));
-  }
+  Future<QueuePayload> setR2D2HoloProjectorIntensity(int i) =>
+      queueCommand(commands.userIO.setR2D2HoloProjectorIntensity(i));
 
-  Future<QueuePayload> startIdleLedAnimation() {
-    return queueCommand(commands.userIO.startIdleLedAnimation());
-  }
+  Future<QueuePayload> startIdleLedAnimation() =>
+      queueCommand(commands.userIO.startIdleLedAnimation());
 
-  Future<QueuePayload> playR2D2Sound(int hex1, int hex2) {
-    return queueCommand(commands.userIO.playR2D2Sound(hex1, hex2));
-  }
+  Future<QueuePayload> playR2D2Sound(int hex1, int hex2) =>
+      queueCommand(commands.userIO.playR2D2Sound(hex1, hex2));
 
-  Future<QueuePayload> setAudioVolume(int vol) {
-    return queueCommand(commands.userIO.setAudioVolume(vol));
-  }
+  Future<QueuePayload> setAudioVolume(int vol) =>
+      queueCommand(commands.userIO.setAudioVolume(vol));
 
-  // TODO: Refractor this and simplify
+  // TODO: Refactor this and simplify
   /// utility calculation for dome rotation
   Uint8List calculateDomeAngle(int angle) {
     final result = Uint8List(2);
@@ -130,7 +116,7 @@ class R2D2 extends RollableToy {
     return result;
   }
 
-  static hobIndex(int val) {
+  static int hobIndex(int val) {
     final values = Uint16List(2);
     values[1] = 0;
     values[0] = val;

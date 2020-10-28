@@ -43,18 +43,17 @@ List<int> sensorValuesToRawV21(List<int> sensorMask,
     });
 
 SensorMaskRaw sensorValuesToRaw(List<int> sensorMask,
-    [APIVersion apiVersion = APIVersion.V2]) {
-  return SensorMaskRaw(
-      v2: sensorValuesToRawV2(sensorMask, apiVersion),
-      v21: sensorValuesToRawV21(sensorMask, apiVersion));
-}
+        [APIVersion apiVersion = APIVersion.V2]) =>
+    SensorMaskRaw(
+        v2: sensorValuesToRawV2(sensorMask, apiVersion),
+        v21: sensorValuesToRawV21(sensorMask, apiVersion));
 
-int flatSensorMask(List<int> sensorMask) => sensorMask.fold(0, (bits, m) {
-      return (bits |= m);
-    });
+int flatSensorMask(List<int> sensorMask) =>
+    sensorMask.fold(0, (bits, m) => bits |= m);
 
 double convertBinaryToFloat(List<int> nums, int offset) {
-  // Extract binary data from payload array at the specific position in the array
+  // Extract binary data from payload array at the specific position
+  // in the array
   // Position in array is defined by offset variable
   // 1 Float value is always 4 bytes!
   if (offset + 4 > nums.length) {
@@ -70,12 +69,11 @@ double convertBinaryToFloat(List<int> nums, int offset) {
 }
 
 class ParserState {
+  ParserState({this.location, this.response, this.floats, this.sensorMask});
   final int location;
   final SensorResponse response;
   final List<double> floats;
   final SensorMaskRaw sensorMask;
-
-  ParserState({this.location, this.response, this.floats, this.sensorMask});
 }
 
 ParserState fillAngles(ParserState state) {
@@ -83,7 +81,7 @@ ParserState fillAngles(ParserState state) {
   final sensorMask = state.sensorMask;
   var response = state.response;
   final location = state.location;
-  if (sensorMask.v2.indexOf(SensorMaskV2.imuAnglesFilteredAll) >= 0) {
+  if (sensorMask.v2.contains(SensorMaskV2.imuAnglesFilteredAll)) {
     response = response.copyWith(
         angles: AngleSensor(
             pitch: floats[location],
@@ -104,7 +102,7 @@ ParserState fillAccelerometer(ParserState state) {
   final sensorMask = state.sensorMask;
   var response = state.response;
   final location = state.location;
-  if (state.sensorMask.v2.indexOf(SensorMaskV2.accelerometerFilteredAll) >= 0) {
+  if (state.sensorMask.v2.contains(SensorMaskV2.accelerometerFilteredAll)) {
     response = response.copyWith(
         accelerometer: ThreeAxisSensor(
             x: floats[location],
@@ -124,8 +122,8 @@ ParserState fillLocator(ParserState state) {
   final sensorMask = state.sensorMask;
   var response = state.response;
   final location = state.location;
-  if (sensorMask.v2.indexOf(SensorMaskV2.locatorAll) >= 0) {
-    final metersToCentimeters = 100.0;
+  if (sensorMask.v2.contains(SensorMaskV2.locatorAll)) {
+    const metersToCentimeters = 100.0;
     response = response.copyWith(
         position: TwoAxisSensor(
             x: floats[location] * metersToCentimeters,
@@ -150,8 +148,8 @@ ParserState fillGyroV2(ParserState state) {
   final sensorMask = state.sensorMask;
   var response = state.response;
   final location = state.location;
-  if (sensorMask.v2.indexOf(SensorMaskV2.gyroFilteredAllV2) >= 0) {
-    final multiplier = 2000.0 / 32767.0;
+  if (sensorMask.v2.contains(SensorMaskV2.gyroFilteredAllV2)) {
+    const multiplier = 2000.0 / 32767.0;
     response = response.copyWith(
         gyro: ThreeAxisSensor(
             x: floats[location] * multiplier,
@@ -172,7 +170,7 @@ ParserState fillGyroV21(ParserState state) {
   final sensorMask = state.sensorMask;
   var response = state.response;
   final location = state.location;
-  if (sensorMask.v21.indexOf(SensorMaskV2.gyroFilteredAllV21) >= 0) {
+  if (sensorMask.v21.contains(SensorMaskV2.gyroFilteredAllV21)) {
     response = response.copyWith(
         gyro: ThreeAxisSensor(
             x: floats[location],
@@ -198,11 +196,11 @@ List<double> tranformToFloat(List<int> bytes) {
 }
 
 SensorResponse parseSensorEvent(List<int> payload, SensorMaskRaw sensorMask) {
-  ParserState state = ParserState(
+  var state = ParserState(
     floats: tranformToFloat(payload),
     sensorMask: sensorMask,
     location: 0,
-    response: SensorResponse(),
+    response: const SensorResponse(),
   );
 
   state = fillAngles(state);

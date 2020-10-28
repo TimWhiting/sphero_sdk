@@ -31,6 +31,7 @@ class HomePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useMemoized(() async {
+      // ignore: unused_local_variable
       final permissionStatus = await Permission.location.request();
       BleManager manager = BleManager();
       await manager.createClient(); //ready to go!

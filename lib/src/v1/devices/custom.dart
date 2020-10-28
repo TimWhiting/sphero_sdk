@@ -198,11 +198,11 @@ mixin Custom on SpheroDevice {
   Future<Map<String, dynamic>> detectFreefall() {
     var falling = false;
     on('accelOne', (data) {
-      if (data.accelOne.value[0] < 70 && !falling) {
+      if (data.accelOne.value[0] as int < 70 && !falling) {
         falling = true;
         emit('freefall', {'value': data.accelOne.value[0]});
       }
-      if (data.accelOne.value[0] > 100 && falling) {
+      if (data.accelOne.value[0] as int > 100 && falling) {
         falling = false;
         emit('landed', {'value': data.accelOne.value[0]});
       }
@@ -226,8 +226,10 @@ mixin Custom on SpheroDevice {
   /// orb.startCalibration();
   Future<Map<String, dynamic>> startCalibration() async {
     final color = await getColor();
-    originalColor =
-        RGB(red: color['red'], green: color['green'], blue: color['blue']);
+    originalColor = RGB(
+        red: color['red'] as int,
+        green: color['green'] as int,
+        blue: color['blue'] as int);
     await setRgbLed(0, 0, 0);
     await setBackLed(127);
     return setStabiliation(false);

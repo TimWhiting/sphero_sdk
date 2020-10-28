@@ -119,20 +119,20 @@ class DriveFlag {
 }
 
 class AllFlags {
+  AllFlags({
+    this.isResponse,
+    this.requestsResponse,
+    this.requestsOnlyErrorResponse,
+    this.resetsInactivityTimeout,
+    this.commandHasTargetId,
+    this.commandHasSourceId,
+  });
   final bool isResponse;
   final bool requestsResponse;
   final bool requestsOnlyErrorResponse;
   final bool resetsInactivityTimeout;
   final bool commandHasTargetId;
   final bool commandHasSourceId;
-
-  AllFlags(
-      {this.isResponse,
-      this.requestsResponse,
-      this.requestsOnlyErrorResponse,
-      this.resetsInactivityTimeout,
-      this.commandHasTargetId,
-      this.commandHasSourceId});
 }
 
 enum CommandId {
@@ -147,57 +147,56 @@ enum CommandId {
 }
 
 class CommandOutput {
+  CommandOutput({this.bytes, this.checksum});
   final List<int> bytes;
   int checksum;
-
-  CommandOutput({this.bytes, this.checksum});
 }
 
 class CommandPartial {
-  List<int> payload;
-  final int commandId;
-  int targetId;
-  int sourceId;
-
   CommandPartial({
     this.commandId,
     this.payload,
     this.targetId,
     this.sourceId,
   });
+  List<int> payload;
+  final int commandId;
+  int targetId;
+  int sourceId;
 }
 
 class Command extends CommandPartial {
-  final int deviceId;
-  final List<int> commandFlags;
-  final int sequenceNumber;
-
-  Command(
-      {List<int> payload,
-      int commandId,
-      int targetId,
-      int sourceId,
-      this.deviceId,
-      this.commandFlags,
-      this.sequenceNumber})
-      : super(
+  Command({
+    List<int> payload,
+    int commandId,
+    int targetId,
+    int sourceId,
+    this.deviceId,
+    this.commandFlags,
+    this.sequenceNumber,
+  }) : super(
           payload: payload,
           commandId: commandId,
           targetId: targetId,
           sourceId: sourceId,
         );
+  Command.fromPart({
+    CommandPartial part,
+    this.deviceId,
+    this.commandFlags,
+    this.sequenceNumber,
+  }) : super(
+          commandId: part.commandId,
+          payload: part.payload,
+          targetId: part.targetId,
+          sourceId: part.sourceId,
+        );
 
-  Command.fromPart(
-      {CommandPartial part,
-      this.deviceId,
-      this.commandFlags,
-      this.sequenceNumber})
-      : super(
-            commandId: part.commandId,
-            payload: part.payload,
-            targetId: part.targetId,
-            sourceId: part.sourceId);
-  Uint8List get raw => this.encode();
+  final int deviceId;
+  final List<int> commandFlags;
+  final int sequenceNumber;
+
+  Uint8List get raw => encode();
 }
 
 typedef CommandGenerator = CommandEncoder Function(int deviceId);

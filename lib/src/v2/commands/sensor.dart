@@ -1,8 +1,9 @@
 import 'types.dart';
 
 class Sensor {
-  final CommandEncoder _encode;
   Sensor(CommandGenerator generator) : _encode = generator(DeviceId.sensor);
+
+  final CommandEncoder _encode;
   Command enableCollisionAsync() =>
       _encode(CommandPartial(commandId: SensorCommandIds.enableCollisionAsync));
 
@@ -13,12 +14,15 @@ class Sensor {
   /// [yThreshold] An 8-bit settable threshold for the X (left/right)
   /// and Y (front/back) axes of Sphero. A value of 00h disables the contribution of that axis.
   /// [xSpeed] An 8-bit settable speed value for the X and Y axes.
-  /// This setting is ranged by the speed, then added to Xt, Yt to generate the final threshold value.
+  /// This setting is ranged by the speed, then added to Xt, Yt to generate
+  /// the final threshold value.
   /// [ySpeed] An 8-bit settable speed value for the X and Y axes.
-  /// This setting is ranged by the speed, then added to Xt, Yt to generate the final threshold value.
-  /// [deadTime] An 8-bit post-collision dead time to prevent retriggering; specified in 10ms increments.
-  /// [method] {method=0x01}  Detection method type to use. Currently the only method
-  /// supported is 01h. Use 00h to completely disable this service.
+  /// This setting is ranged by the speed, then added to Xt, Yt to generate
+  /// the final threshold value.
+  /// [deadTime] An 8-bit post-collision dead time to prevent retriggering;
+  /// specified in 10ms increments.
+  /// [method] {method=0x01}  Detection method type to use. Currently the
+  /// only method supported is 01h. Use 00h to completely disable this service.
   Command configureCollision(
           int xThreshold, int yThreshold, int xSpeed, int ySpeed, int deadTime,
           {int method = 0x01}) =>

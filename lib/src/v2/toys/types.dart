@@ -18,12 +18,12 @@ class CharacteristicUUID {
   static const String subsCharacteristic = '00020003574f4f2053706865726f2121';
 }
 
-class ToyAdvertisement {
-  final String name;
-  final String prefix;
-  final Core Function(Peripheral) typeof;
+class ToyAdvertisement<T extends Core> {
   const ToyAdvertisement(
       {@required this.name, @required this.prefix, @required this.typeof});
+  final String name;
+  final String prefix;
+  final T Function(Peripheral) typeof;
 }
 
 class Stance {

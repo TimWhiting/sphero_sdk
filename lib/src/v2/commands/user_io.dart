@@ -2,11 +2,12 @@ import 'dart:typed_data';
 import 'types.dart';
 
 class UserIO {
-  final CommandEncoder _encode;
-  final CommandEncoder _encodeAnimatronics;
   UserIO(CommandGenerator generator)
       : _encode = generator(DeviceId.userIO),
         _encodeAnimatronics = generator(DeviceId.animatronics);
+  final CommandEncoder _encode;
+  final CommandEncoder _encodeAnimatronics;
+
   Command allLEDsRaw(List<int> payload) => _encode(
       CommandPartial(commandId: UserIOCommandIds.allLEDs, payload: payload));
   Command setBackLedIntensity(int i) => _encode(CommandPartial(
@@ -30,18 +31,21 @@ class UserIO {
       commandId: AnimatronicsCommandIds.animationBundle,
       payload: [0x00, animation]));
 
-  /// Set R2D2 main LED color based on RGB vales (each can range between 0 and 255)
+  /// Set R2D2 main LED color based on RGB vales
+  /// (each can range between 0 and 255)
   /// same like front LED color
   Command setR2D2LEDColor(int r, int g, int b) => _encode(CommandPartial(
       commandId: UserIOCommandIds.allLEDs,
       payload: [0x00, 0x77, r, g, b, r, g, b]));
 
-  /// Set R2D2 front LED color based on RGB vales (each can range between 0 and 255)
+  /// Set R2D2 front LED color based on RGB vales
+  /// (each can range between 0 and 255)
   /// same like main LED color
   Command setR2D2FrontLEDColor(int r, int g, int b) => _encode(CommandPartial(
       commandId: UserIOCommandIds.allLEDs, payload: [0x00, 0x07, r, g, b]));
 
-  /// Set R2D2 back LED color based on RGB vales (each can range between 0 and 255)
+  /// Set R2D2 back LED color based on RGB vales
+  /// (each can range between 0 and 255)
   Command setR2D2BackLEDcolor(int r, int g, int b) => _encode(CommandPartial(
       commandId: UserIOCommandIds.allLEDs, payload: [0x00, 0x70, r, g, b]));
 

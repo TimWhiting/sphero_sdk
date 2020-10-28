@@ -1,8 +1,9 @@
 import 'types.dart';
 
 class Power {
-  final CommandEncoder _encode;
   Power(CommandGenerator generator) : _encode = generator(DeviceId.powerInfo);
+
+  final CommandEncoder _encode;
   Command batteryVoltage() => _encode(CommandPartial(
       targetId: 0x11, commandId: PowerCommandIds.batteryVoltage));
   Command sleep() =>

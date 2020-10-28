@@ -114,8 +114,8 @@ class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
           emit('async', parsedData);
         }
 
-        if (parsedData != null && parsedData['event']) {
-          emit(parsedData['event'], parsedData);
+        if (parsedData != null && parsedData['event'] != null) {
+          emit(parsedData['event'] as String, parsedData);
         }
       }
     };

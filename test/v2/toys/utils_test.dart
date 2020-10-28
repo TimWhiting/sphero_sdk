@@ -11,7 +11,7 @@ void main() {
     final output = parseSensorEvent(payload, mask);
     expect(
       output,
-      SensorResponse(
+      const SensorResponse(
         angles: AngleSensor(
             pitch: 5.656248092651367,
             roll: -0.11342836171388626,

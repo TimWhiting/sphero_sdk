@@ -23,6 +23,7 @@ extension Encoding on Command {
     encodeBytes(out, sequenceNumber, true);
 
     if (payload != null) {
+      // ignore: avoid_function_literals_in_foreach_calls
       payload.forEach((byte) {
         encodeBytes(out, byte, true);
       });
