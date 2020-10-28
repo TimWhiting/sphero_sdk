@@ -1,3 +1,4 @@
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -25,8 +26,26 @@ class HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final tabController = useTabController(initialLength: Pages.values.length);
     return Scaffold(
-      body: TabBarView(controller: tabController, children: [for (final tab in Pages.values) tab.widget])
-      bottomNavigationBar: TabBar(tabs: [for (final tab in Pages.values) TabBarView()]),
+      body: Column(
+        children: [
+          Row(
+            children: [
+              OutlineButton(
+                child: Text('Connect'),
+                onPressed: () {},
+              ),
+              // DropdownButton(), TODO Search for devices and list them
+            ],
+          ),
+          TabBarView(
+              controller: tabController,
+              children: [for (final tab in Pages.values) tab.widget]),
+        ],
+      ),
+      bottomNavigationBar: TabBar(tabs: [
+        for (final tab in Pages.values)
+          Tab(text: EnumToString.convertToString(tab, camelCase: true))
+      ]),
     );
   }
 }
@@ -35,7 +54,13 @@ class BluetoothPage extends HookWidget {
   const BluetoothPage();
   @override
   Widget build(BuildContext context) {
-    return ();
+    return Column(children: [
+      Text('Bluetooth Info'),
+      Text('Name: '),
+      Text('BTAddress: '),
+      Text('Separator: '),
+      Text('Colors: '),
+    ]);
   }
 }
 
