@@ -29,18 +29,22 @@ class PeripheralMock extends Mock implements Peripheral {
   ];
 }
 
+// ignore: avoid_implementing_value_types
 class CharacteristicMock extends Mock implements Characteristic {
-  CharacteristicMock(this.uuid) {
+  CharacteristicMock(this.uuidMock) {
     when(monitor(transactionId: anyNamed('transactionId'))).thenAnswer((_) {
       print('Returning stream');
       return Stream.value(Uint8List(1));
     });
+    when(uuid).thenReturn(uuidMock);
+
     when(write(any, true)).thenAnswer((realInvocation) => null);
   }
-  @override
-  final String uuid;
+
+  final String uuidMock;
 }
 
+// ignore: avoid_implementing_value_types
 class ServiceMock extends Mock implements Service {
   ServiceMock(this.characteristicsMock, {this.uuid}) {
     when(characteristics())
@@ -57,6 +61,6 @@ void main() {
 
     final toy = Core(peripheral);
 
-    expect(toy.start(), completes);
+    expect(toy.start, throwsA('Command Timedout'));
   });
 }
