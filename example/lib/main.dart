@@ -1,9 +1,13 @@
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/all.dart';
+import 'package:hooks_riverpod/all.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,32 +24,54 @@ class MyApp extends StatelessWidget {
   }
 }
 
+final deviceProvider = StateProvider<Set<ScanResult>>((ref) => {});
+
 class HomePage extends HookWidget {
   const HomePage();
   @override
   Widget build(BuildContext context) {
-    final tabController = useTabController(initialLength: Pages.values.length);
-    return Scaffold(
-      body: Column(
-        children: [
-          Row(
-            children: [
-              OutlineButton(
-                child: Text('Connect'),
-                onPressed: () {},
-              ),
-              // DropdownButton(), TODO Search for devices and list them
-            ],
-          ),
-          TabBarView(
-              controller: tabController,
-              children: [for (final tab in Pages.values) tab.widget]),
-        ],
+    useMemoized(() async {
+      final permissionStatus = await Permission.location.request();
+      BleManager manager = BleManager();
+      await manager.createClient(); //ready to go!
+
+      manager.startPeripheralScan().listen((sr) {
+        context.read(deviceProvider).state = context.read(deviceProvider).state
+          ..add(sr);
+      });
+    });
+    final pageIndex = useState(0);
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(),
+        body: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                OutlineButton(
+                  child: Text('Connect'),
+                  onPressed: () {},
+                ),
+
+                // DropdownButton(), TODO Search for devices and list them
+              ],
+            ),
+            Pages.values[pageIndex.value].widget,
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: (i) => pageIndex.value = i,
+          items: [
+            for (final tab in Pages.values)
+              BottomNavigationBarItem(
+                label: EnumToString.convertToString(tab, camelCase: true),
+                icon: Icon(Icons.add),
+              )
+          ],
+        ),
       ),
-      bottomNavigationBar: TabBar(tabs: [
-        for (final tab in Pages.values)
-          Tab(text: EnumToString.convertToString(tab, camelCase: true))
-      ]),
     );
   }
 }
@@ -54,13 +80,20 @@ class BluetoothPage extends HookWidget {
   const BluetoothPage();
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Text('Bluetooth Info'),
-      Text('Name: '),
-      Text('BTAddress: '),
-      Text('Separator: '),
-      Text('Colors: '),
-    ]);
+    final devices = useProvider(deviceProvider).state;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('Bluetooth Info'),
+        Text('Name: '),
+        Text('BTAddress: '),
+        Text('Separator: '),
+        Text('Colors: '),
+        for (final device in devices)
+          Text(device?.advertisementData?.localName ?? '')
+      ],
+    );
   }
 }
 

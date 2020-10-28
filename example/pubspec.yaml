@@ -27,6 +27,8 @@ dependencies:
   flutter_riverpod: any
   hooks_riverpod: any
   enum_to_string: any
+  flutter_ble_lib: any
+  permission_handler: any
   sphero_sdk:
     path: ../
 
