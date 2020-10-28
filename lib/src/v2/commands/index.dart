@@ -41,24 +41,26 @@ Device commandsFactory([int Function() seq]) {
           part: part);
 
   return Device(
-      api: API(gen),
-      driving: Driving(gen),
-      power: Power(gen),
-      somethingApi: SomethingAPI(gen),
-      systemInfo: SystemInfo(gen),
-      userIO: UserIO(gen),
-      sensor: Sensor(gen));
+    api: API(gen),
+    driving: Driving(gen),
+    power: Power(gen),
+    somethingApi: SomethingAPI(gen),
+    systemInfo: SystemInfo(gen),
+    userIO: UserIO(gen),
+    sensor: Sensor(gen),
+  );
 }
 
 class Device {
-  const Device(
-      {this.api,
-      this.driving,
-      this.power,
-      this.somethingApi,
-      this.systemInfo,
-      this.userIO,
-      this.sensor});
+  const Device({
+    this.api,
+    this.driving,
+    this.power,
+    this.somethingApi,
+    this.systemInfo,
+    this.userIO,
+    this.sensor,
+  });
   final API api;
   final Driving driving;
   final Power power;
