@@ -33,12 +33,13 @@ int Function() sequencer() {
 Device commandsFactory([int Function() seq]) {
   final getSequence = seq ?? sequencer();
 
-  Command Function(CommandPartial part) gen(int deviceId) =>
-      (part) => Command.fromPart(
-          commandFlags: [Flags.requestsResponse, Flags.resetsInactivityTimeout],
-          deviceId: deviceId,
-          sequenceNumber: getSequence(),
-          part: part);
+  Command Function(CommandPartial part) gen(int deviceId) => (part) =>
+      Command.fromPart(
+        commandFlags: [Flags.requestsResponse, Flags.resetsInactivityTimeout],
+        deviceId: deviceId,
+        sequenceNumber: getSequence(),
+        part: part,
+      );
 
   return Device(
     api: API(gen),
