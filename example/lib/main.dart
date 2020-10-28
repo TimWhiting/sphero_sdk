@@ -84,6 +84,7 @@ class BluetoothPage extends HookWidget {
 
     return Column(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text('Bluetooth Info'),
         Text('Name: '),
@@ -91,11 +92,15 @@ class BluetoothPage extends HookWidget {
         Text('Separator: '),
         Text('Colors: '),
         ListView.builder(
+          padding: EdgeInsets.all(8),
           itemCount: devices.length,
           shrinkWrap: true,
-          itemBuilder: (c, i) =>
-              Text(devices[i]?.advertisementData?.localName ?? ''),
-        )
+          itemBuilder: (c, i) => Text(
+              devices[i]?.advertisementData?.localName ?? '',
+              style: DefaultTextStyle.of(context)
+                  .style
+                  .copyWith(color: Colors.green)),
+        ),
       ],
     );
   }
