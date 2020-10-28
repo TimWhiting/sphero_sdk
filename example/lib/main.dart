@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final deviceProvider = StateProvider<Set<ScanResult>>((ref) => {});
+final deviceProvider = StateProvider<Map<String, ScanResult>>((ref) => {});
 
 class HomePage extends HookWidget {
   const HomePage();
@@ -37,7 +37,7 @@ class HomePage extends HookWidget {
 
       manager.startPeripheralScan().listen((sr) {
         context.read(deviceProvider).state = context.read(deviceProvider).state
-          ..add(sr);
+          ..[sr.peripheral.name] = sr;
       });
     });
     final pageIndex = useState(0);
@@ -80,7 +80,7 @@ class BluetoothPage extends HookWidget {
   const BluetoothPage();
   @override
   Widget build(BuildContext context) {
-    final devices = useProvider(deviceProvider).state;
+    final devices = useProvider(deviceProvider).state.values.toList();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -90,8 +90,12 @@ class BluetoothPage extends HookWidget {
         Text('BTAddress: '),
         Text('Separator: '),
         Text('Colors: '),
-        for (final device in devices)
-          Text(device?.advertisementData?.localName ?? '')
+        ListView.builder(
+          itemCount: devices.length,
+          shrinkWrap: true,
+          itemBuilder: (c, i) =>
+              Text(devices[i]?.advertisementData?.localName ?? ''),
+        )
       ],
     );
   }
