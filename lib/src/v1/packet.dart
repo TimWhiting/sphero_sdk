@@ -26,8 +26,6 @@ class FIELDS {
 }
 
 class PacketV1 {
-  Uint8List data;
-  int partialCounter = 0;
   PacketV1();
   PacketV1.create({
     this.sop1 = FIELDS.sop1_hex,
@@ -39,6 +37,9 @@ class PacketV1 {
     Uint8List data,
   })  : data = data == null ? Uint8List(0) : data,
         dlen = data.length = 1;
+  Uint8List data;
+  int partialCounter = 0;
+
   int sop1, sop2, did, cid, seq, checksum, dlen; // adds checksum
   int mrsp, idCode, dlenMsb, dlenLsb;
   Uint8List get packet {
@@ -47,8 +48,6 @@ class PacketV1 {
     p.add(checksum);
     return p;
   }
-
-  RGB toRGB() {}
 }
 
 class PacketParser {
@@ -59,26 +58,25 @@ class PacketParser {
 
   Uint8List partialBuffer = Uint8List(0);
   PacketV1 create(
-      {int sop1,
-      int sop2,
-      int cid,
-      int did,
-      int seq,
-      int checksum,
-      Uint8List data}) {
-    return PacketV1.create(
-        sop1: sop1,
-        sop2: sop2,
-        cid: cid,
-        did: did,
-        seq: seq,
-        checksum: checksum,
-        data: data);
-  }
+          {int sop1,
+          int sop2,
+          int cid,
+          int did,
+          int seq,
+          int checksum,
+          Uint8List data}) =>
+      PacketV1.create(
+          sop1: sop1,
+          sop2: sop2,
+          cid: cid,
+          did: did,
+          seq: seq,
+          checksum: checksum,
+          data: data);
 
-  parse(Uint8List buffer) {
+  PacketV1 parse(Uint8List buffer) {
     var b = buffer;
-    if (partialBuffer.length > 0) {
+    if (partialBuffer.isNotEmpty) {
       b = Uint8List.fromList([...partialBuffer, ...b]);
       partialBuffer = Uint8List(0);
     } else {
@@ -149,7 +147,7 @@ class PacketParser {
     if (checksum != packet.checksum) {
       partialBuffer = Uint8List(0);
       if (emitPacketErrors) {
-        throw Exception("Incorrect checksum, packet discarded!");
+        throw Exception('Incorrect checksum, packet discarded!');
       }
     }
     return packet;
@@ -166,26 +164,29 @@ class PacketParser {
     if (cmd == null || cmd['did'] == null || cmd['cid'] == null) {
       throw Exception(payload);
     }
-
     final parserId =
-            cmd['did'].toRadixString(16) + ":" + cmd['cid'].toRadixString(16),
+            // ignore: prefer_interpolation_to_compose_strings
+            cmd['did'].toRadixString(16) + ':' + cmd['cid'].toRadixString(16),
         parser = RES_PARSER[parserId];
 
     return _parseData(parser, payload);
   }
 
   Map<String, dynamic> _parseData(APIV1 parser, PacketV1 payload,
-      [Map<String, int> ds]) {
-    var data = payload.data, pData, fields, field;
-
-    if (parser != null && (data.length > 0)) {
+      [Map<String, int> dsIn]) {
+    final data = payload.data;
+    Map<String, dynamic> pData;
+    dynamic field;
+    var ds = dsIn;
+    if (parser != null && (data.isNotEmpty)) {
       try {
         ds = _checkDSMasks(ds, parser);
-      } catch (e) {
+      } on Exception catch (e) {
+        print(e);
         throw Exception(payload);
       }
 
-      fields = parser.fields;
+      final fields = parser.fields;
 
       pData = {
         'desc': parser.desc,
@@ -216,7 +217,8 @@ class PacketParser {
         i = _incParserIndex(i, fields, data, dsFlag, dsIndex);
       }
     } else {
-      pData = payload;
+      throw Exception('No parser found:  data: $payload');
+      // pData = payload;
     }
 
     return pData;
@@ -235,8 +237,8 @@ class PacketParser {
   }
 
   int _incParserIndex(
-      int i, List<APIField> fields, Uint8List data, int dsFlag, int dsIndex) {
-    i++;
+      int iIn, List<APIField> fields, Uint8List data, int dsFlag, int dsIndex) {
+    var i = iIn + 1;
 
     if ((dsFlag >= 0) && (i == fields.length) && (dsIndex < data.length)) {
       i = 0;
@@ -258,33 +260,33 @@ class PacketParser {
   }
 
   dynamic _parseField(
-      APIField field, Uint8List data, Map<String, dynamic> pData) {
-    var pField;
-    data = data.sublist(field.from, field.to);
+      APIField field, Uint8List dataIn, Map<String, dynamic> pData) {
+    dynamic pField;
+    final data = dataIn.sublist(field.from, field.to);
     final intField = bufferToInt(data);
 
     switch (field.type) {
-      case "number":
-        if (field.format == "hex") {
-          pField = "0x" + intField.toRadixString(16).toUpperCase();
+      case 'number':
+        if (field.format == 'hex') {
+          pField = '0x' + intField.toRadixString(16).toUpperCase();
         }
         break;
-      case "string":
-        pField = data.toStringFormat(field.format).replaceAll('\0', "0");
+      case 'string':
+        pField = data.toStringFormat(field.format).replaceAll('\0', '0');
         break;
-      case "raw":
+      case 'raw':
         pField = data;
         break;
-      case "predefined":
+      case 'predefined':
         if (field.mask != null) {
           pField = intField & field.mask;
         }
         pField = field.values[intField];
         break;
-      case "bitmask":
+      case 'bitmask':
         pField = _parseBitmaskField(intField, field, pData);
         break;
-      case "signed":
+      case 'signed':
         final width = 8 * (field.to - field.from);
         pField = intField;
         if (pField >= pow(2, width - 1)) {
@@ -292,8 +294,8 @@ class PacketParser {
         }
         break;
       default:
-        throw Exception("Data could not be parsed!");
-        pField = "Data could not be parsed!";
+        throw Exception('Data could not be parsed!');
+        pField = 'Data could not be parsed!';
         break;
     }
 
@@ -301,9 +303,9 @@ class PacketParser {
   }
 
   Map<String, dynamic> _parseBitmaskField(
-      int val, APIField field, Map<String, dynamic> pData) {
+      int valIn, APIField field, Map<String, dynamic> pData) {
     var pField = {};
-
+    var val = valIn;
     if (val > field.range_top) {
       val = twosToInt(val, 2);
     }
@@ -323,21 +325,20 @@ class PacketParser {
     return pField;
   }
 
-  bool _checkSOPs(Uint8List buffer) {
-    return _checkSOP1(buffer) ? _checkSOP2(buffer) != false : false;
-  }
+  bool _checkSOPs(Uint8List buffer) =>
+      // ignore: avoid_bool_literals_in_conditional_expressions
+      _checkSOP1(buffer) ? _checkSOP2(buffer) != false : false;
 
-  bool _checkSOP1(Uint8List buffer) {
-    return buffer[FIELDS.sop1_pos] == FIELDS.sop1_hex;
-  }
+  bool _checkSOP1(Uint8List buffer) =>
+      buffer[FIELDS.sop1_pos] == FIELDS.sop1_hex;
 
   dynamic _checkSOP2(Uint8List buffer) {
     final sop2 = buffer[FIELDS.sop2_pos];
 
     if (sop2 == FIELDS.sop2_sync) {
-      return "sync";
+      return 'sync';
     } else if (sop2 == FIELDS.sop2_async) {
-      return "async";
+      return 'async';
     }
 
     return false;
@@ -351,9 +352,7 @@ class PacketParser {
     return (bufferSize < expectedSize) ? -1 : expectedSize;
   }
 
-  bool _checkMinSize(Uint8List buffer) {
-    return (buffer.length >= MIN_BUFFER_SIZE);
-  }
+  bool _checkMinSize(Uint8List buffer) => (buffer.length >= MIN_BUFFER_SIZE);
 
   int _extractDlen(Uint8List buffer) {
     if (buffer[FIELDS.sop2_pos] == FIELDS.sop2_sync) {

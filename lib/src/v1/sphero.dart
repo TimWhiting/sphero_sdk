@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 import 'dart:typed_data';
 
 import 'package:flutter_ble_lib/flutter_ble_lib.dart';
@@ -20,12 +19,11 @@ class SOP2 {
 }
 
 class CommandQueueItemV1 {
+  CommandQueueItemV1({this.packet, this.completer});
+
   final PacketV1 packet;
   final Completer<Map<String, dynamic>> completer;
-  CommandQueueItemV1({this.packet, this.completer});
 }
-
-load(String address) {}
 
 ///
 /// Creates a new sphero instance
@@ -40,9 +38,21 @@ load(String address) {}
 /// @param {Boolean} [opts.emitPacketErrors=false] emit events on packet errors
 /// @param {Object} [opts.peripheral=object] use an existing Noble peripheral
 /// @example
-/// var orb = new Sphero("/dev/rfcomm0", { timeout: 300 });
+/// var orb = new Sphero('/dev/rfcomm0', { timeout: 300 });
 /// @returns {Sphero} a new instance of Sphero
 class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
+  Sphero(
+    this.address, {
+    AdaptorV1 adaptor,
+    int sop2 = 0xFD,
+    this.timeout = 500,
+    this.emitPacketErrors = false,
+    Peripheral peripheral,
+  }) {
+    // check that we were called with 'new'
+    connection = adaptor ?? AdaptorV1(address, peripheral);
+    sop2Bitfield = sop2 ?? SOP2.both;
+  }
   final String address;
   bool busy = false;
   bool ready = false;
@@ -54,19 +64,11 @@ class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
   int seqCounter = 0;
   int timeout;
   final bool emitPacketErrors;
-  Sphero(
-    this.address, {
-    AdaptorV1 adaptor,
-    int sop2 = 0xFD,
-    this.timeout = 500,
-    this.emitPacketErrors = false,
-    Peripheral peripheral,
-  }) {
-    // check that we were called with 'new'
-    connection = adaptor ?? load(address);
-    sop2Bitfield = sop2 ?? SOP2.both;
+
+  @override
+  void emit(String name, [dynamic data]) {
+    print('Emitting: $name, $data');
   }
-  void emit(String name, [dynamic data]) {}
 
   ///
   /// Establishes a connection to Sphero.
@@ -77,39 +79,39 @@ class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
   /// @example
   /// orb.connect(function() {
   ///   // Sphero is connected, tell it to do stuff!
-  ///   orb.color("magenta");
+  ///   orb.color('magenta');
   /// });
   /// @return {void}
 
   Future<void> connect() async {
-    // connection.on("open", () {
-    //   emit("open");
+    // connection.on('open', () {
+    //   emit('open');
     // });
-    // connection.on("close", emit("close"));
+    // connection.on('close', emit('close'));
 
-    // connection.on("error", () {
-    //   emit("error");
+    // connection.on('error', () {
+    //   emit('error');
     // });
-    // packet.on("error", emit("error"));
+    // packet.on('error', emit('error'));
 
     connection.onRead = (payload) {
-      emit("data", payload);
+      emit('data', payload);
 
-      PacketV1 parsedPayload = packet.parse(payload);
+      final parsedPayload = packet.parse(payload);
       Map<String, dynamic> parsedData;
       Map<String, int> cmd;
 
       if (parsedPayload != null && parsedPayload.sop1 != null) {
         if (parsedPayload.sop2 == SOP2.sync) {
           // synchronous packet
-          emit("response", parsedPayload);
+          emit('response', parsedPayload);
           cmd = _responseCmd(parsedPayload.seq);
           parsedData = packet.parseResponseData(cmd, parsedPayload);
           _execCallback(parsedPayload.seq, parsedData);
         } else if (parsedPayload.sop2 == SOP2.async) {
           // async packet
           parsedData = packet.parseAsyncData(parsedPayload, ds);
-          emit("async", parsedData);
+          emit('async', parsedData);
         }
 
         if (parsedData != null && parsedData['event']) {
@@ -128,10 +130,10 @@ class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
   /// @param {Function} callback function to be triggered once disconnected
   /// @example
   /// orb.disconnect(function() {
-  ///   console.log("Now disconnected from Sphero");
+  ///   console.log('Now disconnected from Sphero');
   /// });
   /// @return {void}
-  Future<void> disconnect() async => await connection.close();
+  Future<void> disconnect() => connection.close();
 
   /// Adds a command to the queue and calls for the next command in the queue
   /// to try to execute.
@@ -144,15 +146,18 @@ class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
   /// @example
   /// sphero.command(0x00, 0x02, [0x0f, 0x01, 0xff], callback);
   /// @return {void}
+  @override
   Future<Map<String, dynamic>> baseCommand(
       int vDevice, int cmdName, Uint8List data) {
+    final seq = _incSeq();
     final completer = Completer<Map<String, dynamic>>();
     final cmdPacket = packet.create(
-        sop2: sop2Bitfield,
-        did: vDevice,
-        cid: cmdName,
-        seq: seqCounter,
-        data: data);
+      sop2: sop2Bitfield,
+      did: vDevice,
+      cid: cmdName,
+      seq: seq,
+      data: data,
+    );
     _queueCommand(cmdPacket, completer);
     _execCommand();
     return completer.future;
@@ -186,12 +191,12 @@ class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
   /// @return {void}
   void _execCommand() {
     CommandQueueItemV1 cmd;
-    if (!busy && (commandQueue.length > 0)) {
+    if (!busy && (commandQueue.isNotEmpty)) {
       // Get the seq number from the cmd packet/buffer
       // to store the callback response in that position
-      cmd = commandQueue.removeAt(0);
       busy = true;
-      _queuePromise(cmd.packet, cmd.completer);
+      cmd = commandQueue.removeAt(0);
+      _queueFuture(cmd.packet, cmd.completer);
       connection.write(cmd.packet.packet);
     }
   }
@@ -205,27 +210,27 @@ class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
   /// @example
   /// sphero._execCommand(packet, resolve, reject);
   /// @return {void}
-  _queuePromise(PacketV1 cmdPacket, Completer<Map<String, dynamic>> completer) {
-    var seq = cmdPacket.seq;
+  void _queueFuture(
+      PacketV1 cmdPacket, Completer<Map<String, dynamic>> completer) {
+    final seq = cmdPacket.seq;
 
+    // ignore: prefer_function_declarations_over_variables, avoid_types_on_closure_parameters
     final handler = (err, Map<String, dynamic> packet) {
       responseQueue.remove(seq);
       busy = false;
-
       if (err == null && packet != null) {
         completer.complete(packet);
       } else {
-        var error = Exception("Command sync response was lost.");
+        final error = Exception('Command sync response was lost.');
         completer.completeError(error);
       }
-
       _execCommand();
     };
 
     final response = CommandQueueResponseItem(
         handler: handler, did: cmdPacket.did, cid: cmdPacket.cid);
-    response.timer = Timer(
-        Duration(milliseconds: timeout), () => responseQueue.remove(response));
+    response.timer =
+        Timer(Duration(milliseconds: timeout), () => responseQueue.remove(seq));
     responseQueue[seq] = response;
   }
 
@@ -239,7 +244,7 @@ class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
   /// sphero._execCallback(0x14, packet);
   /// @return {void}
   void _execCallback(int seq, Map<String, dynamic> packet) {
-    var queue = responseQueue[seq];
+    final queue = responseQueue[seq];
 
     if (queue != null) {
       queue.handler(null, packet);
@@ -280,10 +285,10 @@ class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
 }
 
 class CommandQueueResponseItem {
+  CommandQueueResponseItem({this.handler, this.cid, this.did});
+
   final Function(String, Map<String, dynamic>) handler;
   final int cid;
   final int did;
   Timer timer;
-
-  CommandQueueResponseItem({this.handler, this.cid, this.did});
 }

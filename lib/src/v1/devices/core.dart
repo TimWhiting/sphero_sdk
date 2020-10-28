@@ -1,9 +1,6 @@
 import 'dart:typed_data';
-
-import '../packet.dart';
-import '../sphero.dart';
-import 'command.dart';
 import '../utils.dart';
+import 'command.dart';
 
 abstract class SpheroBase {
   final Map<String, int> ds = {};
@@ -100,7 +97,8 @@ mixin Core on SpheroBase {
   Future<Map<String, dynamic>> getBluetoothInfo() =>
       _coreCommand(CoreV1.getBtInfo, null);
 
-  /// Sets auto reconnect feature to [enabled] for reconnecting to device after [seconds]
+  /// Sets auto reconnect feature to [enabled] for reconnecting to device
+  /// after [seconds]
   Future<Map<String, dynamic>> setAutoReconnect(bool enabled, int seconds) =>
       _coreCommand(CoreV1.setAutoReconnect,
           Uint8List.fromList([enabled.intFlag, seconds]));
@@ -124,7 +122,8 @@ mixin Core on SpheroBase {
   Future<Map<String, dynamic>> getAutoReconnect() =>
       _coreCommand(CoreV1.getAutoReconnect, null);
 
-  /// The Get Power State command returns Sphero's current power state, and some additional parameters:
+  /// The Get Power State command returns Sphero's current power state,
+  /// and some additional parameters:
   ///
   /// - **RecVer**: record version code (following is for 0x01)
   /// - **Power State**: high-level state of the power system
@@ -144,12 +143,14 @@ mixin Core on SpheroBase {
 
   ///
   /// The Set Power Notification command enables sphero to asynchronously notify
-  /// the user of power state periodically (or immediately, when a change occurs)
+  /// the user of power state periodically
+  /// (or immediately, when a change occurs)
   ///
   /// Timed notifications are sent every 10 seconds, until they're disabled or
   /// Sphero is unpaired.
   ///
-  /// @param {Number} flag whether or not to send notifications (0 - no, 1 - yes)
+  /// @param {Number} flag whether or not to send notifications
+  ///  (0 - no, 1 - yes)
   /// @param {Function} callback function to be triggered when done writing
   /// @example
   /// orb.setPowerNotification(1, function(err, data) {
@@ -162,10 +163,12 @@ mixin Core on SpheroBase {
   ///
   /// The Sleep command puts Sphero to sleep immediately.
   ///
-  /// @param {Number} wakeup the number of seconds for Sphero to re-awaken after.
+  /// @param {Number} wakeup the number of seconds for Sphero to
+  /// re-awaken after.
   /// 0x00 tells Sphero to sleep forever, 0xFFFF attemps to put Sphero into deep
   /// sleep.
-  /// @param {Number} macro if non-zero, Sphero will attempt to run this macro ID
+  /// @param {Number} macro if non-zero, Sphero will
+  /// attempt to run this macro ID
   /// when it wakes up
   /// @param {Number} orbBasic if non-zero, Sphero will attempt to run an
   /// orbBasic program from this line number
@@ -207,7 +210,8 @@ mixin Core on SpheroBase {
       _coreCommand(CoreV1.getPowerTrips, null);
 
   ///
-  /// The Set Voltage Trip Points command assigns the voltage trip points for Low
+  /// The Set Voltage Trip Points command assigns the voltage trip
+  ///  points for Low
   /// and Critical battery voltages.
   ///
   /// Values are specified in 100ths of a volt, and there are limitations on
@@ -323,8 +327,8 @@ mixin Core on SpheroBase {
   Future<Map<String, dynamic>> runL2Diag() =>
       _coreCommand(CoreV1.runL2Diags, null);
 
-  ///
-  /// The Clear Counters command is a developer-only command to clear the various
+  /// The Clear Counters command is a developer-only
+  ///  command to clear the various
   /// system counters created by the L2 diagnostics.
   ///
   /// It is denied when the Sphero is in Normal mode.

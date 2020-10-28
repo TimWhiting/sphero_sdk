@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import '../packet.dart';
 import '../utils.dart';
 import 'command.dart';
 import 'core.dart';
@@ -212,7 +211,8 @@ mixin SpheroDevice on Core {
   ///   Other bits are reserved.
   /// - **x, y** - the current (x/y) coordinates of Sphero on the ground plane in
   ///   centimeters
-  /// - **yawTare** - controls how the x,y-plane is aligned with Sphero's heading
+  /// - **yawTare** - controls how the x,y-plane is aligned
+  ///  with Sphero's heading
   ///   coordinate system. When zero, yaw = 0 corresponds to facing down the
   ///   y-axis in the positive direction. Possible values are 0-359 inclusive.
   ///
@@ -265,7 +265,8 @@ mixin SpheroDevice on Core {
   /// The Read Locator command gets Sphero's current position (X,Y), component
   /// velocities, and speed-over-ground (SOG).
   ///
-  /// The position is a signed value in centimeters, the component velocities are
+  /// The position is a signed value in centimeters, the component
+  /// velocities are
   /// signed cm/sec, and the SOG is unsigned cm/sec.
   ///
   /// @param {Function} callback function to be triggered with data
@@ -341,7 +342,8 @@ mixin SpheroDevice on Core {
   ///
   /// The Roll command tells Sphero to roll along the provided vector.
   ///
-  /// Both a speed and heading are required, the latter is considered relative to
+  /// Both a speed and heading are required, the latter is
+  /// considered relative to
   /// the last calibrated direction.
   ///
   /// Permissible heading values are 0 to 359 inclusive.
@@ -435,9 +437,8 @@ mixin SpheroDevice on Core {
   /// orb.setPermOptionFlags(0x00000008, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<Map<String, dynamic>> setPermOptionFlags(int flags) {
-    return _command(SpheroV1.setOptionsFlag, flags.toHexArray(4));
-  }
+  Future<Map<String, dynamic>> setPermOptionFlags(int flags) =>
+      _command(SpheroV1.setOptionsFlag, flags.toHexArray(4));
 
   ///
   /// The Get Permanent Option Flags command returns Sphero's permanent option
@@ -445,7 +446,8 @@ mixin SpheroDevice on Core {
   ///
   /// Here's possible bit fields, and their descriptions:
   ///
-  /// - `0`: Set to prevent Sphero from immediately going to sleep when placed in
+  /// - `0`: Set to prevent Sphero from immediately going to
+  /// sleep when placed in
   ///   the charger and connected over Bluetooth.
   /// - `1`: Set to enable Vector Drive, that is, when Sphero is stopped and
   ///   a new roll command is issued it achieves the heading before moving along
@@ -495,7 +497,7 @@ mixin SpheroDevice on Core {
   /// orb.setTempOptionFlags(0x01, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<Map<String, dynamic>> setTempOptionFlags(flags) =>
+  Future<Map<String, dynamic>> setTempOptionFlags(int flags) =>
       _command(SpheroV1.setTempOptionFlags, flags.toHexArray(4));
 
   ///
@@ -518,7 +520,8 @@ mixin SpheroDevice on Core {
       _command(SpheroV1.getTempOptionFlags, null);
 
   ///
-  /// The Get Configuration Block command retrieves one of Sphero's configuration
+  /// The Get Configuration Block command retrieves one of
+  /// Sphero's configuration
   /// blocks.
   ///
   /// The response is a simple one; an error code of 0x08 is returned when the
@@ -535,9 +538,8 @@ mixin SpheroDevice on Core {
   /// orb.getConfigBlock(function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<Map<String, dynamic>> getConfigBlock(int id) {
-    return _command(SpheroV1.getConfigBlock, Uint8List.fromList([id]));
-  }
+  Future<Map<String, dynamic>> getConfigBlock(int id) =>
+      _command(SpheroV1.getConfigBlock, Uint8List.fromList([id]));
 
   Future<Map<String, dynamic>> _setSsbBlock(
           int cmd, int pwd, Uint8List block) =>
@@ -573,9 +575,8 @@ mixin SpheroDevice on Core {
   /// orb.setDeviceMode(0x00, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<Map<String, dynamic>> setDeviceMode(bool mode) {
-    return _command(SpheroV1.setDeviceMode, Uint8List.fromList([mode.intFlag]));
-  }
+  Future<Map<String, dynamic>> setDeviceMode(bool mode) =>
+      _command(SpheroV1.setDeviceMode, Uint8List.fromList([mode.intFlag]));
 
   ///
   /// The Set Config Block command accepts an exact copy of the configuration
@@ -593,9 +594,8 @@ mixin SpheroDevice on Core {
   /// orb.setConfigBlock(dataBlock, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<Map<String, dynamic>> setConfigBlock(Uint8List block) {
-    return _command(SpheroV1.setConfigBlock, block);
-  }
+  Future<Map<String, dynamic>> setConfigBlock(Uint8List block) =>
+      _command(SpheroV1.setConfigBlock, block);
 
   ///
   /// The Get Device Mode command gets the current device mode of Sphero.
@@ -657,7 +657,8 @@ mixin SpheroDevice on Core {
   /// from the current number of cores.
   ///
   /// If it succeeds, the bank is set to the maximum obtainable for that level,
-  /// the cores are spent, and a success response is returned with the lower core
+  /// the cores are spent, and a success response is returned
+  /// with the lower core
   /// balance.
   ///
   /// If there aren't enough cores available to spend, Sphero responds with an
@@ -1098,6 +1099,7 @@ mixin SpheroDevice on Core {
   Future<Map<String, dynamic>> commitToFlash() =>
       _command(SpheroV1.commitToFlash, null);
 
+  // ignore: unused_element
   Future<Map<String, dynamic>> _commitToFlashAlias() =>
       _command(SpheroV1.commitToFlashAlias, null);
 }

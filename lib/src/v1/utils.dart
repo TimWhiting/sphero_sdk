@@ -1,13 +1,12 @@
-import 'dart:typed_data';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'utils.freezed.dart';
 
-/// Converts [red], [green], and [blue] values (0-255) to an equivalent hex number
-int rgbToHex(int red, int green, int blue) {
-  return blue | (green << 8) | (red << 16);
-}
+/// Converts [red], [green], and [blue] values (0-255)
+/// to an equivalent hex number
+int rgbToHex(int red, int green, int blue) => blue | (green << 8) | (red << 16);
 
 final _rand = Random();
 
@@ -18,19 +17,18 @@ abstract class RGB with _$RGB {
 
 /// Generates a random rgb color
 RGB randomRGBColor() {
-  rand() {
-    return _rand.nextInt(255);
-  }
+  int rand() => _rand.nextInt(255);
 
   return RGB(red: rand(), green: rand(), blue: rand());
 }
 
 extension Checksum on List<int> {
-  /// Calculates an Uint8List-like [data] object's checksum through mod-256ing it's contents
+  /// Calculates an Uint8List-like object's checksum
+  /// through mod-256ing it's contents
   /// then ones-complimenting the result.
   int get checksum {
     final data = toList();
-    int value = 0x00;
+    var value = 0x00;
 
     for (var i = 0; i < data.length; i++) {
       value += data[i];
@@ -41,7 +39,8 @@ extension Checksum on List<int> {
 }
 
 extension Hex on int {
-  /// Converts a number to an array of hex values within the provided byte frame.
+  /// Converts a number to an array of hex values within the
+  ///  provided byte frame.
   Uint8List toHexArray(int numBytes) {
     var value = this;
     final hexArray = Uint8List(numBytes);
@@ -80,7 +79,7 @@ int twosToInt(int value, [int numBytes = 2]) {
 
 /// Applies bit Xor to 32 bit [value] with a [mask] to each 8 bits
 int xor32bit(int value, [int mask = 0xff]) {
-  var bytes = value.toHexArray(4);
+  final bytes = value.toHexArray(4);
 
   for (var i = 0; i < bytes.length; i++) {
     bytes[i] ^= mask;

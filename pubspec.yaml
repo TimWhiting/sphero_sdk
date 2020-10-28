@@ -19,6 +19,7 @@ dev_dependencies:
   derry: any
   build_runner: any
   mockito: any
+  abide: any
   flutter_test:
     sdk: flutter
 

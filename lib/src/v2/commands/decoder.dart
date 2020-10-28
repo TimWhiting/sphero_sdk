@@ -6,12 +6,10 @@ import 'types.dart';
 
 const MINIMUN_PACKET_LENGTH = 6;
 
-int number(List<int> buffer, int offset) {
-  return (ByteDataReader(endian: Endian.big)
-        ..add(buffer)
-        ..readAhead(offset))
-      .readInt16();
-}
+int number(List<int> buffer, int offset) => (ByteDataReader(endian: Endian.big)
+      ..add(buffer)
+      ..readAhead(offset))
+    .readInt16();
 
 AllFlags decodeFlags(int flags) {
   final isResponse = (flags & Flags.isResponse) != 0;
@@ -31,13 +29,15 @@ AllFlags decodeFlags(int flags) {
 }
 
 Command classifyPacket(Uint8List packet) {
+  // ignore: unused_local_variable
   final _startPacket = packet[0];
   final flagsInt = packet[1];
   final flags = decodeFlags(flagsInt);
 
-  var sourceId;
-  var targetId;
+  int sourceId;
+  int targetId;
   var nextIndex = 2;
+  // ignore: prefer_function_declarations_over_variables
   final shift = () {
     final val = packet[nextIndex];
     nextIndex++;
@@ -56,7 +56,9 @@ Command classifyPacket(Uint8List packet) {
   final commandId = shift();
   final sequenceNumber = shift();
   final payload = packet.sublist(nextIndex, packet.length - 2);
+  // ignore: unused_local_variable
   final _checkSum = packet[packet.length - 2];
+  // ignore: unused_local_variable
   final _endPacket = packet.last;
 
   return Command(
@@ -70,29 +72,31 @@ Command classifyPacket(Uint8List packet) {
 
 Function(int) decodeFactory(
     void Function(String err, [Command response]) callback) {
-  List<int> msg = [];
+  var msg = <int>[];
   var checksum = 0;
   var isEscaping = false;
 
+  // ignore: prefer_function_declarations_over_variables
   final init = () {
     msg = [];
     checksum = 0;
     isEscaping = false;
   };
+  // ignore: prefer_function_declarations_over_variables, avoid_types_on_closure_parameters
   final error = (String errorMessage) {
     init();
     callback(errorMessage);
   };
-  return (int byte) {
+  return (byte) {
     switch (byte) {
       case APIConstants.startOfPacket:
-        if (msg.length != 0) {
+        if (msg.isNotEmpty) {
           init();
           return callback('Invalid first byte');
         }
         return msg.add(byte);
       case APIConstants.endOfPacket:
-        if (msg.length == 0 || msg.length < MINIMUN_PACKET_LENGTH) {
+        if (msg.isEmpty || msg.length < MINIMUN_PACKET_LENGTH) {
           return error('Invalid last byte ${msg.length}');
         }
 

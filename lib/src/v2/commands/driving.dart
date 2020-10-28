@@ -3,7 +3,7 @@ import 'utils.dart';
 
 List<int> encodeNumberLM(int n) {
   final absN = (n * 3968).abs();
-  var nFirstHalfByte1 = n == 0
+  final nFirstHalfByte1 = n == 0
       ? 0
       : n > 0
           ? 0x30
@@ -20,8 +20,9 @@ List<int> encodeNumberLM(int n) {
 }
 
 class Driving {
-  final CommandEncoder _encode;
   Driving(CommandGenerator generator) : _encode = generator(DeviceId.driving);
+
+  final CommandEncoder _encode;
   Command drive(
     int speed,
     int heading,
