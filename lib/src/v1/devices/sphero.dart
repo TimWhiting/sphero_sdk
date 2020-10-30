@@ -405,7 +405,7 @@ extension SpheroDevice on SpheroBase {
   Future<Map<String, dynamic>> setRawMotors(
           int lmode, int lpower, int rmode, int rpower) =>
       _command(SpheroV1.setRawMotors,
-          Uint8List.fromList([lmode & 0x07, rmode & 0x07, rpower]));
+          Uint8List.fromList([lmode & 0x07, lpower, rmode & 0x07, rpower]));
 
   ///
   /// The Set Motion Timeout command gives Sphero an ultimate timeout for the
@@ -1035,8 +1035,9 @@ extension SpheroDevice on SpheroBase {
   /// orb.appendOrbBasicFragment(0x00, OrbBasicCode, function(err, data) {
   ///   print(err || "data: " + data);
   /// }
-  Future<Map<String, dynamic>> appendOrbBasicFragment(int area, String code) {
-    final data = Uint8List.fromList([area, ...code.asUint8List]);
+  Future<Map<String, dynamic>> appendOrbBasicFragment(
+      int area, Uint8List code) {
+    final data = Uint8List.fromList([area, ...code]);
     return _command(SpheroV1.appendOBFragment, data);
   }
 
