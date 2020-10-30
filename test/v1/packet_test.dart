@@ -11,7 +11,7 @@ void main() {
       packet = PacketParser(emitPacketErrors: true);
     });
 
-    group('#create', () {
+    group('create', () {
       Uint8List buffer;
       Map<String, dynamic> opts;
 
@@ -113,7 +113,7 @@ void main() {
       });
     });
 
-    group('#parse', () {
+    group('parse', () {
       group('with sync response', () {
         Uint8List buffer;
         PacketV1 res;
@@ -356,7 +356,7 @@ void main() {
         expect(res.checksum, 0xE0);
       });
     });
-    group('#parseResponseData', () {
+    group('parseResponseData', () {
       PacketV1 payload;
       Map<String, dynamic> res;
       setUp(() {
@@ -399,258 +399,123 @@ void main() {
       });
     });
 
-    // group('parseDataMap', () {
-    //   final parser, payload;
+    group('CheckdsMasks', () {
+      test('returns null when idCode != 0x03', () {
+        final res = packet.checkDSMasks({}, const APIV1(idCode: 0x07));
+        expect(res, isNull);
+      });
 
-    //   setUp(() {
-    //     payload = {
-    //       sop1: 0xFF,
-    //       sop2: 0xFF,
-    //       mrsp: 0x00,
-    //       seq: 0x02,
-    //       dlen: 0x01,
-    //       data: Uint8List.fromList([0xff]),
-    //       checksum: 0xFC,
-    //     };
+      test('returns ds obj when ds is valid and idCode == 0x03', () {
+        final ds = {'mask1': 0xFF00, 'mask2': 0x00FF};
+        final res = packet.checkDSMasks(
+            {'mask1': 0xFF00, 'mask2': 0x00FF}, const APIV1(idCode: 0x03));
+        expect(res, ds);
+      });
 
-    //     parser = {
-    //       desc: 'Get Chassis Id',
-    //       did: 2,
-    //       cid: 7,
-    //       event: 'chassisId',
-    //       fields: [{ name: 'chassisId', type: 'number' }]
-    //     };
+      test('returns -1 when ds is invalid and idCode == 0x03', () {
+        final ds = {'mask1': 0xFF00};
+        expect(() => packet.checkDSMasks(ds, const APIV1(idCode: 0x03)),
+            throwsA(isA<Exception>()));
+      });
+    });
 
-    //     stub(packet, '_checkDSMasks');
-    //   });
+    group('incParserIndex', () {
+      test('returns i++ with dsFlag < 0', () {
+        final res = packet.incParserIndex(0, [], Uint8List.fromList([]), -1, 0);
+        expect(res, equals(1));
+      });
 
-    //   afterEach(() {
-    //     packet._checkDSMasks.restore();
-    //   });
+      test('returns i++ with i < fields.length', () {
+        final res = packet.incParserIndex(
+            0, [null, null, null], Uint8List.fromList([4, 5, 6]));
+        expect(res, equals(1));
+      });
 
-    //   group('when dsMasks return -1', () {
-    //     setUp(() {
-    //       packet._checkDSMasks.returns(-1);
-    //       packet._parseData(parser, payload);
-    //     });
+      test('returns i++ with dsIndex = data.length', () {
+        final res = packet.incParserIndex(
+            0, [null, null, null], Uint8List.fromList([4, 5, 6, 7]), 0, 4);
+        expect(res, equals(1));
+      });
 
-    //     test('calls #_checkDSMasks once', () {
-    //       expect(packet._checkDSMasks).to.be.calledOnce;
-    //     });
+      test('returns i = 0 when all conditions met', () {
+        final res = packet.incParserIndex(3, [null, null, null, null],
+            Uint8List.fromList([4, 5, 6, 7]), 0, 2);
+        expect(res, equals(0));
+      });
+    });
 
-    //     test('returns payload inmmediately', () {
-    //       expect(packet._parseData(parser, payload), payload);
-    //     });
-    //   });
+    group('checker', () {
+      test('_checksum should return 0xFC', () {
+        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
+            check = buffer.sublist(3, 5).checksum;
+        expect(check, 0xFC);
+      });
 
-    //   group('when dsBit returs 1', () {
-    //     setUp(() {
-    //       stub(packet, '_checkDSBit');
-    //       stub(packet, '_parseField');
+      test('checkSOPs with SOP2 0xFF should return true', () {
+        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
+            check = packet.checkSOPs(buffer.asUint8List);
+        expect(check, true);
+      });
 
-    //       packet._checkDSMasks.returns(0);
-    //       packet._checkDSBit.returns(1);
-    //       packet._parseField.returns(255);
+      test('checkSOPs with SOP2 0xFE should return true', () {
+        final buffer = [0xFF, 0xFE, 0x00, 0x02, 0x01, 0xFC],
+            check = packet.checkSOPs(buffer.asUint8List);
+        expect(check, true);
+      });
 
-    //       packet._parseData(parser, payload, { did: 0x02, cid: 0x07 });
-    //     });
+      test('checkSOPs with SOP2 0xFC should return false', () {
+        final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x01, 0xFC],
+            check = packet.checkSOPs(buffer.asUint8List);
+        expect(check, false);
+      });
 
-    //     afterEach(() {
-    //       packet._checkDSBit.restore();
-    //       packet._parseField.restore();
-    //     });
+      test('checkExpectedSize should return 6 when size == expected', () {
+        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
+            check = packet.checkExpectedSize(buffer.asUint8List);
+        expect(check, 6);
+      });
 
-    //     test('calls #_checkDSBit once', () {
-    //       expect(packet._checkDSBit).to.be.calledOnce;
-    //     });
+      test('checkExpectedSize should return -1 when size < expected', () {
+        final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x04, 0x02, 0x03],
+            check = packet.checkExpectedSize(buffer.asUint8List);
+        expect(check, -1);
+      });
 
-    //     test('calls #_parseField with params', () {
-    //       final field = parser.fields[0];
-    //       field.from = 0;
-    //       field.to = 2;
-    //       expect(packet._parseField).to.be.calledOnce;
-    //     });
-    //   });
+      test('checkMinSize should return true when size >= min', () {
+        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
+            check = packet.checkMinSize(buffer.asUint8List);
+        expect(check, true);
+      });
 
-    //   group('when dsBit returs 0', () {
-    //     setUp(() {
-    //       stub(packet, '_incParserIndex');
-    //       stub(packet, '_checkDSBit');
-    //       stub(packet, '_parseField');
+      test('checkMinSize should return false when size < min', () {
+        final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x01],
+            check = packet.checkMinSize(buffer.asUint8List);
+        expect(check, false);
+      });
+    });
 
-    //       packet._checkDSMasks.returns(0);
-    //       packet._incParserIndex.returns(1);
-    //       packet._checkDSBit.returns(0);
-    //       packet._parseField.returns(255);
+    group('checkDSBit', () {
+      test('returns -1 when DS is invalid', () {
+        final res = packet.checkDSBit(null, null);
+        expect(res, equals(-1));
+      });
 
-    //       packet._parseData(parser, payload, { did: 0x02, cid: 0x07 });
-    //     });
+      test('returns 1 when DS valid and field in mask1|2', () {
+        final res = packet.checkDSBit(
+          {'mask1': 0xFFFF},
+          const APIField(bitmask: 0x1000, maskField: 'mask1'),
+        );
+        expect(res, equals(1));
+      });
 
-    //     afterEach(() {
-    //       packet._incParserIndex.restore();
-    //       packet._checkDSBit.restore();
-    //       packet._parseField.restore();
-    //     });
+      test('returns 0 when DS valid and field not in mask1|2', () {
+        final res = packet.checkDSBit({'mask1': 0x0FFF},
+            const APIField(bitmask: 0x1000, maskField: 'mask1'));
+        expect(res, equals(0));
+      });
+    });
 
-    //     test('calls #_incParserIndex once with params', () {
-    //       expect(packet._incParserIndex).to.be.calledOnce;
-    //       expect(packet._incParserIndex)
-    //         .to.be.calledWith(0, parser.fields, payload.data, 0, 0);
-    //     });
-    //   });
-
-    //   group('parser is null or data length is 0', () {
-    //     setUp(() {
-    //       payload.data = Uint8List.fromList(0);
-    //       spy(packet, '_parseData');
-    //       packet._parseData(null, payload, { did: 0x02, cid: 0x07 });
-    //     });
-
-    //     test('calls #_incParserIndex once with params', () {
-    //       expect(packet._parseData).returned(payload);
-    //     });
-    //   });
-    // });
-
-    // group('#CheckdsMasks', () {
-    //   setUp(() {
-    //     spy(packet, '_checkDSMasks');
-    //   });
-
-    //   afterEach(() {
-    //     packet._checkDSMasks.restore();
-    //   });
-
-    //   test('returns null when idCode !== 0x03', () {
-    //     packet._checkDSMasks({}, { idCode: 0x07 });
-    //     expect(packet._checkDSMasks).to.have.returned(null);
-    //   });
-
-    //   test('returns ds obj when ds is valid and idCode == 0x03', () {
-    //     final ds = { mask1: 0xFF00, mask2: 0x00FF };
-    //     packet._checkDSMasks(ds, { idCode: 0x03 });
-    //     expect(packet._checkDSMasks).to.have.returned(ds);
-    //   });
-
-    //   test('returns -1 when ds is invalid and idCode == 0x03', () {
-    //     final ds = { mask1: 0xFF00 };
-    //     packet._checkDSMasks(ds, { idCode: 0x03 });
-    //     expect(packet._checkDSMasks).to.have.returned(-1);
-    //   });
-    // });
-
-    // group('#_incParserIndex', () {
-    //   setUp(() {
-    //     spy(packet, '_incParserIndex');
-    //   });
-
-    //   afterEach(() {
-    //     packet._incParserIndex.restore();
-    //   });
-
-    //   test('returns i++ with dsFlag < 0', () {
-    //     packet._incParserIndex(0, [], [], -1, 0);
-    //     expect(packet._incParserIndex).to.have.returned(1);
-    //   });
-
-    //   test('returns i++ with i < fields.length', () {
-    //     packet._incParserIndex(0, [1, 2, 3], [4, 5, 6]);
-    //     expect(packet._incParserIndex).to.have.returned(1);
-    //   });
-
-    //   test('returns i++ with dsIndex = data.length', () {
-    //     packet._incParserIndex(0, [1, 2, 3], [4, 5, 6, 7], 0, 4);
-    //     expect(packet._incParserIndex).to.have.returned(1);
-    //   });
-
-    //   test('returns i = 0 when all conditions met', () {
-    //     packet._incParserIndex(3, [1, 2, 3, 4], [4, 5, 6, 7], 0, 2);
-    //     expect(packet._incParserIndex).to.have.returned(0);
-    //   });
-    // });
-
-    // group('checker', () {
-    //   test('#_checksum should return 0xFC', () {
-    //     final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
-    //         check = utils.checksum(buffer.slice(3, 5));
-    //     expect(check, 0xFC);
-    //   });
-
-    //   test('#_checkSOPs with SOP2 0xFF should return 'sync'', () {
-    //     final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
-    //         check = packet._checkSOPs(buffer);
-    //     expect(check, 'sync');
-    //   });
-
-    //   test('#_checkSOPs with SOP2 0xFE should return 'async'', () {
-    //     final buffer = [0xFF, 0xFE, 0x00, 0x02, 0x01, 0xFC],
-    //         check = packet._checkSOPs(buffer);
-    //     expect(check, 'async');
-    //   });
-
-    //   test('#_checkSOPs with SOP2 0xFE should return 'async'', () {
-    //     final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x01, 0xFC],
-    //         check = packet._checkSOPs(buffer);
-    //     expect(check, false);
-    //   });
-
-    //   test('#_checkExpectedSize should return 6 when size == expected', () {
-    //     final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
-    //         check = packet._checkExpectedSize(buffer);
-    //     expect(check, 6);
-    //   });
-
-    //   test('#_checkExpectedSize should return -1 when size < expected', () {
-    //     final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x04, 0x02, 0x03],
-    //         check = packet._checkExpectedSize(buffer);
-    //     expect(check, -1);
-    //   });
-
-    //   test('#_checkMinSize should return true when size >= min', () {
-    //     final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
-    //         check = packet._checkMinSize(buffer);
-    //     expect(check, true);
-    //   });
-
-    //   test('#_checkMinSize should return false when size < min', () {
-    //     final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x01],
-    //         check = packet._checkMinSize(buffer);
-    //     expect(check, false);
-    //   });
-    // });
-
-    // group('#checkDSBit', () {
-    //   setUp(() {
-    //     spy(packet, '_checkDSBit');
-    //   });
-
-    //   afterEach(() {
-    //     packet._checkDSBit.restore();
-    //   });
-
-    //   test('returns -1 when DS is invalid', () {
-    //     packet._checkDSBtest(null);
-    //     expect(packet._checkDSBit).to.have.returned(-1);
-    //   });
-
-    //   test('returns 1 when DS valid and field in mask1|2', () {
-    //     packet._checkDSBtest(
-    //       { mask1: 0xFFFF },
-    //       { bitmask: 0x1000, maskField: 'mask1'
-    //     });
-    //     expect(packet._checkDSBit).to.have.returned(1);
-    //   });
-
-    //   test('returns 0 when DS valid and field not in mask1|2', () {
-    //     packet._checkDSBtest(
-    //       { mask1: 0x0FFF },
-    //       { bitmask: 0x1000, maskField: 'mask1'
-    //     });
-    //     expect(packet._checkDSBit).to.have.returned(0);
-    //   });
-    // });
-
-    // group('#_parseField', () {
+    // group('_parseField', () {
     //   final data, field;
 
     //   setUp(() {
@@ -671,17 +536,8 @@ void main() {
     //     packet._parseField(field, data);
     //   });
 
-    //   afterEach(() {
+    //   tearDown(() {
     //     utils.bufferToInt.restore();
-    //   });
-
-    //   test('calls data#slice', () {
-    //     expect(data.slice).to.be.calledOnce;
-    //     expect(data.slice).to.be.calledWith(undefined, undefined);
-    //   });
-
-    //   test('calls utils#bufferToInt', () {
-    //     expect(utils.bufferToInt).to.be.calledOnce;
     //   });
 
     //   group('when field type is: ', () {
@@ -693,10 +549,10 @@ void main() {
     //     });
 
     //     test(''number' returns the value', () {
-    //       expect(packet._parseField).to.have.returned(255);
+    //       expect(packet._parseField, equals(255);
     //     });
 
-    //     test(''signed' returns the signed value', () {
+    //     test('"signed" returns the signed value', () {
     //       field.type = 'signed';
     //       field.from = 0;
     //       field.to = 1;
@@ -704,53 +560,52 @@ void main() {
     //       expect(tmpVal, -1);
     //     });
 
-    //     test(''number' returns a hex string when format == 'hex'', () {
+    //     test('"number" returns a hex string when format == 'hex'', () {
     //       field.format = 'hex';
     //       packet._parseField(field, [255]);
-    //       expect(packet._parseField).to.have.returned('0xFF');
+    //       expect(packet._parseField, equals('0xFF');
     //       field.format = undefined;
     //     });
 
-    //     test(''string' returns a string with format == 'ascii'', () {
+    //     test('"string" returns a string with format == 'ascii'', () {
     //       field.type = 'string';
     //       field.format = 'ascii';
     //       packet._parseField(field, Uint8List.fromList([0x48, 0x6F, 0x6C, 0x61, 0x21]));
-    //       expect(packet._parseField).to.have.returned('Hola!');
+    //       expect(packet._parseField, equals('Hola!');
     //       field.format = undefined;
     //     });
 
-    //     test(''raw' returns the raw array', () {
+    //     test('"raw" returns the raw array', () {
     //       final buffer = Uint8List.fromList([0x48, 0x6F, 0x6C, 0x61, 0x21]);
     //       field.type = 'raw';
     //       final tmpVal = packet._parseField(field, buffer);
     //       expect(tmpVal, buffer);
     //     });
 
-    //     test(''predefined' returns 'battery OK'', () {
+    //     test('"predefined" returns 'battery OK'', () {
     //       final buffer = Uint8List.fromList([0x02]);
     //       field.type = 'predefined';
     //       field.values = { 0x02: 'battery OK' };
     //       packet._parseField(field, buffer);
-    //       expect(packet._parseField).to.have.returned('battery OK');
+    //       expect(packet._parseField, equals('battery OK');
     //       field.values = undefined;
     //     });
 
-    //     test(''predefined' returns 'true' with mask', () {
+    //     test('"predefined" returns 'true' with mask', () {
     //       final buffer = Uint8List.fromList([0x0F]);
     //       field.type = 'predefined';
     //       field.mask = '0x01';
     //       field.values = { 0x01: true };
     //       packet._parseField(field, buffer);
-    //       expect(packet._parseField).to.have.returned(true);
+    //       expect(packet._parseField, equals(true);
     //       field.values = undefined;
     //     });
 
-    //     test(''bitmask' calls #_parseBotmaskField', () {
+    //     test('"bitmask" calls parseBitmaskField', () {
     //       stub(packet, '_parseBitmaskField');
     //       packet._parseBitmaskField.returns({ val: 'all Good' });
     //       field.type = 'bitmask';
     //       packet._parseField(field, [0x01, 0x02], { val1: 'one' });
-    //       expect(packet._parseBitmaskField).to.be.calledOnce;
     //       expect(packet._parseBitmaskField)
     //         .to.be.calledWith(
     //           258, field, { val1: 'one' }
@@ -758,20 +613,18 @@ void main() {
     //       packet._parseBitmaskField.restore();
     //     });
 
-    //     test(''bitmask' calls #_parseBotmaskField', () {
+    //     test('"bitmask" calls parseBitmaskField', () {
     //       field.type = 'thevoid';
     //       stub(packet, 'emit');
     //       packet._parseField(field, [0x01, 0x02]);
-    //       expect(packet.emit).to.be.calledOnce;
     //       final error = new Error('Data could not be parsed!');
-    //       expect(packet.emit).to.be.calledWith('error', error);
     //       expect(packet._parseField)
     //         .to.have.returned('Data could not be parsed!');
     //     });
     //   });
     // });
 
-    // group('#_parseBitmaskField', () {
+    // group('_parseBitmaskField', () {
     //   final field;
 
     //   setUp(() {
@@ -786,19 +639,11 @@ void main() {
     //       value: [1]
     //     };
 
-    //     stub(utils, 'twosToInt');
     //     utils.twosToInt.returns(255);
-    //     spy(packet, '_parseBitmaskField');
     //   });
 
-    //   afterEach(() {
-    //     utils.twosToInt.restore();
-    //     packet._parseBitmaskField.restore();
-    //   });
-
-    //   test(' if val > field.range.top calls utils#twosToInt', () {
+    //   test(' if val > field.range.top calls utilstwosToInt', () {
     //     packet._parseBitmaskField(0xFF00, field, {});
-    //     expect(utils.twosToInt).to.be.calledOnce;
     //     expect(utils.twosToInt).to.be.calledWith(0xFF00, 2);
     //   });
 

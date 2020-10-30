@@ -36,6 +36,8 @@ extension Checksum on List<int> {
 
     return (value % 256) ^ 0xFF;
   }
+
+  Uint8List get asUint8List => Uint8List.fromList(this);
 }
 
 extension Hex on int {

@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:meta/meta.dart';
+
 import 'parsers/response.dart';
 import 'parsers/response_async.dart';
 import 'parsers/response_sync.dart';
 import 'utils.dart';
+export 'utils.dart';
 
 const MIN_BUFFER_SIZE = 6;
 
@@ -92,16 +95,17 @@ class PacketParser {
     } else {
       partialBuffer = b;
     }
-    if (_checkSOPs(b)) {
-      if (_checkMinSize(b) && _checkExpectedSize(b) > -1) {
-        return _parse(b);
+    if (checkSOPs(b)) {
+      if (checkMinSize(b) && checkExpectedSize(b) > -1) {
+        return parseBuffer(b);
       }
       partialBuffer = Uint8List.fromList(b);
     }
     return null;
   }
 
-  PacketV1 _parse(Uint8List b) {
+  @visibleForTesting
+  PacketV1 parseBuffer(Uint8List b) {
     final packet = PacketV1();
     packet.sop1 = b[FIELDS.sop1_pos];
     packet.sop2 = b[FIELDS.sop2_pos];
@@ -120,7 +124,7 @@ class PacketParser {
       packet.dlenLsb = bByte4;
     }
 
-    packet.dlen = _extractDlen(b);
+    packet.dlen = extractDlen(b);
 
     // Copy data from buffer into packet.data
     packet.data = Uint8List.fromList([
@@ -129,16 +133,17 @@ class PacketParser {
     ]);
     packet.checksum = b[FIELDS.size + packet.dlen - 1];
 
-    _dealWithExtraBytes(b);
+    dealWithExtraBytes(b);
 
-    return _verifyChecksum(b, packet);
+    return verifyChecksum(b, packet);
   }
 
-  void _dealWithExtraBytes(Uint8List b) {
+  @visibleForTesting
+  void dealWithExtraBytes(Uint8List b) {
     // If the packet was parsed successfully, and the buffer and
     // expected size of the buffer are the same, clean up the
     // partialBuffer, otherwise assign extrabytes to partialBuffer
-    final expectedSize = _checkExpectedSize(b);
+    final expectedSize = checkExpectedSize(b);
     if (b.length > expectedSize) {
       partialBuffer = Uint8List.fromList(
           [for (final byte in b.sublist(expectedSize)) byte]);
@@ -147,7 +152,8 @@ class PacketParser {
     }
   }
 
-  PacketV1 _verifyChecksum(Uint8List buffer, PacketV1 packet) {
+  @visibleForTesting
+  PacketV1 verifyChecksum(Uint8List buffer, PacketV1 packet) {
     final bSlice =
         buffer.sublist(FIELDS.mrspIdCode, FIELDS.checksum + packet.dlen - 1);
     final checksum = bSlice.checksum;
@@ -182,6 +188,7 @@ class PacketParser {
     return parseDataMap(parser, payload);
   }
 
+  @visibleForTesting
   Map<String, dynamic> parseDataMap(APIV1 parser, PacketV1 payload,
       [Map<String, int> dsIn]) {
     final data = payload.data;
@@ -190,7 +197,7 @@ class PacketParser {
     var ds = dsIn;
     if (parser != null && (data.isNotEmpty)) {
       try {
-        ds = _checkDSMasks(ds, parser);
+        ds = checkDSMasks(ds, parser);
       } on Exception catch (e) {
         print(e);
         return {'payload': payload};
@@ -212,19 +219,19 @@ class PacketParser {
       while (i < fields.length) {
         field = fields[i];
 
-        dsFlag = _checkDSBit(ds, field);
+        dsFlag = checkDSBit(ds, field);
 
         if (dsFlag == 1) {
           field = field.copyWith(from: dsIndex, to: dsIndex + 2);
           dsIndex += 2;
         } else if (dsFlag == 0) {
-          i = _incParserIndex(i, fields, data, dsFlag, dsIndex);
+          i = incParserIndex(i, fields, data, dsFlag, dsIndex);
           continue;
         }
 
-        pData[field.name] = _parseField(field, data, pData);
+        pData[field.name] = parseField(field, data, pData);
 
-        i = _incParserIndex(i, fields, data, dsFlag, dsIndex);
+        i = incParserIndex(i, fields, data, dsFlag, dsIndex);
       }
     } else {
       print('No parser found:  data: $payload');
@@ -234,7 +241,8 @@ class PacketParser {
     return pData;
   }
 
-  Map<String, int> _checkDSMasks(Map<String, int> ds, APIV1 parser) {
+  @visibleForTesting
+  Map<String, int> checkDSMasks(Map<String, int> ds, APIV1 parser) {
     if (parser.idCode == 0x03) {
       if (!(ds != null && ds['mask1'] != null && ds['mask2'] != null)) {
         throw Exception();
@@ -246,8 +254,9 @@ class PacketParser {
     return ds;
   }
 
-  int _incParserIndex(
-      int iIn, List<APIField> fields, Uint8List data, int dsFlag, int dsIndex) {
+  @visibleForTesting
+  int incParserIndex(int iIn, List<APIField> fields, Uint8List data,
+      [int dsFlag = 0, int dsIndex]) {
     var i = iIn + 1;
 
     if ((dsFlag >= 0) && (i == fields.length) && (dsIndex < data.length)) {
@@ -257,7 +266,8 @@ class PacketParser {
     return i;
   }
 
-  int _checkDSBit(Map<String, int> ds, APIField field) {
+  @visibleForTesting
+  int checkDSBit(Map<String, int> ds, APIField field) {
     if (ds == null) {
       return -1;
     }
@@ -269,7 +279,8 @@ class PacketParser {
     return 0;
   }
 
-  dynamic _parseField(
+  @visibleForTesting
+  dynamic parseField(
       APIField field, Uint8List dataIn, Map<String, dynamic> pData) {
     dynamic pField;
     final data = dataIn.sublist(field.from, field.to);
@@ -295,7 +306,7 @@ class PacketParser {
         pField = field.values[intField];
         break;
       case 'bitmask':
-        pField = _parseBitmaskField(intField, field, pData);
+        pField = parseBitmaskField(intField, field, pData);
         break;
       case 'signed':
         final width = 8 * (field.to - field.from);
@@ -313,7 +324,8 @@ class PacketParser {
     return pField;
   }
 
-  Map<String, dynamic> _parseBitmaskField(
+  @visibleForTesting
+  Map<String, dynamic> parseBitmaskField(
       int valIn, APIField field, Map<String, dynamic> pData) {
     var pField = <String, dynamic>{};
     var val = valIn;
@@ -336,14 +348,17 @@ class PacketParser {
     return pField;
   }
 
-  bool _checkSOPs(Uint8List buffer) =>
+  @visibleForTesting
+  bool checkSOPs(Uint8List buffer) =>
       // ignore: avoid_bool_literals_in_conditional_expressions
-      _checkSOP1(buffer) ? _checkSOP2(buffer) != false : false;
+      checkSOP1(buffer) ? checkSOP2(buffer) != false : false;
 
-  bool _checkSOP1(Uint8List buffer) =>
+  @visibleForTesting
+  bool checkSOP1(Uint8List buffer) =>
       buffer[FIELDS.sop1_pos] == FIELDS.sop1_hex;
 
-  dynamic _checkSOP2(Uint8List buffer) {
+  @visibleForTesting
+  dynamic checkSOP2(Uint8List buffer) {
     final sop2 = buffer[FIELDS.sop2_pos];
 
     if (sop2 == FIELDS.sop2_sync) {
@@ -355,17 +370,20 @@ class PacketParser {
     return false;
   }
 
-  int _checkExpectedSize(Uint8List buffer) {
+  @visibleForTesting
+  int checkExpectedSize(Uint8List buffer) {
     // Size = buffer fields size (SOP1, SOP2, MSRP, SEQ and DLEN) + DLEN value
-    final expectedSize = FIELDS.size + _extractDlen(buffer),
+    final expectedSize = FIELDS.size + extractDlen(buffer),
         bufferSize = buffer.length;
 
     return (bufferSize < expectedSize) ? -1 : expectedSize;
   }
 
-  bool _checkMinSize(Uint8List buffer) => buffer.length >= MIN_BUFFER_SIZE;
+  @visibleForTesting
+  bool checkMinSize(Uint8List buffer) => buffer.length >= MIN_BUFFER_SIZE;
 
-  int _extractDlen(Uint8List buffer) {
+  @visibleForTesting
+  int extractDlen(Uint8List buffer) {
     if (buffer[FIELDS.sop2_pos] == FIELDS.sop2_sync) {
       return buffer[FIELDS.dlenLsb];
     }

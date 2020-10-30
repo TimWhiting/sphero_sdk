@@ -5,23 +5,24 @@ environment:
   sdk: '>=2.7.0 <3.0.0'
 
 dependencies:
-  flutter:
-    sdk: flutter
-  flutter_ble_lib: any
-  rxdart: any
   basics: any
   buffer: any
   dartx: any
+  flutter:
+    sdk: flutter
+  flutter_ble_lib: any
   freezed_annotation: any
+  meta: any
+  rxdart: any
 
 dev_dependencies:
-  freezed: any
-  derry: any
-  build_runner: any
-  mockito: any
   abide: any
+  build_runner: any
+  derry: any
   flutter_test:
     sdk: flutter
+  freezed: any
+  mockito: any
 
 flutter:
 
