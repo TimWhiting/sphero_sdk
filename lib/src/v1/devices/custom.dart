@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../utils.dart';
+import 'core.dart';
 import 'sphero.dart';
 
 /// regular expression to match hex strings
@@ -40,7 +41,7 @@ RGB adjustLuminance(RGB rgb, int lum) {
   return RGB(red: newR, green: newG, blue: newB);
 }
 
-mixin Custom on SpheroDevice {
+mixin Custom on SpheroBase {
   RGB originalColor = const RGB(red: 0, green: 0, blue: 0);
 
   int mergeMasks(String id, int mask, [bool remove = false]) {

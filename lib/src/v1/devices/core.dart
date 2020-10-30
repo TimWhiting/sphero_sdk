@@ -8,7 +8,7 @@ abstract class SpheroBase {
       int deviceId, int command, Uint8List data);
 }
 
-mixin Core on SpheroBase {
+extension Core on SpheroBase {
   Future<Map<String, dynamic>> _coreCommand(int command, Uint8List data) =>
       baseCommand(0x00, command, data);
 

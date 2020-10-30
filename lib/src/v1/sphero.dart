@@ -40,7 +40,7 @@ class CommandQueueItemV1 {
 /// @example
 /// var orb = new Sphero('/dev/rfcomm0', { timeout: 300 });
 /// @returns {Sphero} a new instance of Sphero
-class Sphero extends SpheroBase with Core, SpheroDevice, Custom {
+class Sphero extends SpheroBase with Custom {
   Sphero(
     this.address, {
     AdaptorV1 adaptor,

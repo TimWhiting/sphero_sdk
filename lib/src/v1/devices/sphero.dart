@@ -3,7 +3,7 @@ import '../utils.dart';
 import 'command.dart';
 import 'core.dart';
 
-mixin SpheroDevice on Core {
+extension SpheroDevice on SpheroBase {
   Future<Map<String, dynamic>> _command(int command, Uint8List data) =>
       baseCommand(0x02, command, data);
 
