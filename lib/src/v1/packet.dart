@@ -28,25 +28,34 @@ class FIELDS {
 class PacketV1 {
   PacketV1();
   PacketV1.create({
-    this.sop1 = FIELDS.sop1_hex,
-    this.sop2 = FIELDS.sop2_sync,
-    this.cid = FIELDS.cidHex,
-    this.did = FIELDS.didHex,
-    this.seq = FIELDS.seqHex,
-    this.checksum = 0x00,
+    int sop1,
+    int sop2,
+    int cid,
+    int did,
+    int seq,
+    int checksum,
     Uint8List data,
-  })  : data = data == null ? Uint8List(0) : data,
-        dlen = data.length = 1;
+  })  : data = data ?? Uint8List(0),
+        dlen = data?.length ?? 0,
+        sop1 = sop1 ?? FIELDS.sop1_hex,
+        sop2 = sop2 ?? FIELDS.sop2_sync,
+        cid = cid ?? FIELDS.cidHex,
+        did = did ?? FIELDS.didHex,
+        seq = seq ?? FIELDS.seqHex,
+        checksum = checksum ?? 0x00;
   Uint8List data;
   int partialCounter = 0;
 
   int sop1, sop2, did, cid, seq, checksum, dlen; // adds checksum
   int mrsp, idCode, dlenMsb, dlenLsb;
   Uint8List get packet {
-    final p = Uint8List.fromList([sop1, sop2, did, cid, seq, dlen, ...data]);
+    print(
+      '''sop1: $sop1, sop2: $sop2, did: $did, cid: $cid, dlen: $dlen, data: $data''',
+    );
+    final p =
+        Uint8List.fromList([sop1, sop2, did, cid, seq, dlen + 1, ...data]);
     checksum = p.sublist(2).toList().checksum;
-    p.add(checksum);
-    return p;
+    return Uint8List.fromList([...p, checksum]);
   }
 }
 
@@ -57,6 +66,7 @@ class PacketParser {
   bool emitPacketErrors;
 
   Uint8List partialBuffer = Uint8List(0);
+
   PacketV1 create(
           {int sop1,
           int sop2,
@@ -156,7 +166,7 @@ class PacketParser {
   Map<String, dynamic> parseAsyncData(PacketV1 payload, Map<String, int> ds) {
     final parser = ASYNC_PARSER[payload.idCode];
 
-    return _parseData(parser, payload, ds);
+    return parseDataMap(parser, payload, ds);
   }
 
   Map<String, dynamic> parseResponseData(
@@ -169,10 +179,10 @@ class PacketParser {
             cmd['did'].toRadixString(16) + ':' + cmd['cid'].toRadixString(16),
         parser = RES_PARSER[parserId];
 
-    return _parseData(parser, payload);
+    return parseDataMap(parser, payload);
   }
 
-  Map<String, dynamic> _parseData(APIV1 parser, PacketV1 payload,
+  Map<String, dynamic> parseDataMap(APIV1 parser, PacketV1 payload,
       [Map<String, int> dsIn]) {
     final data = payload.data;
     Map<String, dynamic> pData;
@@ -183,7 +193,7 @@ class PacketParser {
         ds = _checkDSMasks(ds, parser);
       } on Exception catch (e) {
         print(e);
-        throw Exception(payload);
+        return {'payload': payload};
       }
 
       final fields = parser.fields;
@@ -217,8 +227,8 @@ class PacketParser {
         i = _incParserIndex(i, fields, data, dsFlag, dsIndex);
       }
     } else {
-      throw Exception('No parser found:  data: $payload');
-      // pData = payload;
+      print('No parser found:  data: $payload');
+      return {'payload': payload};
     }
 
     return pData;
@@ -263,7 +273,7 @@ class PacketParser {
       APIField field, Uint8List dataIn, Map<String, dynamic> pData) {
     dynamic pField;
     final data = dataIn.sublist(field.from, field.to);
-    final intField = bufferToInt(data);
+    final intField = data.isNotEmpty ? bufferToInt(data) : 0;
 
     switch (field.type) {
       case 'number':

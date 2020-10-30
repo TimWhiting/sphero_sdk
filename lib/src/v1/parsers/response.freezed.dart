@@ -228,8 +228,8 @@ class _$APIFieldTearOff {
       int rangeTop,
       String units,
       int mask,
-      int from,
-      int to,
+      int from = 0,
+      @nullable int to = 0,
       String format,
       Map<int, dynamic> values}) {
     return _APIField(
@@ -266,6 +266,7 @@ mixin _$APIField {
   String get units;
   int get mask;
   int get from;
+  @nullable
   int get to;
   String get format;
   Map<int, dynamic> get values;
@@ -288,7 +289,7 @@ abstract class $APIFieldCopyWith<$Res> {
       String units,
       int mask,
       int from,
-      int to,
+      @nullable int to,
       String format,
       Map<int, dynamic> values});
 }
@@ -352,7 +353,7 @@ abstract class _$APIFieldCopyWith<$Res> implements $APIFieldCopyWith<$Res> {
       String units,
       int mask,
       int from,
-      int to,
+      @nullable int to,
       String format,
       Map<int, dynamic> values});
 }
@@ -413,10 +414,11 @@ class _$_APIField implements _APIField {
       this.rangeTop,
       this.units,
       this.mask,
-      this.from,
-      this.to,
+      this.from = 0,
+      @nullable this.to = 0,
       this.format,
-      this.values});
+      this.values})
+      : assert(from != null);
 
   @override
   final String name;
@@ -436,9 +438,12 @@ class _$_APIField implements _APIField {
   final String units;
   @override
   final int mask;
+  @JsonKey(defaultValue: 0)
   @override
   final int from;
+  @JsonKey(defaultValue: 0)
   @override
+  @nullable
   final int to;
   @override
   final String format;
@@ -520,7 +525,7 @@ abstract class _APIField implements APIField {
       String units,
       int mask,
       int from,
-      int to,
+      @nullable int to,
       String format,
       Map<int, dynamic> values}) = _$_APIField;
 
@@ -545,6 +550,7 @@ abstract class _APIField implements APIField {
   @override
   int get from;
   @override
+  @nullable
   int get to;
   @override
   String get format;
