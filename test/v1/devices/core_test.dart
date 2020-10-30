@@ -3,9 +3,11 @@ import 'package:mockito/mockito.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sphero_sdk/src/v1/devices/core.dart';
+import 'package:sphero_sdk/src/v1/sphero.dart';
 
 void main() {
   group('Core', () {
+    Sphero core;
     setUp(() {
       print('here');
     });
@@ -13,7 +15,7 @@ void main() {
     group('commands', () {
       test('ping calls command with params', () async {
         // when(core.ping()).thenAnswer((realInvocation) => core.klass.ping());
-        // await core.ping();
+        await core.ping();
 
         // verify(core.baseCommand(any, any, any)).called(1);
         // final captured =
