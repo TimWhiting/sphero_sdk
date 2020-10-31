@@ -26,7 +26,7 @@ abstract class APIField with _$APIField {
     String units,
     int mask,
     @Default(0) int from,
-    @nullable @Default(0) int to,
+    @nullable int to,
     String format,
     Map<int, dynamic> values,
   }) = _APIField;

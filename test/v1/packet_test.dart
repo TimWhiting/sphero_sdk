@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sphero_sdk/src/v1/packet.dart';
 import 'package:sphero_sdk/src/v1/parsers/response.dart';
+import 'package:sphero_sdk/src/v1/parsers/response_async.dart';
 
 void main() {
   PacketParser packet;
@@ -515,144 +516,129 @@ void main() {
       });
     });
 
-    // group('_parseField', () {
-    //   final data, field;
+    group('parseField', () {
+      Uint8List data;
+      APIField field;
 
-    //   setUp(() {
-    //     field = {
-    //       name: 'chassisId',
-    //       type: 'number',
-    //     };
+      setUp(() {
+        field = const APIField(
+          name: 'chassisId',
+          type: 'number',
+        );
 
-    //     data = {
-    //       slice: stub()
-    //     };
+        data = [0xFF, 0xFE, 0x00, 0x01].asUint8List;
+      });
 
-    //     data.slice.returns(Uint8List.fromList([0xFF, 0xFE, 0x00, 0x01]));
-    //     spy(utils, 'bufferToInt');
+      group('when field type is: ', () {
+        test('"number" returns the value', () {
+          final res = packet.parseField(field, [255].asUint8List);
+          expect(res, equals(255));
+        });
 
-    //     spy(packet, '_parseField');
+        test('"signed" returns the signed value', () {
+          field = field.copyWith(type: 'signed', from: 0, to: 1);
+          final tmpVal = packet.parseField(
+            field,
+            [0xFF, 0xFE, 0x00, 0x01].asUint8List,
+          );
+          expect(tmpVal, -1);
+        });
 
-    //     packet._parseField(field, data);
-    //   });
+        test('"number" returns a hex string when format == "hex"', () {
+          field = field.copyWith(format: 'hex');
+          final res = packet.parseField(field, [255].asUint8List);
+          expect(res, equals('0xFF'));
+        });
 
-    //   tearDown(() {
-    //     utils.bufferToInt.restore();
-    //   });
+        test('"string" returns a string with format == "ascii"', () {
+          field = field.copyWith(type: 'string', format: 'ascii');
+          final res = packet.parseField(
+              field, [0x48, 0x6F, 0x6C, 0x61, 0x21].asUint8List);
+          expect(res, equals('Hola!'));
+        });
 
-    //   group('when field type is: ', () {
-    //     setUp(() {
-    //       data.slice.reset();
-    //       utils.bufferToInt.reset();
-    //       packet._parseField.reset();
-    //       packet._parseField(field, [255]);
-    //     });
+        test('"raw" returns the raw array', () {
+          final buffer = Uint8List.fromList([0x48, 0x6F, 0x6C, 0x61, 0x21]);
+          field = field.copyWith(type: 'raw');
+          final tmpVal = packet.parseField(field, buffer);
+          expect(tmpVal, buffer);
+        });
 
-    //     test(''number' returns the value', () {
-    //       expect(packet._parseField, equals(255);
-    //     });
+        test('"predefined" returns "battery OK"', () {
+          final buffer = Uint8List.fromList([0x02]);
+          field =
+              field.copyWith(type: 'predefined', values: {0x02: 'battery OK'});
+          final res = packet.parseField(field, buffer);
+          expect(res, equals('battery OK'));
+        });
 
-    //     test('"signed" returns the signed value', () {
-    //       field.type = 'signed';
-    //       field.from = 0;
-    //       field.to = 1;
-    //       final tmpVal = packet._parseField(field, Uint8List.fromList([0xFF, 0xFE, 0x00, 0x01]));
-    //       expect(tmpVal, -1);
-    //     });
+        test('"predefined" returns "true" with mask', () {
+          final buffer = Uint8List.fromList([0x0F]);
+          field = field
+              .copyWith(type: 'predefined', mask: 0x01, values: {0x01: true});
+          final res = packet.parseField(field, buffer);
+          expect(res, equals(true));
+        });
 
-    //     test('"number" returns a hex string when format == 'hex'', () {
-    //       field.format = 'hex';
-    //       packet._parseField(field, [255]);
-    //       expect(packet._parseField, equals('0xFF');
-    //       field.format = undefined;
-    //     });
+        test('"bitmask" calls parseBitmaskField', () {
+          // packet.parseBitmaskField.returns({val: 'all Good'});
+          field = ASYNC_PARSER[0x03].fields.first;
+          final res = packet
+              .parseField(field, [0x01, 0x02].asUint8List, {'val1': 'one'});
+          expect(
+              res,
+              equals({
+                'sensor': 'accelerometer axis X, raw',
+                'range': {'top': 2047, 'bottom': -2048},
+                'units': '4mg',
+                'value': [258]
+              }));
+        });
 
-    //     test('"string" returns a string with format == 'ascii'', () {
-    //       field.type = 'string';
-    //       field.format = 'ascii';
-    //       packet._parseField(field, Uint8List.fromList([0x48, 0x6F, 0x6C, 0x61, 0x21]));
-    //       expect(packet._parseField, equals('Hola!');
-    //       field.format = undefined;
-    //     });
+        test('"bitmask" calls parseBitmaskField and errors', () {
+          field = field.copyWith(type: 'thevoid');
+          expect(
+              () => packet.parseField(field, [0x01, 0x02].asUint8List),
+              throwsA(isA<Exception>().having((e) => e.toString(), 'message',
+                  'Exception: Data could not be parsed!')));
+        });
+      });
+    });
 
-    //     test('"raw" returns the raw array', () {
-    //       final buffer = Uint8List.fromList([0x48, 0x6F, 0x6C, 0x61, 0x21]);
-    //       field.type = 'raw';
-    //       final tmpVal = packet._parseField(field, buffer);
-    //       expect(tmpVal, buffer);
-    //     });
+    group('_parseBitmaskField', () {
+      Map<String, dynamic> fieldMap;
+      APIField field;
 
-    //     test('"predefined" returns 'battery OK'', () {
-    //       final buffer = Uint8List.fromList([0x02]);
-    //       field.type = 'predefined';
-    //       field.values = { 0x02: 'battery OK' };
-    //       packet._parseField(field, buffer);
-    //       expect(packet._parseField, equals('battery OK');
-    //       field.values = undefined;
-    //     });
+      setUp(() {
+        fieldMap = {
+          'name': 'gyro',
+          'sensor': 'gyro',
+          'units': 'gyrons',
+          'range': {
+            'top': 0x0FFF,
+            'bottom': -255,
+          },
+          'value': [1]
+        };
+        field = const APIField(
+          name: 'gyro',
+          sensor: 'gyro',
+          units: 'gyrons',
+          rangeTop: 0x0FFF,
+          rangeBottom: -255,
+        );
+      });
 
-    //     test('"predefined" returns 'true' with mask', () {
-    //       final buffer = Uint8List.fromList([0x0F]);
-    //       field.type = 'predefined';
-    //       field.mask = '0x01';
-    //       field.values = { 0x01: true };
-    //       packet._parseField(field, buffer);
-    //       expect(packet._parseField, equals(true);
-    //       field.values = undefined;
-    //     });
+      test(' if val > field.range.top calls utilstwosToInt', () {
+        final res = packet.parseBitmaskField(0xFF00, field, {});
+        expect(res['value'].length, 1);
+      });
 
-    //     test('"bitmask" calls parseBitmaskField', () {
-    //       stub(packet, '_parseBitmaskField');
-    //       packet._parseBitmaskField.returns({ val: 'all Good' });
-    //       field.type = 'bitmask';
-    //       packet._parseField(field, [0x01, 0x02], { val1: 'one' });
-    //       expect(packet._parseBitmaskField)
-    //         .to.be.calledWith(
-    //           258, field, { val1: 'one' }
-    //         );
-    //       packet._parseBitmaskField.restore();
-    //     });
-
-    //     test('"bitmask" calls parseBitmaskField', () {
-    //       field.type = 'thevoid';
-    //       stub(packet, 'emit');
-    //       packet._parseField(field, [0x01, 0x02]);
-    //       final error = new Error('Data could not be parsed!');
-    //       expect(packet._parseField)
-    //         .to.have.returned('Data could not be parsed!');
-    //     });
-    //   });
-    // });
-
-    // group('_parseBitmaskField', () {
-    //   final field;
-
-    //   setUp(() {
-    //     field = {
-    //       name: 'gyro',
-    //       sensor: 'gyro',
-    //       units: 'gyrons',
-    //       range: {
-    //         top: 0x0FFF,
-    //         bottom: -255,
-    //       },
-    //       value: [1]
-    //     };
-
-    //     utils.twosToInt.returns(255);
-    //   });
-
-    //   test(' if val > field.range.top calls utilstwosToInt', () {
-    //     packet._parseBitmaskField(0xFF00, field, {});
-    //     expect(utils.twosToInt).to.be.calledWith(0xFF00, 2);
-    //   });
-
-    //   test('adds to the array if field already exist', () {
-    //     packet._parseBitmaskField(0xFE, field, { gyro: field });
-    //     field.value.push(255);
-    //     expect(packet._parseBitmaskField)
-    //       .to.have.returned(field);
-    //   });
-    // });
+      test('adds to the array if field already exist', () {
+        final res = packet.parseBitmaskField(0xFF, field, {'gyro': fieldMap});
+        expect(res['value'].length, 2);
+        expect(res['value'][1], 255);
+      });
+    });
   });
 }

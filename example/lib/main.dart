@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:dartx/dartx.dart';
 
 void main() {
   runApp(ProviderScope(child: MyApp()));
@@ -13,64 +14,88 @@ void main() {
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: HomePage(),
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const HomePage(),
+      );
 }
 
-final deviceProvider = StateProvider<Map<String, ScanResult>>((ref) => {});
+final bleManagerProvider = FutureProvider<BleManager>((ref) async {
+  await Permission.location.request();
+  final manager = BleManager();
+  await manager.createClient(); //ready to go!
+  try {
+    manager.startPeripheralScan().listen((sr) {
+      ref.read(allDevicesProvider).state = ref.read(allDevicesProvider).state
+        ..[sr.peripheral.name] = sr;
+    });
+  } on Exception catch (e) {
+    print(e);
+  }
+  return manager;
+});
+final allDevicesProvider = StateProvider<Map<String, ScanResult>>((ref) => {});
+final selectedDeviceNameProvider = StateProvider<String>((ref) => null);
+final selectedDeviceProvider = StateProvider<ScanResult>((ref) => ref
+    .watch(allDevicesProvider)
+    .state[ref.watch(selectedDeviceNameProvider).state]);
 
 class HomePage extends HookWidget {
   const HomePage();
   @override
   Widget build(BuildContext context) {
-    useMemoized(() async {
-      // ignore: unused_local_variable
-      final permissionStatus = await Permission.location.request();
-      BleManager manager = BleManager();
-      await manager.createClient(); //ready to go!
-
-      manager.startPeripheralScan().listen((sr) {
-        context.read(deviceProvider).state = context.read(deviceProvider).state
-          ..[sr.peripheral.name] = sr;
-      });
-    });
+    useProvider(bleManagerProvider);
+    final devices = useProvider(allDevicesProvider).state;
+    final deviceName = useProvider(selectedDeviceNameProvider).state;
     final pageIndex = useState(0);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(),
         body: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                OutlineButton(
-                  child: Text('Connect'),
-                  onPressed: () {},
-                ),
-
-                // DropdownButton(), TODO Search for devices and list them
+                if (devices != null)
+                  DropdownButton<String>(
+                    value: deviceName,
+                    onChanged: (v) =>
+                        context.read(selectedDeviceNameProvider).state = v,
+                    items: devices.entries
+                        .map(
+                          (d) => DropdownMenuItem(
+                            value: d.key,
+                            child: Text(
+                              d.value?.advertisementData?.localName ?? '',
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
               ],
             ),
+            const SizedBox(height: 20),
             Pages.values[pageIndex.value].widget,
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          onTap: (i) => pageIndex.value = i,
-          items: [
-            for (final tab in Pages.values)
-              BottomNavigationBarItem(
-                label: EnumToString.convertToString(tab, camelCase: true),
-                icon: Icon(Icons.add),
-              )
-          ],
+        bottomNavigationBar: SizedBox(
+          height: 40,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              for (final tab in 0.rangeTo(Pages.values.length - 1))
+                TextButton(
+                  child: Text(
+                    EnumToString.convertToString(Pages.values[tab],
+                        camelCase: true),
+                  ),
+                  onPressed: () => pageIndex.value = tab,
+                )
+            ],
+          ),
         ),
       ),
     );
@@ -81,27 +106,15 @@ class BluetoothPage extends HookWidget {
   const BluetoothPage();
   @override
   Widget build(BuildContext context) {
-    final devices = useProvider(deviceProvider).state.values.toList();
-
+    final device = useProvider(selectedDeviceProvider).state;
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('Bluetooth Info'),
-        Text('Name: '),
-        Text('BTAddress: '),
-        Text('Separator: '),
-        Text('Colors: '),
-        ListView.builder(
-          padding: EdgeInsets.all(8),
-          itemCount: devices.length,
-          shrinkWrap: true,
-          itemBuilder: (c, i) => Text(
-              devices[i]?.advertisementData?.localName ?? '',
-              style: DefaultTextStyle.of(context)
-                  .style
-                  .copyWith(color: Colors.green)),
-        ),
+        const Text('Bluetooth Info:'),
+        Text('Name: ${device?.advertisementData?.localName}'),
+        Text('BTAddress: ${device?.peripheral?.identifier}'),
+        const Text('Colors: ${'red'}'),
       ],
     );
   }

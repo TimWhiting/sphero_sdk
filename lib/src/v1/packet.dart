@@ -280,11 +280,12 @@ class PacketParser {
   }
 
   @visibleForTesting
-  dynamic parseField(
-      APIField field, Uint8List dataIn, Map<String, dynamic> pData) {
+  dynamic parseField(APIField field, Uint8List dataIn,
+      [Map<String, dynamic> pData = const {}]) {
     dynamic pField;
-    final data = dataIn.sublist(field.from, field.to);
+    final data = dataIn.sublist(field.from, field.to ?? dataIn.length);
     final intField = data.isNotEmpty ? bufferToInt(data) : 0;
+    pField = intField;
 
     switch (field.type) {
       case 'number':
@@ -303,7 +304,7 @@ class PacketParser {
         if (field.mask != null) {
           pField = intField & field.mask;
         }
-        pField = field.values[intField];
+        pField = field.values[pField as int];
         break;
       case 'bitmask':
         pField = parseBitmaskField(intField, field, pData);
@@ -328,6 +329,7 @@ class PacketParser {
   Map<String, dynamic> parseBitmaskField(
       int valIn, APIField field, Map<String, dynamic> pData) {
     var pField = <String, dynamic>{};
+    print('valIn $valIn, $field, $pData');
     var val = valIn;
     if (val > field.rangeTop) {
       val = twosToInt(val, 2);

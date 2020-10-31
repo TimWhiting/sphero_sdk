@@ -27,5 +27,5 @@ dev_dependencies:
 flutter:
 
 scripts:
-  gen: flutter pub run build_runner build --delete-conflicting-outputs
-  genw: flutter pub run build_runner watch --delete-conflicting-outputs
+  gen: flutter packages run build_runner build --delete-conflicting-outputs
+  genw: flutter packages run build_runner watch --delete-conflicting-outputs

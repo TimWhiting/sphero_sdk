@@ -229,7 +229,7 @@ class _$APIFieldTearOff {
       String units,
       int mask,
       int from = 0,
-      @nullable int to = 0,
+      @nullable int to,
       String format,
       Map<int, dynamic> values}) {
     return _APIField(
@@ -415,7 +415,7 @@ class _$_APIField implements _APIField {
       this.units,
       this.mask,
       this.from = 0,
-      @nullable this.to = 0,
+      @nullable this.to,
       this.format,
       this.values})
       : assert(from != null);
@@ -441,7 +441,6 @@ class _$_APIField implements _APIField {
   @JsonKey(defaultValue: 0)
   @override
   final int from;
-  @JsonKey(defaultValue: 0)
   @override
   @nullable
   final int to;
