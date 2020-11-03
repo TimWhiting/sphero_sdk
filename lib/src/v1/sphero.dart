@@ -7,7 +7,9 @@ import 'package:sphero_sdk/src/v1/packet.dart';
 
 import 'adaptor.dart';
 import 'devices/core.dart';
-import 'devices/sphero.dart';
+export 'devices/core.dart';
+export 'devices/custom.dart';
+export 'devices/sphero.dart';
 
 class SOP2 {
   static const answer = 0xFD;
