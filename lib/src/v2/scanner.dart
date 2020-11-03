@@ -22,7 +22,7 @@ Future<Core> startToy(Core toy) async {
   return toy;
 }
 
-extension on BleManager {
+extension BleManagerXV2 on BleManager {
   /// Searches (but does not start) toys that match the passed criteria
   Future<List<ToyDiscovered>> findToys(List<ToyAdvertisement> toysType) async {
     print('findToys');
@@ -44,7 +44,7 @@ extension on BleManager {
   Future<T> find<T extends Core>(ToyAdvertisement toyType,
       [String name]) async {
     final discovered = await findToys([toyType]);
-    final discoveredItem = discovered.firstWhere(
+    final discoveredItem = discovered.firstOrNullWhere(
             (item) => item.peripheral.advertisementData.localName == name) ??
         discovered[0];
 
@@ -114,7 +114,7 @@ extension on ScanResult {
     List<ToyAdvertisement> validToys,
     List<ToyDiscovered> toys,
   ) async {
-    print('Discovered ${peripheral.identifier}');
+    // print('Discovered ${advertisementData.localName}');
 
     final localName = advertisementData.localName ?? '';
     for (final toyAdvertisement in validToys) {

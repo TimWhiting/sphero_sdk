@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 
 import 'adaptor.dart';
 import 'sphero.dart';
+export 'sphero.dart';
 
 class ToyAdvertisement<T extends Sphero> {
   const ToyAdvertisement(
@@ -33,7 +34,7 @@ Future<T> startToy<T extends Sphero>(T toy) async {
   return toy;
 }
 
-extension on BleManager {
+extension BleManagerX on BleManager {
   /// Searches (but does not start) toys that match the passed criteria
   Future<List<ToyDiscovered>> findToys(List<ToyAdvertisement> toysType) async {
     print('findToys');
@@ -55,7 +56,7 @@ extension on BleManager {
   Future<T> find<T extends Sphero>(ToyAdvertisement toyType,
       [String name]) async {
     final discovered = await findToys([toyType]);
-    final discoveredItem = discovered.firstWhere(
+    final discoveredItem = discovered.firstOrNullWhere(
             (item) => item.peripheral.advertisementData.localName == name) ??
         discovered[0];
 
@@ -67,6 +68,7 @@ extension on BleManager {
     final toy = toyType.typeof(discoveredItem.peripheral.peripheral);
 
     await startToy(toy);
+    print('found toy');
 
     return toy as T;
   }
@@ -100,7 +102,7 @@ extension on ScanResult {
     List<ToyAdvertisement> validToys,
     List<ToyDiscovered> toys,
   ) async {
-    print('Discovered ${peripheral.identifier}');
+    // print('Discovered ${advertisementData.localName}');
 
     final localName = advertisementData.localName ?? '';
     for (final toyAdvertisement in validToys) {

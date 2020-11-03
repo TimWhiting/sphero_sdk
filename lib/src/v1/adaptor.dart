@@ -72,6 +72,7 @@ class AdaptorV1 {
   }
 
   Future<void> _connectPeripheral() async {
+    print('connecting peripheral');
     await _connectBLE();
     await peripheral.discoverAllServicesAndCharacteristics();
     for (final service in await peripheral.services()) {

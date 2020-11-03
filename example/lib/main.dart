@@ -1,11 +1,13 @@
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:example/pages/version_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:hooks_riverpod/all.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:dartx/dartx.dart';
+
+import 'common/state.dart';
+import 'pages/bluetooth_info.dart';
 
 void main() {
   runApp(ProviderScope(child: MyApp()));
@@ -23,26 +25,6 @@ class MyApp extends StatelessWidget {
       );
 }
 
-final bleManagerProvider = FutureProvider<BleManager>((ref) async {
-  await Permission.location.request();
-  final manager = BleManager();
-  await manager.createClient(); //ready to go!
-  try {
-    manager.startPeripheralScan().listen((sr) {
-      ref.read(allDevicesProvider).state = ref.read(allDevicesProvider).state
-        ..[sr.peripheral.name] = sr;
-    });
-  } on Exception catch (e) {
-    print(e);
-  }
-  return manager;
-});
-final allDevicesProvider = StateProvider<Map<String, ScanResult>>((ref) => {});
-final selectedDeviceNameProvider = StateProvider<String>((ref) => null);
-final selectedDeviceProvider = StateProvider<ScanResult>((ref) => ref
-    .watch(allDevicesProvider)
-    .state[ref.watch(selectedDeviceNameProvider).state]);
-
 class HomePage extends HookWidget {
   const HomePage();
   @override
@@ -55,6 +37,7 @@ class HomePage extends HookWidget {
       child: Scaffold(
         appBar: AppBar(),
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -78,7 +61,7 @@ class HomePage extends HookWidget {
               ],
             ),
             const SizedBox(height: 20),
-            Pages.values[pageIndex.value].widget,
+            Expanded(child: Pages.values[pageIndex.value].widget),
           ],
         ),
         bottomNavigationBar: SizedBox(
@@ -98,24 +81,6 @@ class HomePage extends HookWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class BluetoothPage extends HookWidget {
-  const BluetoothPage();
-  @override
-  Widget build(BuildContext context) {
-    final device = useProvider(selectedDeviceProvider).state;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text('Bluetooth Info:'),
-        Text('Name: ${device?.advertisementData?.localName}'),
-        Text('BTAddress: ${device?.peripheral?.identifier}'),
-        const Text('Colors: ${'red'}'),
-      ],
     );
   }
 }
@@ -148,7 +113,7 @@ extension NavX on Pages {
   Widget get widget {
     switch (this) {
       case Pages.BluetoothInfo:
-        return BluetoothPage();
+        return const BluetoothPage();
       case Pages.Calibration:
         // TODO: Handle this case.
         break;
@@ -207,9 +172,8 @@ extension NavX on Pages {
         // TODO: Handle this case.
         break;
       case Pages.Version:
-        // TODO: Handle this case.
-        break;
+        return const VersionPage();
     }
-    return BluetoothPage();
+    return const BluetoothPage();
   }
 }
