@@ -98,7 +98,8 @@ class AdaptorV1 {
         }
       }
     }
-    return devModeOn();
+    // devModeOn();
+    // return devModeOn();
   }
 
   Future<void> _connectBLE() async {
