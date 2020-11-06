@@ -8,6 +8,7 @@ final bleManagerProvider = FutureProvider<BleManager>((ref) async {
   final manager = BleManager();
   await manager.createClient(); //ready to go!
   try {
+    await manager.setLogLevel(LogLevel.error);
     manager.startPeripheralScan().listen((sr) {
       ref.read(allDevicesProvider).state = ref.read(allDevicesProvider).state
         ..[sr.peripheral.name] = sr;

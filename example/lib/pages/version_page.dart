@@ -12,7 +12,8 @@ final versionProvider = FutureProvider<String>((ref) async {
   if (sphero == null) {
     return '';
   }
-  return (await sphero.version()).toString();
+  // return (await sphero.version()).toString();
+  return '';
 });
 
 class VersionPage extends HookWidget {

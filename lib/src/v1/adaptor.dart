@@ -6,13 +6,13 @@ import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 class AdaptorV1 {
   AdaptorV1(String id, [this.peripheral])
       : uuid = id.split(':').join('').toLowerCase();
-  static const BLEService = '22bb746f2bb075542d6f726568705327';
-  static const WakeCharacteristic = '22bb746f2bbf75542d6f726568705327';
-  static const TXPowerCharacteristic = '22bb746f2bb275542d6f726568705327';
-  static const AntiDosCharacteristic = '22bb746f2bbd75542d6f726568705327';
-  static const RobotControlService = '22bb746f2ba075542d6f726568705327';
-  static const CommandsCharacteristic = '22bb746f2ba175542d6f726568705327';
-  static const ResponseCharacteristic = '22bb746f2ba675542d6f726568705327';
+  static const BLEService = '22bb746f-2bb0-7554-2d6f-726568705327';
+  static const WakeCharacteristic = '22bb746f-2bbf-7554-2d6f-726568705327';
+  static const TXPowerCharacteristic = '22bb746f-2bb2-7554-2d6f-726568705327';
+  static const AntiDosCharacteristic = '22bb746f-2bbd-7554-2d6f-726568705327';
+  static const RobotControlService = '22bb746f-2ba0-7554-2d6f-726568705327';
+  static const CommandsCharacteristic = '22bb746f-2ba1-7554-2d6f-726568705327';
+  static const ResponseCharacteristic = '22bb746f-2ba6-7554-2d6f-726568705327';
 
   final String uuid;
   bool isConnected = false;
@@ -77,6 +77,7 @@ class AdaptorV1 {
     await peripheral.discoverAllServicesAndCharacteristics();
     for (final service in await peripheral.services()) {
       for (final char in await service.characteristics()) {
+        // print('Found service: ${service.uuid}, char: ${char.uuid}');
         if (service.uuid == BLEService) {
           if (char.uuid == AntiDosCharacteristic) {
             print('Found Anti Dos characteristic');
@@ -99,7 +100,7 @@ class AdaptorV1 {
       }
     }
     // devModeOn();
-    // return devModeOn();
+    return devModeOn();
   }
 
   Future<void> _connectBLE() async {
