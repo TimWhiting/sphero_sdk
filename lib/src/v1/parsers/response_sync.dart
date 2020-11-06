@@ -15,8 +15,9 @@ const RES_PARSER = {
       APIField(name: 'bl', type: 'number', format: 'hex', from: 5, to: 6),
       APIField(name: 'bas', type: 'number', format: 'hex', from: 6, to: 7),
       APIField(name: 'macro', type: 'number', format: 'hex', from: 7, to: 8),
-      APIField(name: 'apiMaj', type: 'number', from: 8, to: 9),
-      APIField(name: 'apiMin', type: 'number', from: 9, to: 10),
+      // Note this is returning weird data.
+      // APIField(name: 'apiMaj', type: 'number', from: 8, to: 9),
+      // APIField(name: 'apiMin', type: 'number', from: 9, to: 10),
     ],
   ),
   '0:11': APIV1(

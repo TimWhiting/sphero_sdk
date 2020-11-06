@@ -53,7 +53,7 @@ class PacketV1 {
   int mrsp, idCode, dlenMsb, dlenLsb;
   Uint8List get packet {
     print(
-      '''sop1: $sop1, sop2: $sop2, did: $did, cid: $cid, dlen: $dlen, data: $data''',
+      '''sop1: $sop1, sop2: $sop2, did: $did, cid: $cid, seq: $seq, dlen: $dlen, data: $data''',
     );
     final p =
         Uint8List.fromList([sop1, sop2, did, cid, seq, dlen + 1, ...data]);
@@ -96,7 +96,9 @@ class PacketParser {
       partialBuffer = b;
     }
     if (checkSOPs(b)) {
+      // print('sop looks good');
       if (checkMinSize(b) && checkExpectedSize(b) > -1) {
+        // print('size looks good');
         return parseBuffer(b);
       }
       partialBuffer = Uint8List.fromList(b);
@@ -283,6 +285,15 @@ class PacketParser {
   dynamic parseField(APIField field, Uint8List dataIn,
       [Map<String, dynamic> pData = const {}]) {
     dynamic pField;
+    if (field.from > dataIn.length) {
+      print('Big problem with field, returning 0');
+      return 0;
+    }
+    if (field.to != null && field.to > dataIn.length) {
+      print('Big problem with field, but still returning field as int');
+      final data = dataIn.sublist(field.from);
+      return bufferToInt(data);
+    }
     final data = dataIn.sublist(field.from, field.to ?? dataIn.length);
     final intField = data.isNotEmpty ? bufferToInt(data) : 0;
     pField = intField;

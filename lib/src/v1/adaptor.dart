@@ -116,6 +116,6 @@ class AdaptorV1 {
     Uint8List data,
   ) async {
     await peripheral.writeCharacteristic(
-        serviceId, characteristicId, data, true);
+        serviceId, characteristicId, data, false);
   }
 }

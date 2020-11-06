@@ -98,7 +98,6 @@ class Sphero extends SpheroBase with Custom {
 
     connection.onRead = (payload) {
       emit('data', payload);
-
       final parsedPayload = packet.parse(payload);
       Map<String, dynamic> parsedData;
       Map<String, int> cmd;
@@ -108,7 +107,10 @@ class Sphero extends SpheroBase with Custom {
           // synchronous packet
           emit('response', parsedPayload);
           cmd = _responseCmd(parsedPayload.seq);
+          print('response for command $cmd');
+          print('response payload: ${parsedPayload.packet}');
           parsedData = packet.parseResponseData(cmd, parsedPayload);
+
           _execCallback(parsedPayload.seq, parsedData);
         } else if (parsedPayload.sop2 == SOP2.async) {
           // async packet
