@@ -68,7 +68,7 @@ mixin Custom on SpheroBase {
   Future<Map<String, dynamic>> streamData({
     String event,
     int mask1,
-    int mask2,
+    int mask2 = 0,
     List<String> fields,
     int sps = 2,
     bool remove,
