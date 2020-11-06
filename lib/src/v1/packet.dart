@@ -285,16 +285,16 @@ class PacketParser {
   dynamic parseField(APIField field, Uint8List dataIn,
       [Map<String, dynamic> pData = const {}]) {
     dynamic pField;
-    if (field.from > dataIn.length) {
+    if (field.from != null && field.from >= dataIn.length) {
       print('Big problem with field, returning 0');
       return 0;
     }
     if (field.to != null && field.to > dataIn.length) {
       print('Big problem with field, but still returning field as int');
       final data = dataIn.sublist(field.from);
-      return bufferToInt(data);
+      return data.isNotEmpty ? bufferToInt(data) : 0;
     }
-    final data = dataIn.sublist(field.from, field.to ?? dataIn.length);
+    final data = dataIn.sublist(field.from ?? 0, field.to ?? dataIn.length);
     final intField = data.isNotEmpty ? bufferToInt(data) : 0;
     pField = intField;
 
