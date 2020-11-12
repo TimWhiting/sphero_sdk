@@ -45,7 +45,7 @@ extension BleManagerX on BleManager {
       sr.discover(toysType, toys);
     });
     print('findToys-wait5seconds');
-    await Future.delayed(5000.milliseconds);
+    await Future.delayed(10.seconds);
     await stopPeripheralScan();
     print('Done scanning devices.');
     return toys;
@@ -58,7 +58,7 @@ extension BleManagerX on BleManager {
     final discovered = await findToys([toyType]);
     final discoveredItem = discovered.firstOrNullWhere(
             (item) => item.peripheral.advertisementData.localName == name) ??
-        discovered[0];
+        (discovered.isNotEmpty ? discovered[0] : null);
 
     if (discoveredItem == null) {
       print('Not found');
@@ -84,6 +84,7 @@ extension BleManagerX on BleManager {
       }));
     } else {
       print('Not found');
+      return [];
     }
   }
 
