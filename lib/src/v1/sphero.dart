@@ -69,7 +69,7 @@ class Sphero extends SpheroBase with Custom {
 
   @override
   void emit(String name, [dynamic data]) {
-    print('Emitting: $name, $data');
+    // print('Emitting: $name, $data');
   }
 
   ///
@@ -108,7 +108,7 @@ class Sphero extends SpheroBase with Custom {
           emit('response', parsedPayload);
           cmd = _responseCmd(parsedPayload.seq);
           print('response for command $cmd');
-          print('response payload: ${parsedPayload.packet}');
+          parsedPayload.printPacket();
           parsedData = packet.parseResponseData(cmd, parsedPayload);
 
           _execCallback(parsedPayload.seq, parsedData);
@@ -195,12 +195,14 @@ class Sphero extends SpheroBase with Custom {
   /// @return {void}
   void _execCommand() {
     CommandQueueItemV1 cmd;
-    if (!busy && (commandQueue.isNotEmpty)) {
+    if (!busy && commandQueue.isNotEmpty) {
       // Get the seq number from the cmd packet/buffer
       // to store the callback response in that position
       busy = true;
       cmd = commandQueue.removeAt(0);
       _queueFuture(cmd.packet, cmd.completer);
+      print('Writing command');
+      cmd.packet.printPacket();
       connection.write(cmd.packet.packet);
     }
   }
@@ -280,11 +282,12 @@ class Sphero extends SpheroBase with Custom {
   /// sphero._responseCmd(0x14);
   /// @return {Number} the increased value of seqCounter
   int _incSeq() {
+    final seq = seqCounter;
+    seqCounter++;
     if (seqCounter > 255) {
-      seqCounter = 0x00;
+      seqCounter = 0;
     }
-
-    return seqCounter++;
+    return seq;
   }
 }
 

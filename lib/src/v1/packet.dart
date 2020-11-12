@@ -51,10 +51,13 @@ class PacketV1 {
 
   int sop1, sop2, did, cid, seq, checksum, dlen; // adds checksum
   int mrsp, idCode, dlenMsb, dlenLsb;
-  Uint8List get packet {
+  void printPacket() {
     print(
       '''sop1: $sop1, sop2: $sop2, did: $did, cid: $cid, seq: $seq, dlen: $dlen, data: $data''',
     );
+  }
+
+  Uint8List get packet {
     final p =
         Uint8List.fromList([sop1, sop2, did, cid, seq, dlen + 1, ...data]);
     checksum = p.sublist(2).toList().checksum;

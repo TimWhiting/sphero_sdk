@@ -25,12 +25,12 @@ Future<T> startToy<T extends Sphero>(T toy) async {
   await toy.connect();
 
   print('Started');
-  final version = await toy.version();
+  // final version = await toy.version();
 
-  print('Version $version');
-  final battery = await toy.getPowerState();
+  // print('Version $version');
+  // final battery = await toy.getPowerState();
 
-  print('Battery $battery');
+  // print('Battery $battery');
   return toy;
 }
 
@@ -45,7 +45,7 @@ extension BleManagerX on BleManager {
       sr.discover(toysType, toys);
     });
     print('findToys-wait5seconds');
-    await Future.delayed(10.seconds);
+    await Future.delayed(4.seconds);
     await stopPeripheralScan();
     print('Done scanning devices.');
     return toys;

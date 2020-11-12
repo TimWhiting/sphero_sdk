@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_ble_lib/flutter_ble_lib.dart';
@@ -40,7 +41,11 @@ class AdaptorV1 {
   /// Writes data to the BLE device on the
   /// RobotControlService/CommandsCharacteristic.
   Future<void> write(Uint8List data) => writeServiceCharacteristic(
-      RobotControlService, CommandsCharacteristic, data);
+        RobotControlService,
+        CommandsCharacteristic,
+        data,
+        false, //data[0] == FIELDS.sop2_sync,
+      );
 
   void Function(Uint8List) onRead;
   Future<void> Function() close;
@@ -51,24 +56,30 @@ class AdaptorV1 {
     await wake();
     peripheral
         .monitorCharacteristic(RobotControlService, ResponseCharacteristic)
-        .listen((cWithValue) {
-      final data = cWithValue.value;
-      if (data != null && data.length > 5) {
-        onRead(data);
-      }
-    });
+        .listen(
+      (cWithValue) {
+        final data = cWithValue.value;
+        if (data != null && data.length > 5) {
+          onRead(data);
+        }
+      },
+      onError: (e) =>
+          print('Error: $e while monitoring the response characteristic'),
+      onDone: () => print('Done'),
+    );
   }
 
   Future<void> wake() => writeServiceCharacteristic(
-      BLEService, WakeCharacteristic, Uint8List.fromList([1]));
+      BLEService, WakeCharacteristic, Uint8List.fromList([1]), false);
 
   Future<void> setTXPower(int level) => writeServiceCharacteristic(
-      BLEService, TXPowerCharacteristic, Uint8List.fromList([level]));
+      BLEService, TXPowerCharacteristic, Uint8List.fromList([level]), false);
 
   Future<void> setAntiDos() {
     const str = '011i3';
-    final bytes = Uint8List.fromList(str.codeUnits);
-    return writeServiceCharacteristic(BLEService, AntiDosCharacteristic, bytes);
+    final bytes = Uint8List.fromList(utf8.encode(str));
+    return writeServiceCharacteristic(
+        BLEService, AntiDosCharacteristic, bytes, false);
   }
 
   Future<void> _connectPeripheral() async {
@@ -99,7 +110,6 @@ class AdaptorV1 {
         }
       }
     }
-    // devModeOn();
     return devModeOn();
   }
 
@@ -114,8 +124,9 @@ class AdaptorV1 {
     String serviceId,
     String characteristicId,
     Uint8List data,
+    bool withResponse,
   ) async {
     await peripheral.writeCharacteristic(
-        serviceId, characteristicId, data, false);
+        serviceId, characteristicId, data, true);
   }
 }
