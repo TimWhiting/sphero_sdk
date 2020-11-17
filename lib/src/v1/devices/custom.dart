@@ -54,8 +54,19 @@ mixin Custom on SpheroBase {
     return ds[id] | m;
   }
 
-  void on(String name, Function(dynamic) data) {}
-  void emit(String name, dynamic data) {}
+  void on(String name, Function(dynamic) data) {
+    if (eventListeners[name] == null) {
+      eventListeners[name] = [];
+    }
+    eventListeners[name].add(data);
+  }
+
+  void emit(String name, dynamic data) {
+    // print('Emitting: $name, $data');'
+    for (final l in eventListeners[name]) {
+      l(data);
+    }
+  }
 
   ///
   /// Generic Data Streaming setup, using Sphero's setDataStraming command.

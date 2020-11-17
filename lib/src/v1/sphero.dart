@@ -67,11 +67,6 @@ class Sphero extends SpheroBase with Custom {
   int timeout;
   final bool emitPacketErrors;
 
-  @override
-  void emit(String name, [dynamic data]) {
-    // print('Emitting: $name, $data');
-  }
-
   ///
   /// Establishes a connection to Sphero.
   ///

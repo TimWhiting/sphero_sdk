@@ -59,7 +59,7 @@ class AdaptorV1 {
         .listen(
       (cWithValue) {
         final data = cWithValue.value;
-        if (data != null && data.length > 5) {
+        if (data != null) {
           onRead(data);
         }
       },

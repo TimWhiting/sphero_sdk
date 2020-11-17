@@ -6,6 +6,7 @@ abstract class SpheroBase {
   final Map<String, int> ds = {};
   Future<Map<String, dynamic>> baseCommand(
       int deviceId, int command, Uint8List data);
+  final Map<String, List<void Function(dynamic)>> eventListeners = {};
 }
 
 extension Core on SpheroBase {
