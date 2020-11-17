@@ -48,7 +48,11 @@ class AdaptorV1 {
       );
 
   void Function(Uint8List) onRead;
-  Future<void> Function() close;
+  Future<void> close() async {
+    await peripheral.disconnectOrCancelConnection();
+    isConnected = false;
+    peripheral = null;
+  }
 
   Future<void> devModeOn() async {
     await setAntiDos();
