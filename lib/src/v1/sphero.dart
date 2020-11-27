@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:sphero_sdk/src/v1/devices/custom.dart';
 import 'package:sphero_sdk/src/v1/packet.dart';
 
@@ -49,7 +48,7 @@ class Sphero extends SpheroBase with Custom {
     int sop2 = 0xFD,
     this.timeout = 500,
     this.emitPacketErrors = false,
-    Peripheral peripheral,
+    SpheroPeripheral peripheral,
   }) {
     // check that we were called with 'new'
     connection = adaptor ?? AdaptorV1(address, peripheral);
