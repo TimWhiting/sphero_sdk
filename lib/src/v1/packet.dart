@@ -180,14 +180,13 @@ class PacketParser {
     return parseDataMap(parser, payload, ds);
   }
 
-  Map<String, dynamic> parseResponseData(
-      Map<String, int> cmd, PacketV1 payload) {
-    if (cmd == null || cmd['did'] == null || cmd['cid'] == null) {
+  Map<String, dynamic> parseResponseData(CommandID cmd, PacketV1 payload) {
+    if (cmd == null || cmd.did == null || cmd.cid == null) {
       throw Exception(payload);
     }
     final parserId =
             // ignore: prefer_interpolation_to_compose_strings
-            cmd['did'].toRadixString(16) + ':' + cmd['cid'].toRadixString(16),
+            cmd.did.toRadixString(16) + ':' + cmd.cid.toRadixString(16),
         parser = RES_PARSER[parserId];
 
     return parseDataMap(parser, payload);
@@ -239,8 +238,10 @@ class PacketParser {
         i = incParserIndex(i, fields, data, dsFlag, dsIndex);
       }
     } else {
-      print(
-          'No parser found:  data: $payload, ${payload.cid},${payload.did},${payload.seq}');
+      print('''No parser found:  data: $payload, 
+          ${payload.cid},
+          ${payload.did},
+          ${payload.seq}''');
       return {'payload': payload};
     }
 
@@ -422,4 +423,10 @@ extension ToStringFormat on Uint8List {
     }
     throw UnimplementedError();
   }
+}
+
+class CommandID {
+  CommandID({this.cid, this.did});
+  final int cid;
+  final int did;
 }

@@ -43,6 +43,10 @@ class SpheroPeripheral {
     if (peripheral is ble.Peripheral) {
       return (peripheral as ble.Peripheral).name;
     }
+    if (peripheral is blue.BluetoothDevice) {
+      return (peripheral as blue.BluetoothDevice).name;
+    }
+    return null;
   }
 
   dynamic peripheral;

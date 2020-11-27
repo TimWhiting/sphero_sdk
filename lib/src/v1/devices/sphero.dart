@@ -231,15 +231,15 @@ extension SpheroDevice on SpheroBase {
   Future<Map<String, dynamic>> configureLocator(
           int flags, int x, int y, int yawTare) =>
       _command(
-          SpheroV1.locator,
-          Uint8List.fromList([
-            flags,
-            ...x.toHexArray(2),
-            ...y.toHexArray(2),
-            ...yawTare.toHexArray(2)
-          ]));
+        SpheroV1.locator,
+        Uint8List.fromList([
+          flags,
+          ...x.toHexArray(2),
+          ...y.toHexArray(2),
+          ...yawTare.toHexArray(2)
+        ]),
+      );
 
-  ///
   /// The Set Accelerometer Range command tells Sphero what accelerometer range
   /// to use.
   ///
@@ -261,7 +261,6 @@ extension SpheroDevice on SpheroBase {
   Future<Map<String, dynamic>> setAccelRange(int idx) =>
       _command(SpheroV1.setAccelerometer, Uint8List.fromList([idx & idx]));
 
-  ///
   /// The Read Locator command gets Sphero's current position (X,Y), component
   /// velocities, and speed-over-ground (SOG).
   ///
@@ -269,20 +268,19 @@ extension SpheroDevice on SpheroBase {
   /// velocities are
   /// signed cm/sec, and the SOG is unsigned cm/sec.
   ///
-  /// @param {Function} callback function to be triggered with data
-  /// @example
-  /// orb.readLocator(function(err, data) {
-  ///   if (err) {
-  ///     print("error: ", err);
-  ///   } else {
-  ///     print("data:");
-  ///     print("  xpos:", data.xpos);
-  ///     print("  ypos:", data.ypos);
-  ///     print("  xvel:", data.xvel);
-  ///     print("  yvel:", data.yvel);
-  ///     print("  sog:", data.sog);
-  ///   }
+  /// ```dart
+  /// await orb.readLocator();
+  /// if (err) {
+  ///   print("error: ", err);
+  /// } else {
+  ///   print("data:");
+  ///   print("  xpos:", data.xpos);
+  ///   print("  ypos:", data.ypos);
+  ///   print("  xvel:", data.xvel);
+  ///   print("  yvel:", data.yvel);
+  ///   print("  sog:", data.sog);
   /// }
+  /// ```
   Future<Map<String, dynamic>> readLocator() =>
       _command(SpheroV1.readLocator, null);
 

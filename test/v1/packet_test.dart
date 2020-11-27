@@ -378,12 +378,13 @@ void main() {
         // stub(packet, '_parseData');
         // packet.parseDataMap.returns({val1: 'uno'});
 
-        res = packet.parseResponseData({'did': 0x02, 'cid': 0x07}, payload);
+        res =
+            packet.parseResponseData(CommandID(did: 0x02, cid: 0x07), payload);
       });
 
       test('throws if cmd is not valid', () {
         expect(
-            () => packet.parseResponseData({}, payload),
+            () => packet.parseResponseData(CommandID(), payload),
             throwsA(isA<Exception>().having((e) => e.toString(), 'message',
                 'Exception: Instance of \'PacketV1\'')));
       });

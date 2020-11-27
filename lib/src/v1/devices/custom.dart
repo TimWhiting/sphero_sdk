@@ -7,32 +7,18 @@ import 'sphero.dart';
 /// regular expression to match hex strings
 final hexRegex = RegExp(r'^[A-Fa-f0-9]{6}$');
 
-///
-/// Converts a hex color number to RGB values
-///
-/// @private
-/// @param {Number} num color value to convert
-/// @return {Object} RGB color values
-RGB hexToRgb(int n) =>
-    RGB(red: (n >> 16) & 0xff, green: (n >> 8) & 0xff, blue: n & 0xff);
+/// Converts a hex color [number] to RGB values
+RGB hexToRgb(int number) => RGB(
+    red: (number >> 16) & 0xff,
+    green: (number >> 8) & 0xff,
+    blue: number & 0xff);
 
-///
-/// Converts a hex color number to luminance adjusted value
-///
-/// @private
-/// @param {Object} hex hex color value to convert
-/// @param {Number} lum percentage of luminance
-/// @return {Object} converted color value
+/// Converts a [hex] color number to luminance adjusted value based on the [lum]
+/// percentage of luminance
 int calculateLuminance(int hex, int lum) =>
     min(max(0, hex + (hex * lum)), 255).round();
 
-///
-/// Adjusts an RGB color by the relative luminance
-///
-/// @private
-/// @param {Object} rgb rgb color value to convert
-/// @param {Number} lum percentage of luminance
-/// @return {Object} RGB color values
+/// Adjusts an [rgb] color by the relative [lum]
 RGB adjustLuminance(RGB rgb, int lum) {
   final newR = calculateLuminance(rgb.red, lum);
   final newG = calculateLuminance(rgb.green, lum);
