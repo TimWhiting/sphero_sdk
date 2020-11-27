@@ -113,8 +113,8 @@ extension Core on SpheroBase {
   Future<Map<String, dynamic>> getPowerState() =>
       _coreCommand(CoreV1.getPwrState, null);
 
-  /// The Set Power Notification command enables sphero to asynchronously notify
-  /// the user of power state periodically
+  /// The Set Power Notification command [enable]s sphero to asynchronously
+  /// notify the user of power state periodically
   /// (or immediately, when a change occurs)
   ///
   /// Timed notifications are sent every 10 seconds, until they're disabled or
@@ -123,19 +123,19 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.setPowerNotification(true);
   /// ```
-  Future<Map<String, dynamic>> setPowerNotification(bool enabled) =>
-      _coreCommand(CoreV1.setPwrNotify, Uint8List.fromList([enabled.intFlag]));
+  Future<Map<String, dynamic>> setPowerNotification(bool enable) =>
+      _coreCommand(CoreV1.setPwrNotify, Uint8List.fromList([enable.intFlag]));
 
   /// The Sleep command puts Sphero to sleep immediately.
   ///
-  /// @param {Number} wakeup the number of seconds for Sphero to
+  /// [wakeup] the number of seconds for Sphero to
   /// re-awaken after.
   /// 0x00 tells Sphero to sleep forever, 0xFFFF attemps to put Sphero into deep
   /// sleep.
-  /// @param {Number} macro if non-zero, Sphero will
+  /// [startMacro] if non-zero, Sphero will
   /// attempt to run this macro ID
   /// when it wakes up
-  /// @param {Number} orbBasic if non-zero, Sphero will attempt to run an
+  /// [orbBasicLine] if non-zero, Sphero will attempt to run an
   /// orbBasic program from this line number
   /// ```dart
   /// await orb.sleep(10, 0, 0);
@@ -165,8 +165,7 @@ extension Core on SpheroBase {
       _coreCommand(CoreV1.getPowerTrips, null);
 
   /// The Set Voltage Trip Points command assigns the voltage trip
-  ///  points for Low
-  /// and Critical battery voltages.
+  /// points for Low and Critical battery voltages.
   ///
   /// Values are specified in 100ths of a volt, and there are limitations on
   /// adjusting these from their defaults:
@@ -179,8 +178,8 @@ extension Core on SpheroBase {
   /// Shifting these values too low can result in very little warning before
   /// Sphero forces itself to sleep, depending on the battery pack. Be careful.
   ///
-  /// @param {Number} vLow new voltage trigger for Low battery
-  /// @param {Number} vCrit new voltage trigger for Crit battery
+  /// [vLow] new voltage trigger for Low battery
+  /// [vCrit] new voltage trigger for Crit battery
   /// ```dart
   /// await orb.setVoltageTripPoints(675, 650);
   /// ```
@@ -194,12 +193,12 @@ extension Core on SpheroBase {
   /// By default, the value is 600 seconds (10 minutes), but this command can
   /// alter it to any value of 60 seconds or greater.
   ///
-  /// @param {Number} time new delay before sleeping
+  /// [time] new delay in seconds before sleeping
   /// ```dart
   /// await orb.setInactivityTimeout(120);
   /// ```
-  Future<Map<String, dynamic>> setInactivityTimeout(int seconds) =>
-      _coreCommand(CoreV1.setInactiveTimer, seconds.toHexArray(2));
+  Future<Map<String, dynamic>> setInactivityTimeout(int time) =>
+      _coreCommand(CoreV1.setInactiveTimer, time.toHexArray(2));
 
   /// The Jump To Bootloader command requests a jump into the Bootloader to
   /// prepare for a firmware download.
@@ -277,7 +276,7 @@ extension Core on SpheroBase {
   /// The Assign Time command sets a specific value to Sphero's internal 32-bit
   /// relative time counter.
   ///
-  /// @param {Number} time the new value to set
+  ///[time] the new value to set
   /// ```dart
   /// await orb.assignTime(0x00ffff00);
   /// ```
@@ -289,7 +288,7 @@ extension Core on SpheroBase {
   ///
   /// For more details, see the Sphero API documentation.
   ///
-  /// @param {Number} time a timestamp to use for profiling
+  /// [time] a timestamp to use for profiling
   /// ```dart
   /// await orb.assignTime(0x00ffff);
   /// print("data:");

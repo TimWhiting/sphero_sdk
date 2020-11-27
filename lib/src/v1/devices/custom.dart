@@ -143,6 +143,7 @@ mixin Custom on SpheroBase {
   /// The Detect Freefall command sets up Sphero's freefall detection system,
   /// and automatically listens to data events to emit freefall/landing events
   /// to 'freefall' or 'landing' event listeners.
+  ///
   /// ```dart
   /// await orb.detectFreefall();
   ///
@@ -223,6 +224,7 @@ mixin Custom on SpheroBase {
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `odometer` event to get the data.
+  ///
   /// ```dart
   /// orb.streamOdometer();
   ///
@@ -272,6 +274,7 @@ mixin Custom on SpheroBase {
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `accelOne` event to get the data.
+  ///
   /// ```dart
   /// orb.streamAccelOne();
   ///
@@ -296,6 +299,7 @@ mixin Custom on SpheroBase {
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `imuAngles` event to get the data.
+  ///
   /// ```dart
   /// orb.streamImuAngles();
   ///
@@ -321,6 +325,7 @@ mixin Custom on SpheroBase {
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `accelerometer` event to get the data.
+  ///
   /// ```dart
   /// orb.streamAccelerometer();
   ///
@@ -346,6 +351,7 @@ mixin Custom on SpheroBase {
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `gyroscope` event to get the data.
+  ///
   /// ```dart
   /// orb.streamGyroscope();
   ///
@@ -371,6 +377,7 @@ mixin Custom on SpheroBase {
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `motorsBackEmf` event to get the data.
+  ///
   /// ```dart
   /// orb.streamMotorsBackEmf();
   ///
@@ -393,6 +400,7 @@ mixin Custom on SpheroBase {
   /// The Stop On Disconnect command sends a flag to Sphero. This flag tells
   /// Sphero whether or not it should automatically stop when it detects
   /// that it's disconnected.
+  ///
   /// ```dart
   /// await orb.stopOnDisconnect();
   /// ```
