@@ -54,14 +54,10 @@ mixin Custom on SpheroBase {
     }
   }
 
-  ///
   /// Generic Data Streaming setup, using Sphero's setDataStraming command.
   ///
   /// Users need to listen for the `dataStreaming` event, or a custom event, to
   /// get the data.
-  ///
-  /// @private
-  /// @param {Object} args event, masks, fields, and sps data
   Future<Map<String, dynamic>> streamData({
     String event,
     int mask1,
@@ -90,51 +86,20 @@ mixin Custom on SpheroBase {
     return setDataStreaming(n, m, m1, m2, pcnt);
   }
 
-  ///
-  /// The Color command wraps Sphero's built-in setRgb command, allowing for
-  /// a greater range of possible inputs.
-  ///
-  /// @param {Number} color what color to change Sphero to
-  /// @param {string} [luminance] - percentage of luminance
-  ///  to apply to RGB color
-  /// @example
-  /// orb.color('#00ff00', function(err, data) {
-  ///   print(err || 'Color Changed!');
-  /// });
-  /// @example
-  /// orb.color(0xff0000, function(err, data) {
-  ///   print(err || 'Color Changed!');
-  /// });
-  /// @example
-  /// orb.color({ red: 0, green: 0, blue: 255 }, function(err, data) {
-  ///   print(err || 'Color Changed!');
-  /// });
-  Future<Map<String, dynamic>> color(int color, [int luminance]) {
-    var c = hexToRgb(color);
-    if (luminance != null) {
-      c = adjustLuminance(c, luminance);
-    }
-    return setRgbLed(c.red, c.green, c.blue);
-  }
-
-  ///
   /// The Random Color command sets Sphero to a randomly-generated color.
   ///
-  /// @param {Function} callback (err, data) to be triggered with response
-  /// @example
-  /// orb.randomColor(function(err, data) {
-  ///   print(err || 'Random Color!');
-  /// });
+  /// ```dart
+  /// await orb.randomColor();
+  /// ```
   Future<Map<String, dynamic>> randomColor() {
     final rgb = randomRGBColor();
     return setRgbLed(rgb.red, rgb.green, rgb.blue);
   }
 
-  ///
   /// Passes the color of the sphero Rgb LED to the callback (err, data)
   ///
-  /// @example
-  /// orb.getColor(function(err, data) {
+  /// ```dart
+  /// orb.getColor(Function(err, data) {
   ///   if (err) {
   ///     print('error: ', err);
   ///   } else {
@@ -145,30 +110,29 @@ mixin Custom on SpheroBase {
   ///     print('  blue:', data.blue);
   ///   }
   /// });
+  /// ```
   Future<Map<String, dynamic>> getColor() => getRgbLed();
 
-  ///
   /// The Detect Collisions command sets up Sphero's collision detection system,
   /// and automatically parses asynchronous packets to re-emit collision events
   /// to 'collision' event listeners.
+
+  /// ```dart
+  /// await orb.detectCollisions();
   ///
-  /// @param {Object} opts device
-  /// @param {Function} callback (err, data) to be triggered with response
-  /// @example
-  /// orb.detectCollisions();
-  ///
-  /// orb.on('collision', function(data) {
+  /// orb.on('collision', () {
   ///   print('data:');
-  ///   print('  x:', data.x);
-  ///   print('  y:', data.y);
-  ///   print('  z:', data.z);
-  ///   print('  axis:', data.axis);
-  ///   print('  xMagnitud:', data.xMagnitud);
-  ///   print('  yMagnitud:', data.yMagnitud);
-  ///   print('  speed:', data.timeStamp);
-  ///   print('  timeStamp:', data.timeStamp);
+  ///   print('  x: ${data['x']}');
+  ///   print('  y: ${data.['y']}');
+  ///   print('  z: ${data.['z']}');
+  ///   print('  axis: ${data.['axis']}');
+  ///   print('  xMagnitud: ${data.['xMagnitude']}');
+  ///   print('  yMagnitud: ${data.['yMagnitude']}');
+  ///   print('  speed: ${data.['speed']}');
+  ///   print('  timeStamp: ${data.['timeStamp'])}';
   /// });
-  Future<Map<String, dynamic>> detectCollisions(bool isBB8) {
+  /// ```
+  Future<Map<String, dynamic>> detectCollisions([bool isBB8 = false]) {
     final t = isBB8 ? 0x20 : 0x40;
     final s = isBB8 ? 0x20 : 0x50;
     final dead = isBB8 ? 0x01 : 0x50;
@@ -176,23 +140,21 @@ mixin Custom on SpheroBase {
         meth: 0x01, xt: t, yt: t, xs: s, ys: s, dead: dead);
   }
 
-  ///
   /// The Detect Freefall command sets up Sphero's freefall detection system,
   /// and automatically listens to data events to emit freefall/landing events
   /// to 'freefall' or 'landing' event listeners.
+  /// ```dart
+  /// await orb.detectFreefall();
   ///
-  /// @param {Function} callback (err, data) to be triggered with response
-  /// @example
-  /// orb.detectFreefall();
-  ///
-  /// orb.on('freefall', function(data) {
+  /// orb.on('freefall', (data) {
   ///   print('freefall:');
   ///   print('  value:', data.value);
   /// });
-  /// orb.on('landing', function(data) {
+  /// orb.on('landing', (data) {
   ///   print('landing:');
   ///   print('  value:', data.value);
   /// });
+  /// ```
   Future<Map<String, dynamic>> detectFreefall() {
     var falling = false;
     on('accelOne', (data) {
@@ -209,7 +171,6 @@ mixin Custom on SpheroBase {
     return streamAccelOne();
   }
 
-  ///
   /// The Start Calibration command sets up Sphero for manual heading
   /// calibration.
   ///
@@ -219,9 +180,9 @@ mixin Custom on SpheroBase {
   /// When done, call #finishCalibration to set the new heading, and re-enable
   /// stabilization.
   ///
-  /// @param {Function} callback (err, data) to be triggered with response
-  /// @example
+  /// ```dart
   /// orb.startCalibration();
+  /// ```
   Future<Map<String, dynamic>> startCalibration() async {
     final color = await getColor();
     originalColor = RGB(
@@ -233,47 +194,46 @@ mixin Custom on SpheroBase {
     return setStabiliation(false);
   }
 
-  ///
   /// The Finish Calibration command ends Sphero's calibration mode, by setting
   /// the new heading as current, and re-enabling normal defaults
   ///
-  /// @example
+  /// ```dart
   /// orb.finishCalibration();
+  /// ```
   Future<Map<String, dynamic>> finishCalibration() {
     setHeading(0);
     setRgbLed(originalColor.red, originalColor.green, originalColor.blue);
     return setDefaultSettings();
   }
 
-  ///
   /// The setDefaultSettings command sets Sphero's settings back to sensible
   /// defaults, such as turning off the back LED, and re-enabling
   /// stabilization.
   ///
-  /// @example
+  /// ```dart
   /// orb.setDefaultSettings();
+  /// ```
   Future<Map<String, dynamic>> setDefaultSettings() {
     setBackLed(0);
     return setStabiliation(true);
   }
 
-  ///
-  /// Starts streaming of odometer data
+  /// Starts streaming of odometer data at [sps] samples per second. Setting
+  /// [remove] to false forces velocity streaming to stop.
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `odometer` event to get the data.
-  ///
-  /// @param {Number} [sps=5] samples per second
-  /// @param {Boolean} [remove=false] forces velocity streaming to stop
-  /// @example
+  /// ```dart
   /// orb.streamOdometer();
   ///
-  /// orb.on('odometer', function(data) {
+  /// orb.on('odometer', Function(data) {
   ///   print('data:');
   ///   print('  xOdomoter:', data.xOdomoter);
   ///   print('  yOdomoter:', data.yOdomoter);
   /// });
-  Future<Map<String, dynamic>> streamOdometer([int sps, bool remove]) =>
+  /// ```
+  Future<Map<String, dynamic>> streamOdometer(
+          [int sps = 5, bool remove = false]) =>
       streamData(
         event: 'odometer',
         mask2: 0x0C000000,
@@ -282,23 +242,23 @@ mixin Custom on SpheroBase {
         remove: remove,
       );
 
-  ///
-  /// Starts streaming of velocity data
+  /// Starts streaming of velocity data at [sps] samples per second. Setting
+  /// [remove] to false forces velocity streaming to stop.
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `velocity` event to get the velocity values.
   ///
-  /// @param {Number} [sps=5] samples per second
-  /// @param {Boolean} [remove=false] forces velocity streaming to stop
-  /// @example
+  /// ```dart
   /// orb.streamVelocity();
   ///
-  /// orb.on('velocity', function(data) {
+  /// orb.on('velocity', Function(data) {
   ///   print('data:');
   ///   print('  xVelocity:', data.xVelocity);
   ///   print('  yVelocity:', data.yVelocity);
   /// });
-  Future<Map<String, dynamic>> streamVelocity([int sps, bool remove]) =>
+  /// ```
+  Future<Map<String, dynamic>> streamVelocity(
+          [int sps = 5, bool remove = false]) =>
       streamData(
         event: 'velocity',
         mask2: 0x01800000,
@@ -307,22 +267,21 @@ mixin Custom on SpheroBase {
         remove: remove,
       );
 
-  ///
-  /// Starts streaming of accelOne data
+  /// Starts streaming of accelOne data at [sps] samples per second. Setting
+  /// [remove] to false forces velocity streaming to stop.
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `accelOne` event to get the data.
-  ///
-  /// @param {Number} [sps=5] samples per second
-  /// @param {Boolean} [remove=false] forces velocity streaming to stop
-  /// @example
+  /// ```dart
   /// orb.streamAccelOne();
   ///
-  /// orb.on('accelOne', function(data) {
+  /// orb.on('accelOne', Function(data) {
   ///   print('data:');
   ///   print('  accelOne:', data.accelOne);
   /// });
-  Future<Map<String, dynamic>> streamAccelOne([int sps, bool remove]) =>
+  /// ```
+  Future<Map<String, dynamic>> streamAccelOne(
+          [int sps = 5, bool remove = false]) =>
       streamData(
         event: 'accelOne',
         mask2: 0x02000000,
@@ -331,24 +290,24 @@ mixin Custom on SpheroBase {
         remove: remove,
       );
 
+  /// Starts streaming of IMU angles data at [sps] samples per second. Setting
+  /// [remove] to false forces velocity streaming to stop.
   ///
-  /// Starts streaming of IMU angles data
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `imuAngles` event to get the data.
-  ///
-  /// @param {Number} [sps=5] samples per second
-  /// @param {Boolean} [remove=false] forces velocity streaming to stop
-  /// @example
+  /// ```dart
   /// orb.streamImuAngles();
   ///
-  /// orb.on('imuAngles', function(data) {
+  /// orb.on('imuAngles', Function(data) {
   ///   print('data:');
   ///   print('  pitchAngle:', data.pitchAngle);
   ///   print('  rollAngle:', data.rollAngle);
   ///   print('  yawAngle:', data.yawAngle);
   /// });
-  Future<Map<String, dynamic>> streamImuAngles([int sps, bool remove]) =>
+  /// ```
+  Future<Map<String, dynamic>> streamImuAngles(
+          [int sps = 5, bool remove = false]) =>
       streamData(
         event: 'imuAngles',
         mask1: 0x00070000,
@@ -357,24 +316,23 @@ mixin Custom on SpheroBase {
         remove: remove,
       );
 
-  ///
-  /// Starts streaming of accelerometer data
+  /// Starts streaming of accelerometer data at [sps] samples per second.
+  /// Setting [remove] to false forces velocity streaming to stop.
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `accelerometer` event to get the data.
-  ///
-  /// @param {Number} [sps=5] samples per second
-  /// @param {Boolean} [remove=false] forces velocity streaming to stop
-  /// @example
+  /// ```dart
   /// orb.streamAccelerometer();
   ///
-  /// orb.on('accelerometer', function(data) {
+  /// orb.on('accelerometer', Function(data) {
   ///   print('data:');
   ///   print('  xAccel:', data.xAccel);
   ///   print('  yAccel:', data.yAccel);
   ///   print('  zAccel:', data.zAccel);
   /// });
-  Future<Map<String, dynamic>> streamAccelerometer([int sps, bool remove]) =>
+  /// ```
+  Future<Map<String, dynamic>> streamAccelerometer(
+          [int sps = 5, bool remove = false]) =>
       streamData(
         event: 'accelerometer',
         mask1: 0x0000E000,
@@ -383,24 +341,23 @@ mixin Custom on SpheroBase {
         remove: remove,
       );
 
-  ///
-  /// Starts streaming of gyroscope data
+  /// Starts streaming of gyroscope data at [sps] samples per second.
+  /// Setting [remove] to false forces velocity streaming to stop.
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `gyroscope` event to get the data.
-  ///
-  /// @param {Number} [sps=5] samples per second
-  /// @param {Boolean} [remove=false] forces velocity streaming to stop
-  /// @example
+  /// ```dart
   /// orb.streamGyroscope();
   ///
-  /// orb.on('gyroscope', function(data) {
+  /// orb.on('gyroscope', (data) {
   ///   print('data:');
   ///   print('  xGyro:', data.xGyro);
   ///   print('  yGyro:', data.yGyro);
   ///   print('  zGyro:', data.zGyro);
   /// });
-  Future<Map<String, dynamic>> streamGyroscope([int sps, bool remove]) =>
+  /// ```
+  Future<Map<String, dynamic>> streamGyroscope(
+          [int sps = 5, bool remove = false]) =>
       streamData(
         event: 'gyroscope',
         mask1: 0x00001C00,
@@ -409,23 +366,22 @@ mixin Custom on SpheroBase {
         remove: remove,
       );
 
-  ///
-  /// Starts streaming of motor back EMF data
+  /// Starts streaming of motor back EMF data at [sps] samples per second.
+  /// Setting [remove] to false forces velocity streaming to stop.
   ///
   /// It uses sphero's data streaming command. User needs to listen
   /// for the `dataStreaming` or `motorsBackEmf` event to get the data.
-  ///
-  /// @param {Number} [sps=5] samples per second
-  /// @param {Boolean} [remove=false] forces velocity streaming to stop
-  /// @example
+  /// ```dart
   /// orb.streamMotorsBackEmf();
   ///
-  /// orb.on('motorsBackEmf', function(data) {
+  /// orb.on('motorsBackEmf', (data) {
   ///   print('data:');
   ///   print('  rMotorBackEmf:', data.rMotorBackEmf);
   ///   print('  lMotorBackEmf:', data.lMotorBackEmf);
   /// });
-  Future<Map<String, dynamic>> streamMotorsBackEmf([int sps, bool remove]) =>
+  /// ```
+  Future<Map<String, dynamic>> streamMotorsBackEmf(
+          [int sps = 5, bool remove = false]) =>
       streamData(
         event: 'motorsBackEmf',
         mask1: 0x00000060,
@@ -434,28 +390,21 @@ mixin Custom on SpheroBase {
         remove: remove,
       );
 
-  ///
   /// The Stop On Disconnect command sends a flag to Sphero. This flag tells
   /// Sphero whether or not it should automatically stop when it detects
   /// that it's disconnected.
-  ///
-  /// @param {Boolean} [remove=false] whether or not to stop on disconnect
-  /// @param {Function} callback triggered on complete
-  /// @example
-  /// orb.stopOnDisconnect(function(err, data) {
-  ///   print(err || 'data' + data);
-  /// });
-  Future<Map<String, dynamic>> stopOnDisconnect([bool remove = false]) =>
-      setTempOptionFlags(remove.intFlag);
+  /// ```dart
+  /// await orb.stopOnDisconnect();
+  /// ```
+  Future<Map<String, dynamic>> stopOnDisconnect([bool stop = false]) =>
+      setTempOptionFlags(stop.intFlag);
 
   ///
   /// Stops sphero the optimal way by setting flag 'go' to 0
   /// and speed to a very low value.
   ///
-  /// @param {Function} callback triggered on complete
-  /// @example
-  /// sphero.stop(function(err, data) {
-  ///   print(err || 'data' + data);
-  /// });
+  /// ```dart
+  /// await sphero.stop();
+  /// ```
   Future<Map<String, dynamic>> stop() => roll(0, 0, 0);
 }

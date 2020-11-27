@@ -13,10 +13,9 @@ extension SpheroDevice on SpheroBase {
   /// If stabilization is enabled, Sphero will respond immediately to this.
   ///
   /// @param {Number} heading Sphero's new reference heading, in degrees (0-359)
-  /// @example
-  /// orb.setHeading(180, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setHeading(180);
+  /// ```
   Future<Map<String, dynamic>> setHeading(int heading) =>
       _command(SpheroV1.setHeading, heading.toHexArray(2));
 
@@ -24,10 +23,9 @@ extension SpheroDevice on SpheroBase {
   /// off, depending on the flag provided.
   ///
   /// @param {Number} flag stabilization setting flag (0 - off, 1 - on)
-  /// @example
-  /// orb.setStabilization(1, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setStabilization(1);
+  /// ```
   Future<Map<String, dynamic>> setStabiliation(bool enabled) => _command(
       SpheroV1.setStabilization, Uint8List.fromList([enabled.intFlag]));
 
@@ -41,10 +39,9 @@ extension SpheroDevice on SpheroBase {
   /// The provided value is in units of 0.784 degrees/sec.
   ///
   /// @param {Number} rotation new rotation rate (0-255)
-  /// @example
-  /// orb.setRotationRate(180, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setRotationRate(180);
+  /// ```
   Future<Map<String, dynamic>> setRotationRate(int rotation) =>
       _command(SpheroV1.setRotationRate, Uint8List.fromList([rotation]));
 
@@ -52,15 +49,11 @@ extension SpheroDevice on SpheroBase {
   /// assigned at the factory.
   ///
   /// @param {Function} callback function to be triggered with a response
-  /// @example
-  /// orb.getChassisId(function(err, data) {
-  ///   if (err) {
-  ///     print("error: ", err);
-  ///   } else {
-  ///     print("data:");
-  ///     print("  chassisId:", data.chassisId);
-  ///   }
-  /// }
+  /// ```dart
+  /// final data = orb.getChassisId();
+  /// print("data:");
+  /// print("  chassisId:", data.chassisId);
+  /// ```
   Future<Map<String, dynamic>> getChassisId() =>
       _command(SpheroV1.getChassisId, null);
 
@@ -70,10 +63,9 @@ extension SpheroDevice on SpheroBase {
   /// This command only works if you're at the factory.
   ///
   /// @param {Number} chassisId new chassis ID
-  /// @example
-  /// orb.setChassisId(0xFE75, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setChassisId(0xFE75);
+  /// ```
   Future<Map<String, dynamic>> setChassisId(int id) =>
       _command(SpheroV1.setChassisId, id.toHexArray(2));
 
@@ -96,17 +88,12 @@ extension SpheroDevice on SpheroBase {
   ///  - options: bitmask 4bit e.g. 0xF;
   /// };
   ///
-  /// @example
-  /// final opts = {
-  ///   angleLimit: 0,
+  /// ```dart
+  /// await orb.selfLevel(angleLimit: 0,
   ///   timeout: 0, ,
   ///   trueTime: 0,
-  ///   options: 0x7
-  /// };
-  ///
-  /// orb.selfLevel(opts, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  ///   options: 0x7);
+  /// ```
   Future<Map<String, dynamic>> selfLevel(
           {int angleLimit = 0,
           int timeout = 0,
@@ -133,18 +120,13 @@ extension SpheroDevice on SpheroBase {
   /// documentation.
   ///
   /// @param {Object} opts object containing streaming data options
-  /// @example
-  /// final opts = {
-  ///   n: 400,
+  /// ```dart
+  /// await orb.setDataStreaming(n: 400,
   ///   m: 1,
   ///   mask1: 0x00000000,
   ///   mask2: 0x01800000,
-  ///   pcnt: 0
-  /// }
-  ///
-  /// orb.setDataStreaming(opts, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  ///   pcnt: 0);
+  /// ```
   Future<Map<String, dynamic>> setDataStreaming(
       int n, int m, int mask1, int mask2, int pcnt) {
     ds['mask1'] = mask1;
@@ -181,19 +163,14 @@ extension SpheroDevice on SpheroBase {
   ///
   /// @param {Object} opts object containing collision configuration opts
   /// @param {Function} cb function to be triggered after writing
-  /// @example
-  /// final opts = {
-  ///   meth: 0x01,
+  /// ```dart
+  /// await orb.configureCollisions(meth: 0x01,
   ///   xt: 0x0F,
   ///   xs: 0x0F,
   ///   yt: 0x0A,
   ///   ys: 0x0A,
-  ///   dead: 0x05
-  /// }
-  ///
-  /// orb.configureCollisions(opts, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  ///   dead: 0x05);
+  /// ```
   Future<Map<String, dynamic>> configureCollisions(
       {int meth, int xt, int xs, int yt, int ys, int dead}) {
     final data = [meth, xt, xs, yt, ys, dead];
@@ -217,17 +194,12 @@ extension SpheroDevice on SpheroBase {
   ///   y-axis in the positive direction. Possible values are 0-359 inclusive.
   ///
   /// @param {Object} opts object containing locator service configuration
-  /// @example
-  /// final opts = {
-  ///   flags: 0x01,
+  /// ```dart
+  /// await orb.configureLocator(flags: 0x01,
   ///   x: 0x0000,
   ///   y: 0x0000,
-  ///   yawTare: 0x0
-  /// }
-  ///
-  /// orb.configureLocator(opts, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  ///   yawTare: 0x0);
+  /// ```
   Future<Map<String, dynamic>> configureLocator(
           int flags, int x, int y, int yawTare) =>
       _command(
@@ -254,10 +226,9 @@ extension SpheroDevice on SpheroBase {
   /// - `3`: ±16Gs
   ///
   /// @param {Number} idx what accelerometer range to use
-  /// @example
-  /// orb.setAccelRange(0x02, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setAccelRange(0x02);
+  /// ```
   Future<Map<String, dynamic>> setAccelRange(int idx) =>
       _command(SpheroV1.setAccelerometer, Uint8List.fromList([idx & idx]));
 
@@ -270,21 +241,16 @@ extension SpheroDevice on SpheroBase {
   ///
   /// ```dart
   /// await orb.readLocator();
-  /// if (err) {
-  ///   print("error: ", err);
-  /// } else {
-  ///   print("data:");
-  ///   print("  xpos:", data.xpos);
-  ///   print("  ypos:", data.ypos);
-  ///   print("  xvel:", data.xvel);
-  ///   print("  yvel:", data.yvel);
-  ///   print("  sog:", data.sog);
-  /// }
+  /// print("data:");
+  /// print("  xpos:", data.xpos);
+  /// print("  ypos:", data.ypos);
+  /// print("  xvel:", data.xvel);
+  /// print("  yvel:", data.yvel);
+  /// print("  sog:", data.sog);
   /// ```
   Future<Map<String, dynamic>> readLocator() =>
       _command(SpheroV1.readLocator, null);
 
-  ///
   /// The Set RGB LED command sets the colors of Sphero's RGB LED.
   ///
   /// An object containaing `red`, `green`, and `blue` values must be provided.
@@ -293,51 +259,42 @@ extension SpheroDevice on SpheroBase {
   /// cycles.
   ///
   /// @param {Object} opts object containing RGB values for Sphero's LED
-  /// @example
-  /// orb.setRgbLed({ red: 0, green: 0, blue: 255 }, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setRgbLed( 0,  0, 255);
+  /// ```
   Future<Map<String, dynamic>> setRgbLed(int red, int green, int blue,
           [int flag = 0x01]) =>
       _command(
           SpheroV1.setRgbLed, Uint8List.fromList([red, green, blue, flag]));
 
-  ///
   /// The Set Back LED command allows brightness adjustment of Sphero's tail
   /// light.
   ///
   /// This value does not persist across power cycles.
   ///
   /// @param {Number} brightness brightness to set to Sphero's tail light
-  /// @example
-  /// orb.setbackLed(255, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setbackLed(255);
+  /// ```
   Future<Map<String, dynamic>> setBackLed(int brightness) =>
       _command(SpheroV1.setBackLed, Uint8List.fromList([brightness]));
 
-  ///
   /// The Get RGB LED command fetches the current "user LED color" value, stored
   /// in Sphero's configuration.
   ///
   /// This value may or may not be what's currently displayed by Sphero's LEDs.
   ///
-  /// @example
-  /// orb.getRgbLed(function(err, data) {
-  ///   if (err) {
-  ///     print("error: ", err);
-  ///   } else {
-  ///     print("data:");
-  ///     print("  color:", data.color);
-  ///     print("  red:", data.red);
-  ///     print("  green:", data.green);
-  ///     print("  blue:", data.blue);
-  ///   }
-  /// }
+  /// ```dart
+  /// await orb.getRgbLed();
+  /// print("data:");
+  /// print("  color:", data.color);
+  /// print("  red:", data.red);
+  /// print("  green:", data.green);
+  /// print("  blue:", data.blue);
+  /// ```
   Future<Map<String, dynamic>> getRgbLed() =>
       _command(SpheroV1.getRgbLed, null);
 
-  ///
   /// The Roll command tells Sphero to roll along the provided vector.
   ///
   /// Both a speed and heading are required, the latter is
@@ -349,29 +306,26 @@ extension SpheroDevice on SpheroBase {
   /// @param {Number} speed what speed Sphero should roll at
   /// @param {Number} heading what heading Sphero should roll towards (0-359)
   /// @param {Number} [state] optional state parameter
-  /// @example
-  /// orb.roll(100, 0, function() {
-  ///   print("rolling...");
-  /// }
+  /// ```dart
+  /// orb.roll(100, 0);
+  /// print("rolling...");
+  /// ```
   Future<Map<String, dynamic>> roll(int speed, int heading,
           [int state = 0x01]) =>
       _command(SpheroV1.roll,
           Uint8List.fromList([speed, ...heading.toHexArray(2), state & 0x03]));
 
-  ///
   /// The Boost command executes Sphero's boost macro.
   ///
   /// It takes a 1-byte parameter, 0x01 to start boosting, or 0x00 to stop.
   ///
   /// @param {Number} boost whether or not to boost (1 - yes, 0 - no)
-  /// @example
-  /// orb.boost(1, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.boost(1);
+  /// ```
   Future<Map<String, dynamic>> boost(bool boost) =>
       _command(SpheroV1.boost, Uint8List.fromList([boost.intFlag]));
 
-  ///
   /// The Set Raw Motors command allows manual control over one or both of
   /// Sphero's motor output values.
   ///
@@ -389,23 +343,17 @@ extension SpheroDevice on SpheroBase {
   /// - `0x04`: Ignore (motor mode and power is left unchanged
   ///
   /// @param {Object} opts object with mode/power values (e.g. lmode, lpower)
-  /// @example
-  /// final opts = {
-  ///   lmode: 0x01,
+  /// ```dart
+  /// await orb.setRawMotors(lmode: 0x01,
   ///   lpower: 180,
   ///   rmode: 0x02,
-  ///   rpower: 180
-  /// }
-  ///
-  /// orb.setRawMotors(opts, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  ///   rpower: 180);
+  /// ```
   Future<Map<String, dynamic>> setRawMotors(
           int lmode, int lpower, int rmode, int rpower) =>
       _command(SpheroV1.setRawMotors,
           Uint8List.fromList([lmode & 0x07, lpower, rmode & 0x07, rpower]));
 
-  ///
   /// The Set Motion Timeout command gives Sphero an ultimate timeout for the
   /// last motion command to keep Sphero from rolling away in the case of
   /// a crashed (or paused) application.
@@ -413,15 +361,12 @@ extension SpheroDevice on SpheroBase {
   /// This defaults to 2000ms (2 seconds) upon wakeup.
   ///
   /// @param {Number} time timeout length in milliseconds
-  /// @param {Function} callback function to be triggered when done writing
-  /// @example
-  /// orb.setMotionTimeout(0x0FFF, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setMotionTimeout(0x0FFF);
+  /// ```
   Future<Map<String, dynamic>> setMotionTimeout(int time) =>
       _command(SpheroV1.setMotionTimeout, time.toHexArray(2));
 
-  ///
   /// The Set Permanent Option Flags command assigns Sphero's permanent option
   /// flags to the provided values, and writes them immediately to the config
   /// block.
@@ -429,16 +374,13 @@ extension SpheroDevice on SpheroBase {
   /// See below for the bit definitions.
   ///
   /// @param {Array} flags permanent option flags
-  /// @param {Function} callback function to be triggered when done writing
-  /// @example
+  /// ```dart
   /// // Force tail LED always on
-  /// orb.setPermOptionFlags(0x00000008, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// await orb.setPermOptionFlags(0x00000008);
+  /// ```
   Future<Map<String, dynamic>> setPermOptionFlags(int flags) =>
       _command(SpheroV1.setOptionsFlag, flags.toHexArray(4));
 
-  ///
   /// The Get Permanent Option Flags command returns Sphero's permanent option
   /// flags, as a bit field.
   ///
@@ -462,62 +404,49 @@ extension SpheroDevice on SpheroBase {
   /// - `6-31`: Unassigned
   ///
   /// @param {Function} callback function triggered with option flags data
-  /// @example
-  /// orb.getPermOptionFlags(function(err, data) {
-  ///   if (err) {
-  ///     print("error: ", err);
-  ///   } else {
-  ///     print("data:");
-  ///     print("  sleepOnCharger:", data.sleepOnCharger);
-  ///     print("  vectorDrive:", data.vectorDrive);
-  ///     print("  selfLevelOnCharger:", data.selfLevelOnCharger);
-  ///     print("  tailLedAlwaysOn:", data.tailLedAlwaysOn);
-  ///     print("  motionTimeouts:", data.motionTimeouts);
-  ///     print("  retailDemoOn:", data.retailDemoOn);
-  ///     print("  awakeSensitivityLight:", data.awakeSensitivityLight);
-  ///     print("  awakeSensitivityHeavy:", data.awakeSensitivityHeavy);
-  ///     print("  gyroMaxAsyncMsg:", data.gyroMaxAsyncMsg);
-  ///   }
-  /// }
+  /// ```dart
+  /// await orb.getPermOptionFlags();
+  /// print("data:");
+  /// print("  sleepOnCharger:", data.sleepOnCharger);
+  /// print("  vectorDrive:", data.vectorDrive);
+  /// print("  selfLevelOnCharger:", data.selfLevelOnCharger);
+  /// print("  tailLedAlwaysOn:", data.tailLedAlwaysOn);
+  /// print("  motionTimeouts:", data.motionTimeouts);
+  /// print("  retailDemoOn:", data.retailDemoOn);
+  /// print("  awakeSensitivityLight:", data.awakeSensitivityLight);
+  /// print("  awakeSensitivityHeavy:", data.awakeSensitivityHeavy);
+  /// print("  gyroMaxAsyncMsg:", data.gyroMaxAsyncMsg);
+  /// ```
   Future<Map<String, dynamic>> getPermOptionFlags() =>
       _command(SpheroV1.getOptionsFlag, null);
 
-  ///
   /// The Set Temporary Option Flags command assigns Sphero's temporary option
   /// flags to the provided values. These do not persist across power cycles.
   ///
   /// See below for the bit definitions.
   ///
   /// @param {Array} flags permanent option flags
-  /// @param {Function} callback function to be triggered when done writing
-  /// @example
+  /// ```dart
   /// // enable stop on disconnect behaviour
-  /// orb.setTempOptionFlags(0x01, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// await orb.setTempOptionFlags(0x01);
+  /// ```
   Future<Map<String, dynamic>> setTempOptionFlags(int flags) =>
       _command(SpheroV1.setTempOptionFlags, flags.toHexArray(4));
 
-  ///
   /// The Get Temporary Option Flags command returns Sphero's temporary option
   /// flags, as a bit field:
   ///
   /// - `0`: Enable Stop On Disconnect behavior
   /// - `1-31`: Unassigned
   ///
-  /// @example
-  /// orb.getTempOptionFlags(function(err, data) {
-  ///   if (err) {
-  ///     print("error: ", err);
-  ///   } else {
-  ///     print("data:");
-  ///     print("  stopOnDisconnect:", data.stopOnDisconnect);
-  ///   }
-  /// }
+  /// ```dart
+  /// orb.getTempOptionFlags();
+  /// print("data:");
+  /// print("  stopOnDisconnect:", data.stopOnDisconnect);
+  /// ```
   Future<Map<String, dynamic>> getTempOptionFlags() =>
       _command(SpheroV1.getTempOptionFlags, null);
 
-  ///
   /// The Get Configuration Block command retrieves one of
   /// Sphero's configuration
   /// blocks.
@@ -532,10 +461,9 @@ extension SpheroDevice on SpheroBase {
   /// current values first
   ///
   /// @param {Number} id which configuration block to fetch
-  /// @example
-  /// orb.getConfigBlock(function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.getConfigBloc);
+  /// ```
   Future<Map<String, dynamic>> getConfigBlock(int id) =>
       _command(SpheroV1.getConfigBlock, Uint8List.fromList([id]));
 
@@ -543,7 +471,6 @@ extension SpheroDevice on SpheroBase {
           int cmd, int pwd, Uint8List block) =>
       _command(cmd, Uint8List.fromList([...pwd.toHexArray(4), ...block]));
 
-  ///
   /// The Set SSB Modifier Block command allows the SSB to be patched with a new
   /// modifier block - including the Boost macro.
   ///
@@ -552,14 +479,12 @@ extension SpheroDevice on SpheroBase {
   /// @param {Number} pwd a 32 bit (4 bytes) hexadecimal value
   /// @param {Array} block array of bytes with the data to be written
   /// @param {Function} callback a function to be triggered after writing
-  /// @example
-  /// orb.setSsbModBlock(0x0000000F, data, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setSsbModBlock(0x0000000F, data);
+  /// ```
   Future<Map<String, dynamic>> setSsbModBlock(int pwd, Uint8List block) =>
       _setSsbBlock(SpheroV1.setSsbParams, pwd, block);
 
-  ///
   /// The Set Device Mode command assigns the operation mode of Sphero based on
   /// the supplied mode value.
   ///
@@ -569,14 +494,12 @@ extension SpheroDevice on SpheroBase {
   ///
   /// @param {Number} mode which mode to set Sphero to
   /// @param {Function} callback function to be called after writing
-  /// @example
-  /// orb.setDeviceMode(0x00, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setDeviceMode(0x00);
+  /// ```
   Future<Map<String, dynamic>> setDeviceMode(bool mode) =>
       _command(SpheroV1.setDeviceMode, Uint8List.fromList([mode.intFlag]));
 
-  ///
   /// The Set Config Block command accepts an exact copy of the configuration
   /// block, and loads it into the RAM copy of the configuration block.
   ///
@@ -585,17 +508,14 @@ extension SpheroDevice on SpheroBase {
   /// The configuration block can be obtained by using the Get Configuration
   /// Block command.
   ///
-  /// @private
   /// @param {Array} block - An array of bytes with the data to be written
   /// @param {Function} callback - To be triggered when done
-  /// @example
-  /// orb.setConfigBlock(dataBlock, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setConfigBlock(dataBlock);
+  /// ```
   Future<Map<String, dynamic>> setConfigBlock(Uint8List block) =>
       _command(SpheroV1.setConfigBlock, block);
 
-  ///
   /// The Get Device Mode command gets the current device mode of Sphero.
   ///
   /// Possible values:
@@ -604,33 +524,25 @@ extension SpheroDevice on SpheroBase {
   /// - **0x01**: User Hack mode.
   ///
   /// @param {Function} callback function to be called with response
-  /// @example
-  /// orb.getDeviceMode(function(err, data) {
-  ///   if (err) {
-  ///     print("error: ", err);
-  ///   } else {
-  ///     print("data:");
-  ///     print("  mode:", data.mode);
-  ///   }
-  /// }
+  /// ```dart
+  /// final data = await orb.getDeviceMode();
+  /// print("data:");
+  /// print("  mode:", data.mode);
+  /// ```
   Future<Map<String, dynamic>> getDeviceMode() =>
       _command(SpheroV1.getDeviceMode, null);
 
-  ///
   /// The Get SSB command retrieves Sphero's Soul Block.
   ///
   /// The response is simple, and then the actual block of soulular data returns
   /// in an asynchronous message of type 0x0D, due to it's 0x440 byte length
   ///
-  /// @private
   /// @param {Function} callback function to be called with response
-  /// @example
-  /// orb.getSsb(function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.getSsb();
+  /// ```
   Future<Map<String, dynamic>> getSsb() => _command(SpheroV1.getSsb, null);
 
-  ///
   /// The Set SSB command sets Sphero's Soul Block.
   ///
   /// The actual payload length is 0x404 bytes, but if you use the special DLEN
@@ -638,18 +550,15 @@ extension SpheroDevice on SpheroBase {
   ///
   /// You need to supply the password in order for it to work.
   ///
-  /// @private
   /// @param {Number} pwd a 32 bit (4 bytes) hexadecimal value
   /// @param {Array} block array of bytes with the data to be written
   /// @param {Function} callback a function to be triggered after writing
-  /// @example
-  /// orb.setSsb(pwd, block, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setSsb(pwd, block);
+  /// ```
   Future<Map<String, dynamic>> setSsb(int pwd, Uint8List block) =>
       _setSsbBlock(SpheroV1.setSsb, pwd, block);
 
-  ///
   /// The Refill Bank command attempts to refill either the Boost bank (0x00) or
   /// the Shield bank (0x01) by attempting to deduct the respective refill cost
   /// from the current number of cores.
@@ -662,17 +571,14 @@ extension SpheroDevice on SpheroBase {
   /// If there aren't enough cores available to spend, Sphero responds with an
   /// EEXEC error (0x08)
   ///
-  /// @private
   /// @param {Number} type what bank to refill (0 - Boost, 1 - Shield)
   /// @param {Function} callback function to be called with response
-  /// @example
-  /// orb.refillBank(0x00, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.refillBank(0x00);
+  /// ```
   Future<Map<String, dynamic>> refillBank(int type) =>
       _command(SpheroV1.ssbRefill, Uint8List.fromList([type]));
 
-  ///
   /// The Buy Consumable command attempts to spend cores on consumables.
   ///
   /// The consumable ID is given (0 - 7), as well as the quantity requested to
@@ -686,18 +592,15 @@ extension SpheroDevice on SpheroBase {
   /// exceed the max consumable quantity of 255, Sphero responds with an EEXEC
   /// error (0x08)
   ///
-  /// @private
   /// @param {Number} id what consumable to buy
   /// @param {Number} qty how many consumables to buy
   /// @param {Function} callback function to be called with response
-  /// @example
-  /// orb.buyConsumable(0x00, 5, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.buyConsumable(0x00, 5);
+  /// ```
   Future<Map<String, dynamic>> buyConsumable(int id, int qty) =>
       _command(SpheroV1.ssbBuy, Uint8List.fromList([id, qty]));
 
-  ///
   /// The Use Consumable command attempts to use a consumable if the quantity
   /// remaining is non-zero.
   ///
@@ -707,17 +610,14 @@ extension SpheroDevice on SpheroBase {
   /// If the associated macro is already running, or the quantity remaining is
   /// zero, this returns an EEXEC error (0x08).
   ///
-  /// @private
   /// @param {Number} id what consumable to use
   /// @param {Function} callback function to be called with response
-  /// @example
-  /// orb.useConsumable(0x00, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.useConsumable(0x00);
+  /// ```
   Future<Map<String, dynamic>> useConsumable(int id) =>
       _command(SpheroV1.ssbUseConsumeable, Uint8List.fromList([id]));
 
-  ///
   /// The Grant Cores command adds the supplied number of cores.
   ///
   /// If the first bit in the flags byte is set, the command immediately commits
@@ -727,14 +627,12 @@ extension SpheroDevice on SpheroBase {
   ///
   /// If the password is not accepted, this command fails without consequence.
   ///
-  /// @private
   /// @param {Number} pw 32-bit password
   /// @param {Number} qty 32-bit number of cores to add
   /// @param {Number} flags 8-bit flags byte
-  /// @example
-  /// orb.grantCores(pwd, 5, 0x01, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.grantCores(pwd, 5, 0x01);
+  /// ```
   Future<Map<String, dynamic>> grantCores(
           int pw, int qty, int flags) =>
       _command(
@@ -745,23 +643,19 @@ extension SpheroDevice on SpheroBase {
   Future<Map<String, dynamic>> _xpOrLevelUp(int cmd, int pw, int gen) =>
       _command(cmd, Uint8List.fromList([...pw.toHexArray(4), gen]));
 
-  ///
   /// The add XP command increases XP by adding the supplied number of minutes
   /// of drive time, and immediately commits the SSB to flash.
   ///
   /// If the password is not accepted, this command fails without consequence.
   ///
-  /// @private
   /// @param {Number} pw 32-bit password
   /// @param {Number} qty 8-bit number of minutes of drive time to add
-  /// @example
-  /// orb.addXp(pwd, 5, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.addXp(pwd, 5);
+  /// ```
   Future<Map<String, dynamic>> addXp(int pw, int qty) =>
       _xpOrLevelUp(SpheroV1.ssbAddXp, pw, qty);
 
-  ///
   /// The Level Up Attribute command attempts to increase the level of the
   /// specified attribute by spending attribute points.
   ///
@@ -782,32 +676,26 @@ extension SpheroDevice on SpheroBase {
   ///
   /// If the password is not accepted, this command fails without consequence.
   ///
-  /// @private
   /// @param {Number} pw 32-bit password
   /// @param {Number} id which attribute to level up
-  /// @example
-  /// orb.levelUpAttr(pwd, 0x00, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.levelUpAttr(pwd, 0x00);
+  /// ```
   Future<Map<String, dynamic>> levelUpAttr(int pw, int id) =>
       _xpOrLevelUp(SpheroV1.ssbLevelUpAttr, pw, id);
 
-  ///
   /// The Get Password Seed command returns Sphero's password seed.
   ///
   /// Protected Sphero commands require a password.
   ///
   /// Refer to the Sphero API documentation, Appendix D for more information.
   ///
-  /// @private
-  /// @example
-  /// orb.getPasswordSeed(function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.getPasswordSee);
+  /// ```
   Future<Map<String, dynamic>> getPasswordSeed() =>
       _command(SpheroV1.getPwSeed, null);
 
-  ///
   /// The Enable SSB Async Messages command turns on/off soul block related
   /// asynchronous messages.
   ///
@@ -816,17 +704,13 @@ extension SpheroDevice on SpheroBase {
   ///
   /// This feature defaults to off.
   ///
-  /// @private
   /// @param {Number} flag whether or not to enable async messages
-  /// @param {Function} callback function to be triggered after write
-  /// @example
-  /// orb.enableSsbAsyncMsg(0x01, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.enableSsbAsyncMsg(0x01);
+  /// ```
   Future<Map<String, dynamic>> enableSsbAsyncMsg(bool flag) =>
       _command(SpheroV1.ssbEnableAsync, Uint8List.fromList([flag.intFlag]));
 
-  ///
   /// The Run Macro command attempts to execute the specified macro.
   ///
   /// Macro IDs are split into groups:
@@ -847,14 +731,12 @@ extension SpheroDevice on SpheroBase {
   /// specified ID code can't be found.
   ///
   /// @param {Number} id 8-bit Macro ID to run
-  /// @example
-  /// orb.runMacro(0x01, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.runMacro(0x01);
+  /// ```
   Future<Map<String, dynamic>> runMacro(int id) =>
       _command(SpheroV1.runMacro, Uint8List.fromList([id]));
 
-  ///
   /// The Save Temporary Macro stores the attached macro definition into the
   /// temporary RAM buffer for later execution.
   ///
@@ -863,10 +745,9 @@ extension SpheroDevice on SpheroBase {
   /// all macros, the longest definition that can be sent is 254 bytes.
   ///
   /// @param {Array} macro array of bytes with the data to be written
-  /// @example
-  /// orb.saveTempMacro(0x01, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.saveTempMacro(0x01);
+  /// ```
   Future<Map<String, dynamic>> saveTempMacro(Uint8List macro) =>
       _command(SpheroV1.saveTempMacro, macro);
 
@@ -883,27 +764,23 @@ extension SpheroDevice on SpheroBase {
   /// As with all macros, the longest definition that can be sent is 254 bytes.
   ///
   /// @param {Array} macro array of bytes with the data to be written
-  /// @example
-  /// orb.saveMacro(0x01, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.saveMacro(0x01);
+  /// ```
   Future<Map<String, dynamic>> saveMacro(Uint8List macro) =>
       _command(SpheroV1.saveMacro, macro);
 
-  ///
   /// The Reinit Macro Executive command terminates any running macro, and
   /// reinitializes the macro system.
   ///
   /// The table of any persistent user macros is cleared.
   ///
-  /// @example
-  /// orb.reInitMacroExec(function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.reInitMacroExec();
+  /// ```
   Future<Map<String, dynamic>> reInitMacroExec() =>
       _command(SpheroV1.initMacroExecutive, null);
 
-  ///
   /// The Abort Macro command aborts any executing macro, and returns both it's
   /// ID code and the command number currently in progress.
   ///
@@ -912,40 +789,30 @@ extension SpheroDevice on SpheroBase {
   /// A returned ID code of 0x00 indicates that no macro was running, an ID code
   /// of 0xFFFF as the CmdNum indicates the macro was unkillable.
   ///
-  /// @example
-  /// orb.abortMacro(function(err, data) {
-  ///   if (err) {
-  ///     print("error: ", err);
-  ///   } else {
-  ///     print("data:");
-  ///     print("  id:", data.id);
-  ///     print("  cmdNum:", data.cmdNum);
-  ///   }
-  /// }
+  /// ```dart
+  /// final data = await orb.abortMacro();
+  /// print("data:");
+  /// print("  id:", data.id);
+  /// print("  cmdNum:", data.cmdNum);
+  /// ```
   Future<Map<String, dynamic>> abortMacro() =>
       _command(SpheroV1.abortMacro, null);
 
-  ///
   /// The Get Macro Status command returns the ID code and command number of the
   /// currently executing macro.
   ///
   /// If no macro is running, the 0x00 is returned for the ID code, and the
   /// command number is left over from the previous macro.
   ///
-  /// @example
-  /// orb.getMacroStatus(function(err, data) {
-  ///   if (err) {
-  ///     print("error: ", err);
-  ///   } else {
-  ///     print("data:");
-  ///     print("  idCode:", data.idCode);
-  ///     print("  cmdNum:", data.cmdNum);
-  ///   }
-  /// }
+  /// ```dart
+  /// final data = orb.getMacroStatus();
+  /// print("data:");
+  /// print("  idCode:", data.idCode);
+  /// print("  cmdNum:", data.cmdNum);
+  /// ```
   Future<Map<String, dynamic>> getMacroStatus() =>
       _command(SpheroV1.macroStatus, null);
 
-  ///
   /// The Set Macro Parameter command allows system globals that influence
   /// certain macro commands to be selectively altered from outside of the macro
   /// system itself.
@@ -965,14 +832,12 @@ extension SpheroDevice on SpheroBase {
   /// @param {Number} index what parameter index to use
   /// @param {Number} val1 value 1 to set
   /// @param {Number} val2 value 2 to set
-  /// @example
-  /// orb.setMacroParam(0x02, 0xF0, 0x00, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.setMacroParam(0x02, 0xF0, 0x00);
+  /// ```
   Future<Map<String, dynamic>> setMacroParam(int index, int val1, int val2) =>
       _command(SpheroV1.setMacroParam, Uint8List.fromList([index, val1, val2]));
 
-  ///
   /// The Append Macro Chunk project stores the attached macro definition into
   /// the temporary RAM buffer for later execution.
   ///
@@ -991,14 +856,12 @@ extension SpheroDevice on SpheroBase {
   /// certain the larger buffer is completely initialized.
   ///
   /// @param {Array} chunk of bytes to append for macro execution
-  /// @example
-  /// orb.appendMacroChunk(, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.appendMacroChunk();
+  /// ```
   Future<Map<String, dynamic>> appendMacroChunk(Uint8List chunk) =>
       _command(SpheroV1.appendTempMacroChunk, chunk);
 
-  ///
   /// The Erase orbBasic Storage command erases any existing program in the
   /// specified storage area.
   ///
@@ -1006,14 +869,12 @@ extension SpheroDevice on SpheroBase {
   /// storage area.
   ///
   /// @param {Number} area which area to erase
-  /// @example
-  /// orb.eraseOrbBasicStorage(0x00, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.eraseOrbBasicStorage(0x00);
+  /// ```
   Future<Map<String, dynamic>> eraseOrbBasicStorage(int area) =>
       _command(SpheroV1.eraseOBStorage, Uint8List.fromList([area]));
 
-  ///
   /// The Append orbBasic Fragment command appends a patch of orbBasic code to
   /// existing ones in the specified storage area (0x00 for RAM, 0x01 for
   /// persistent).
@@ -1029,17 +890,15 @@ extension SpheroDevice on SpheroBase {
   ///
   /// @param {Number} area which area to append the fragment to
   /// @param {String} code orbBasic code to append
-  /// @example
-  /// orb.appendOrbBasicFragment(0x00, OrbBasicCode, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.appendOrbBasicFragment(0x00, OrbBasicCode);
+  /// ```
   Future<Map<String, dynamic>> appendOrbBasicFragment(
       int area, Uint8List code) {
     final data = Uint8List.fromList([area, ...code]);
     return _command(SpheroV1.appendOBFragment, data);
   }
 
-  ///
   /// The Execute orbBasic Program command attempts to run a program in the
   /// specified storage area, beginning at the specified line number.
   ///
@@ -1048,27 +907,23 @@ extension SpheroDevice on SpheroBase {
   /// @param {Number} area which area to run from
   /// @param {Number} slMSB start line
   /// @param {Number} slLSB start line
-  /// @example
-  /// orb.executeOrbBasicProgram(0x00, 0x00, 0x00, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.executeOrbBasicProgram(0x00, 0x00, 0x00);
+  /// ```
   Future<Map<String, dynamic>> executeOrbBasicProgram(
           int area, int slMSB, int slLSB) =>
       _command(
           SpheroV1.execOBProgram, Uint8List.fromList([area, slMSB, slLSB]));
 
-  ///
   /// The Abort orbBasic Program command aborts execution of any currently
   /// running orbBasic program.
   ///
-  /// @example
-  /// orb.abortOrbBasicProgram(function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.abortOrbBasicProgram();
+  /// ```
   Future<Map<String, dynamic>> abortOrbBasicProgram() =>
       _command(SpheroV1.abortOBProgram, null);
 
-  ///
   /// The Submit value To Input command takes the place of the typical user
   /// console in orbBasic and allows a user to answer an input request.
   ///
@@ -1078,23 +933,20 @@ extension SpheroDevice on SpheroBase {
   /// Refer to the orbBasic language document for further information.
   ///
   /// @param {Number} val value to respond with
-  /// @example
-  /// orb.submitValuetoInput(0x0000FFFF, function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.submitValuetoInput(0x0000FFFF);
+  /// ```
   Future<Map<String, dynamic>> submitValueToInput(int val) =>
       _command(SpheroV1.answerInput, val.toHexArray(4));
 
-  ///
   /// The Commit To Flash command copies the current orbBasic RAM program to
   /// persistent flash storage.
   ///
   /// It will fail if a program is currently executing out of flash.
   ///
-  /// @example
-  /// orb.commitToFlash(function(err, data) {
-  ///   print(err || "data: " + data);
-  /// }
+  /// ```dart
+  /// await orb.commitToFlas);
+  /// ```
   Future<Map<String, dynamic>> commitToFlash() =>
       _command(SpheroV1.commitToFlash, null);
 
