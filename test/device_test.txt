@@ -1,0 +1,280 @@
+Running "flutter pub get" in example...
+Launching lib/main.dart on motorola one hyper in debug mode...
+ lib/main.dart
+✓ Built build/app/outputs/flutter-apk/app-debug.apk.
+Connecting to VM Service at ws://127.0.0.1:51515/Qdhplso4L28=/ws
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: createClient
+I/flutter ( 6797): set log level to error
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: setLogLevel
+D/com.polidea.flutter_ble_lib.delegate.LogLevelDelegate( 6797): set log level to: error
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: startDeviceScan
+D/BluetoothAdapter( 6797): isLeEnabled(): ON
+D/BluetoothLeScanner( 6797): onScannerRegistered() - status=0 scannerId=10 mScannerId=0
+I/flutter ( 6797): findToys
+I/flutter ( 6797): Scanning devices...
+I/flutter ( 6797): findToys-wait5seconds
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: startDeviceScan
+D/BluetoothAdapter( 6797): isLeEnabled(): ON
+D/BluetoothLeScanner( 6797): onScannerRegistered() - status=0 scannerId=11 mScannerId=0
+I/flutter ( 6797): findToys
+I/flutter ( 6797): Scanning devices...
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: startDeviceScan
+I/flutter ( 6797): findToys-wait5seconds
+D/BluetoothAdapter( 6797): isLeEnabled(): ON
+D/BluetoothLeScanner( 6797): onScannerRegistered() - status=0 scannerId=12 mScannerId=0
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: stopDeviceScan
+D/BluetoothAdapter( 6797): isLeEnabled(): ON
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: stopDeviceScan
+I/chatty  ( 6797): uid=10326(com.example.example) identical 1 line
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: stopDeviceScan
+I/flutter ( 6797): Done scanning devices.
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: stopDeviceScan
+I/flutter ( 6797): Done scanning devices.
+E/flutter ( 6797): [ERROR:flutter/lib/ui/ui_dart_state.cc(177)] Unhandled Exception: RangeError (index): Invalid value: Valid value range is empty: 0
+[38;5;244mE/flutter ( 6797): #0      List.[] (dart:core-patch/growable_array.dart:177:60)[39;49m
+[38;5;248mE/flutter ( 6797): #1      BleManagerX.find[39;49m
+ package:sphero_sdk/…/v1/scanner.dart
+E/flutter ( 6797): <asynchronous suspension>
+[38;5;248mE/flutter ( 6797): #2      spheroProvider.<anonymous closure>[39;49m
+ package:example/common/state.dart
+E/flutter ( 6797): <asynchronous suspension>
+[38;5;244mE/flutter ( 6797): #3      RefreshIndicatorState._show.<anonymous closure>.<anonymous closure> (package:flutter/src/material/refresh_indicator.dart)[39;49m
+ package:flutter/…/material/refresh_indicator.dart
+E/flutter ( 6797): <asynchronous suspension>
+E/flutter ( 6797):
+I/flutter ( 6797): findToys
+I/flutter ( 6797): Scanning devices...
+I/flutter ( 6797): findToys-wait5seconds
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: startDeviceScan
+D/BluetoothAdapter( 6797): isLeEnabled(): ON
+D/BluetoothLeScanner( 6797): onScannerRegistered() - status=0 scannerId=12 mScannerId=0
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: stopDeviceScan
+D/BluetoothAdapter( 6797): isLeEnabled(): ON
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: stopDeviceScan
+I/flutter ( 6797): Done scanning devices.
+E/flutter ( 6797): [ERROR:flutter/lib/ui/ui_dart_state.cc(177)] Unhandled Exception: RangeError (index): Invalid value: Valid value range is empty: 0
+[38;5;244mE/flutter ( 6797): #0      List.[] (dart:core-patch/growable_array.dart:177:60)[39;49m
+[38;5;248mE/flutter ( 6797): #1      BleManagerX.find[39;49m
+ package:sphero_sdk/…/v1/scanner.dart
+E/flutter ( 6797): <asynchronous suspension>
+[38;5;248mE/flutter ( 6797): #2      spheroProvider.<anonymous closure>[39;49m
+ package:example/common/state.dart
+E/flutter ( 6797): <asynchronous suspension>
+[38;5;244mE/flutter ( 6797): #3      RefreshIndicatorState._show.<anonymous closure>.<anonymous closure> (package:flutter/src/material/refresh_indicator.dart)[39;49m
+ package:flutter/…/material/refresh_indicator.dart
+E/flutter ( 6797): <asynchronous suspension>
+E/flutter ( 6797):
+I/flutter ( 6797): findToys
+I/flutter ( 6797): Scanning devices...
+I/flutter ( 6797): findToys-wait5seconds
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: startDeviceScan
+D/BluetoothAdapter( 6797): isLeEnabled(): ON
+D/BluetoothLeScanner( 6797): onScannerRegistered() - status=0 scannerId=12 mScannerId=0
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: stopDeviceScan
+I/flutter ( 6797): Done scanning devices.
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: stopDeviceScan
+E/flutter ( 6797): [ERROR:flutter/lib/ui/ui_dart_state.cc(177)] Unhandled Exception: RangeError (index): Invalid value: Valid value range is empty: 0
+[38;5;244mE/flutter ( 6797): #0      List.[] (dart:core-patch/growable_array.dart:177:60)[39;49m
+[38;5;248mE/flutter ( 6797): #1      BleManagerX.find[39;49m
+ package:sphero_sdk/…/v1/scanner.dart
+E/flutter ( 6797): <asynchronous suspension>
+[38;5;248mE/flutter ( 6797): #2      spheroProvider.<anonymous closure>[39;49m
+ package:example/common/state.dart
+E/flutter ( 6797): <asynchronous suspension>
+[38;5;244mE/flutter ( 6797): #3      RefreshIndicatorState._show.<anonymous closure>.<anonymous closure> (package:flutter/src/material/refresh_indicator.dart)[39;49m
+ package:flutter/…/material/refresh_indicator.dart
+E/flutter ( 6797): <asynchronous suspension>
+E/flutter ( 6797):
+D/BluetoothAdapter( 6797): isLeEnabled(): ON
+I/flutter ( 6797): findToys
+I/flutter ( 6797): Scanning devices...
+I/flutter ( 6797): findToys-wait5seconds
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: startDeviceScan
+D/BluetoothAdapter( 6797): isLeEnabled(): ON
+D/BluetoothLeScanner( 6797): onScannerRegistered() - status=0 scannerId=12 mScannerId=0
+I/flutter ( 6797): name: Spark+,
+I/flutter ( 6797):    uuid: D6:76:3E:C5:5C:BE,
+I/flutter ( 6797):    mac-address: D6:76:3E:C5:5C:BE
+I/chatty  ( 6797): uid=10326(com.example.example) 1.ui identical 1 line
+I/flutter ( 6797): name: Spark+,
+I/flutter ( 6797):    uuid: D6:76:3E:C5:5C:BE,
+I/flutter ( 6797):    mac-address: D6:76:3E:C5:5C:BE
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: stopDeviceScan
+D/BluetoothAdapter( 6797): isLeEnabled(): ON
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: stopDeviceScan
+I/flutter ( 6797): Done scanning devices.
+I/flutter ( 6797): Starting...
+I/flutter ( 6797): connecting peripheral
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: isDeviceConnected
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: connectToDevice
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->objectFieldOffset(Ljava/lang/reflect/Field;)J (greylist,core-platform-api, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->compareAndSwapInt(Ljava/lang/Object;JII)Z (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->getIntVolatile(Ljava/lang/Object;J)I (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden field Lsun/misc/Unsafe;->theUnsafe:Lsun/misc/Unsafe; (greylist, reflection, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->arrayIndexScale(Ljava/lang/Class;)I (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->arrayBaseOffset(Ljava/lang/Class;)I (greylist,core-platform-api, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->getObject(Ljava/lang/Object;J)Ljava/lang/Object; (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->getObjectVolatile(Ljava/lang/Object;J)Ljava/lang/Object; (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->getLongVolatile(Ljava/lang/Object;J)J (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->getObjectVolatile(Ljava/lang/Object;J)Ljava/lang/Object; (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+D/BluetoothGatt( 6797): connect() - device: D6:76:3E:C5:5C:BE, auto: false
+D/BluetoothGatt( 6797): registerApp()
+D/BluetoothGatt( 6797): registerApp() - UUID=d7f209be-ab03-4beb-9d62-e6fe33ac0edf
+D/BluetoothGatt( 6797): onClientRegistered() - status=0 clientIf=12
+D/BluetoothGatt( 6797): onClientConnectionState() - status=0 clientIf=12 device=D6:76:3E:C5:5C:BE
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->getLongVolatile(Ljava/lang/Object;J)J (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->getObjectVolatile(Ljava/lang/Object;J)Ljava/lang/Object; (greylist, linking, allowed)
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: discoverAllServicesAndCharacteristics
+D/BluetoothGatt( 6797): discoverServices() - device: D6:76:3E:C5:5C:BE
+D/BluetoothGatt( 6797): onConnectionUpdated() - Device=D6:76:3E:C5:5C:BE interval=6 latency=0 timeout=500 status=0
+D/BluetoothGatt( 6797): onSearchComplete() = Device=D6:76:3E:C5:5C:BE Status=0
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->getLongVolatile(Ljava/lang/Object;J)J (greylist, linking, allowed)
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: services
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: characteristicsForService
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: characteristicsForService
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: characteristicsForService
+I/flutter ( 6797): Found commands characteristic
+I/flutter ( 6797): Found response characteristic
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: characteristicsForService
+I/flutter ( 6797): Found tx power characteristic
+I/flutter ( 6797): Found Anti Dos characteristic
+I/flutter ( 6797): Found wake characteristic
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: characteristicsForService
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: characteristicsForService
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: writeCharacteristicForDevice
+D/BluetoothGatt( 6797): onConnectionUpdated() - Device=D6:76:3E:C5:5C:BE interval=36 latency=0 timeout=500 status=0
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: writeCharacteristicForDevice
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: writeCharacteristicForDevice
+I/flutter ( 6797): Started
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: monitorCharacteristicForDevice
+D/BluetoothGatt( 6797): setCharacteristicNotification() - uuid: 22bb746f-2ba6-7554-2d6f-726568705327 enable: true
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+I/flutter ( 6797): sop1: 255, sop2: 253, did: 0, cid: 2, dlen: 0, data: []
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: writeCharacteristicForDevice
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+I/flutter ( 6797): Emitting: data, [255, 255, 0, 0, 9, 1, 50, 1, 7, 21, 113, 23, 6, 24]
+I/flutter ( 6797): Emitting: response, Instance of 'PacketV1'
+E/flutter ( 6797): [ERROR:flutter/lib/ui/ui_dart_state.cc(177)] Unhandled Exception: RangeError (end): Invalid value: Only valid value is 8: 9
+[38;5;244mE/flutter ( 6797): #0      RangeError.checkValidRange (dart:core/errors.dart:357:9)[39;49m
+[38;5;244mE/flutter ( 6797): #1      _TypedIntListMixin.sublist (dart:typed_data-patch/typed_data_patch.dart:462:31)[39;49m
+[38;5;248mE/flutter ( 6797): #2      PacketParser.parseField[39;49m
+ package:sphero_sdk/…/v1/packet.dart
+[38;5;248mE/flutter ( 6797): #3      PacketParser.parseDataMap[39;49m
+ package:sphero_sdk/…/v1/packet.dart
+[38;5;248mE/flutter ( 6797): #4      PacketParser.parseResponseData[39;49m
+ package:sphero_sdk/…/v1/packet.dart
+[38;5;248mE/flutter ( 6797): #5      Sphero.connect.<anonymous closure>[39;49m
+ package:sphero_sdk/…/v1/sphero.dart
+[38;5;248mE/flutter ( 6797): #6      AdaptorV1.devModeOn.<anonymous closure>[39;49m
+ package:sphero_sdk/…/v1/adaptor.dart
+[38;5;244mE/flutter ( 6797): #7      _rootRunUnary (dart:async/zone.dart:1198:47)[39;49m
+[38;5;244mE/flutter ( 6797): #8      _CustomZone.runUnary (dart:async/zone.dart:1100:19)[39;49m
+[38;5;244mE/flutter ( 6797): #9      _CustomZone.runUnaryGuarded (dart:async/zone.dart:1005:7)[39;49m
+[38;5;244mE/flutter ( 6797): #10     _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:357:11)[39;49m
+[38;5;244mE/flutter ( 6797): #11     _DelayedData.perform (dart:async/stream_impl.dart:611:14)[39;49m
+[38;5;244mE/flutter ( 6797): #12     _StreamImplEvents.handleNext (dart:async/stream_impl.dart:730:11)[39;49m
+[38;5;244mE/flutter ( 6797): #13     _PendingEvents.schedule.<anonymous closure> (dart:async/stream_impl.dart:687:7)[39;49m
+[38;5;244mE/flutter ( 6797): #14     _rootRun (dart:async/zone.dart:1182:47)[39;49m
+[38;5;244mE/flutter ( 6797): #15     _CustomZone.run (dart:async/zone.dart:1093:19)[39;49m
+[38;5;244mE/flutter ( 6797): #16     _CustomZone.runGuarded (dart:async/zone.dart:997:7)[39;49m
+[38;5;244mE/flutter ( 6797): #17     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1037:23)[39;49m
+[38;5;244mE/flutter ( 6797): #18     _rootRun (dart:async/zone.dart:1190:13)[39;49m
+[38;5;244mE/flutter ( 6797): #19     _CustomZone.run (dart:async/zone.dart:1093:19)[39;49m
+[38;5;244mE/flutter ( 6797): #20     _CustomZone.runGuarded (dart:async/zone.dart:997:7)[39;49m
+[38;5;244mE/flutter ( 6797): #21     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1037:23)[39;49m
+[38;5;244mE/flutter ( 6797): #22     _microtaskLoop (dart:async/schedule_microtask.dart:41:21)[39;49m
+[38;5;244mE/flutter ( 6797): #23     _startMicrotaskLoop (dart:async/schedule_microtask.dart:50:5)[39;49m
+E/flutter ( 6797):
+D/BluetoothGatt( 6797): onConnectionUpdated() - Device=D6:76:3E:C5:5C:BE interval=12 latency=0 timeout=175 status=0
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+I/flutter ( 6797): Emitting: data, [255, 254, 20, 0, 1, 234]
+I/flutter ( 6797): No parser found:  data: Instance of 'PacketV1'
+I/flutter ( 6797): Emitting: async, {payload: Instance of 'PacketV1'}
+D/BluetoothGatt( 6797): setCharacteristicNotification() - uuid: 22bb746f-2ba6-7554-2d6f-726568705327 enable: false
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->getLongVolatile(Ljava/lang/Object;J)J (greylist, linking, allowed)
+D/BluetoothGatt( 6797): cancelOpen() - device: D6:76:3E:C5:5C:BE
+D/BluetoothGatt( 6797): onClientConnectionState() - status=0 clientIf=12 device=D6:76:3E:C5:5C:BE
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedObject(Ljava/lang/Object;JLjava/lang/Object;)V (greylist, linking, allowed)
+W/example.exampl( 6797): Accessing hidden method Lsun/misc/Unsafe;->putOrderedLong(Ljava/lang/Object;JJ)V (greylist, linking, allowed)
+D/BluetoothGatt( 6797): close()
+D/BluetoothGatt( 6797): unregisterApp() - mClientIf=12
+E/flutter ( 6797): [ERROR:flutter/lib/ui/ui_dart_state.cc(177)] Unhandled Exception: BleError (Error code: 201, ATT error code: null, iOS error code: null, Android error code: null, reason: Disconnected from D6:76:3E:C5:5C:BE with status -1 (UNKNOWN), internal message: null, device ID: D6:76:3E:C5:5C:BE, service UUID: null, characteristic UUID: null, descriptor UUID: null)
+[38;5;248mE/flutter ( 6797): #0      CharacteristicsMixin._throwErrorIfMatchesWithTransactionId[39;49m
+ package:flutter_ble_lib/…/bridge/characteristics_mixin.dart
+[38;5;248mE/flutter ( 6797): #1      CharacteristicsMixin._createMonitoringStream.<anonymous closure>[39;49m
+ package:flutter_ble_lib/…/bridge/characteristics_mixin.dart
+[38;5;244mE/flutter ( 6797): #2      _invokeErrorHandler (dart:async/async_error.dart:16:24)[39;49m
+[38;5;244mE/flutter ( 6797): #3      _HandleErrorStream._handleError (dart:async/stream_pipe.dart:282:9)[39;49m
+[38;5;244mE/flutter ( 6797): #4      _ForwardingStreamSubscription._handleError (dart:async/stream_pipe.dart:161:13)[39;49m
+[38;5;244mE/flutter ( 6797): #5      _rootRunBinary (dart:async/zone.dart:1214:47)[39;49m
+[38;5;244mE/flutter ( 6797): #6      _CustomZone.runBinary (dart:async/zone.dart:1107:19)[39;49m
+[38;5;244mE/flutter ( 6797): #7      _CustomZone.runBinaryGuarded (dart:async/zone.dart:1013:7)[39;49m
+[38;5;244mE/flutter ( 6797): #8      _BufferingStreamSubscription._sendError.sendError (dart:async/stream_impl.dart:376:15)[39;49m
+[38;5;244mE/flutter ( 6797): #9      _BufferingStreamSubscription._sendError (dart:async/stream_impl.dart:394:16)[39;49m
+[38;5;244mE/flutter ( 6797): #10     _BufferingStreamSubscription._addError (dart:async/stream_impl.dart:294:7)[39;49m
+[38;5;244mE/flutter ( 6797): #11     _ForwardingStreamSubscription._addError (dart:async/stream_pipe.dart:132:11)[39;49m
+[38;5;244mE/flutter ( 6797): #12     _ForwardingStream._handleError (dart:async/stream_pipe.dart:97:10)[39;49m
+[38;5;244mE/flutter ( 6797): #13     _ForwardingStreamSubscription._handleError (dart:async/stream_pipe.dart:161:13)[39;49m
+[38;5;244mE/flutter ( 6797): #14     _rootRunBinary (dart:async/zone.dart:1214:47)[39;49m
+[38;5;244mE/flutter ( 6797): #15     _CustomZone.runBinary (dart:async/zone.dart:1107:19)[39;49m
+[38;5;244mE/flutter ( 6797): #16     _CustomZone.runBinaryGuarded (dart:async/zone.dart:1013:7)[39;49m
+[38;5;244mE/flutter ( 6797): #17     _BufferingStreamSubscription._sendError.sendError (dart:async/stream_impl.dart:376:15)[39;49m
+[38;5;244mE/flutter ( 6797): #18     _BufferingStreamSubscription._sendError (dart:async/stream_impl.dart:394:16)[39;49m
+[38;5;244mE/flutter ( 6797): #19     _BufferingStreamSubscription._addError (dart:async/stream_impl.dart:294:7)[39;49m
+[38;5;244mE/flutter ( 6797): #20     _ForwardingStreamSubscription._addError (dart:async/stream_pipe.dart:132:11)[39;49m
+[38;5;244mE/flutter ( 6797): #21     _ForwardingStream._handleError (dart:async/stream_pipe.dart:97:10)[39;49m
+[38;5;244mE/flutter ( 6797): #22     _ForwardingStreamSubscription._handleError (dart:async/stream_pipe.dart:161:13)[39;49m
+[38;5;244mE/flutter ( 6797): #23     _rootRunBinary (dart:async/zone.dart:1214:47)[39;49m
+[38;5;244mE/flutter ( 6797): #24     _CustomZone.runBinary (dart:async/zone.dart:1107:19)[39;49m
+[38;5;244mE/flutter ( 6797): #25     _CustomZone.runBinaryGuarded (dart:async/zone.dart:1013:7)[39;49m
+[38;5;244mE/flutter ( 6797): #26     _BufferingStreamSubscription._sendError.sendError (dart:async/stream_impl.dart:376:15)[39;49m
+[38;5;244mE/flutter ( 6797): #27     _BufferingStreamSubscription._sendError (dart:async/stream_impl.dart:394:16)[39;49m
+[38;5;244mE/flutter ( 6797): #28     _DelayedError.perform (dart:async/stream_impl.dart:622:14)[39;49m
+[38;5;244mE/flutter ( 6797): #29     _StreamImplEvents.handleNext (dart:async/stream_impl.dart:730:11)[39;49m
+[38;5;244mE/flutter ( 6797): #30     _PendingEvents.schedule.<anonymous closure> (dart:async/stream_impl.dart:687:7)[39;49m
+[38;5;244mE/flutter ( 6797): #31     _rootRun (dart:async/zone.dart:1182:47)[39;49m
+[38;5;244mE/flutter ( 6797): #32     _CustomZone.run (dart:async/zone.dart:1093:19)[39;49m
+[38;5;244mE/flutter ( 6797): #33     _CustomZone.runGuarded (dart:async/zone.dart:997:7)[39;49m
+[38;5;244mE/flutter ( 6797): #34     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1037:23)[39;49m
+[38;5;244mE/flutter ( 6797): #35     _rootRun (dart:async/zone.dart:1190:13)[39;49m
+[38;5;244mE/flutter ( 6797): #36     _CustomZone.run (dart:async/zone.dart:1093:19)[39;49m
+[38;5;244mE/flutter ( 6797): #37     _CustomZone.runGuarded (dart:async/zone.dart:997:7)[39;49m
+[38;5;244mE/flutter ( 6797): #38     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1037:23)[39;49m
+[38;5;244mE/flutter ( 6797): #39     _microtaskLoop (dart:async/schedule_microtask.dart:41:21)[39;49m
+[38;5;244mE/flutter ( 6797): #40     _startMicrotaskLoop (dart:async/schedule_microtask.dart:50:5)[39;49m
+E/flutter ( 6797):
+D/com.polidea.flutter_ble_lib.FlutterBleLibPlugin( 6797): on native side observed method: cancelTransaction
+Lost connection to device.
+Exited (sigterm)

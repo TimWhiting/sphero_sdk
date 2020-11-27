@@ -63,7 +63,7 @@ mixin Custom on SpheroBase {
 
   void emit(String name, dynamic data) {
     // print('Emitting: $name, $data');'
-    for (final l in eventListeners[name]) {
+    for (final l in eventListeners[name] ?? []) {
       l(data);
     }
   }

@@ -15,6 +15,12 @@ class AdaptorV1 {
   static const CommandsCharacteristic = '22bb746f-2ba1-7554-2d6f-726568705327';
   static const ResponseCharacteristic = '22bb746f-2ba6-7554-2d6f-726568705327';
 
+  Characteristic _antiDosChar;
+  Characteristic _wakeChar;
+  Characteristic _txChar;
+  Characteristic _commandChar;
+  Characteristic _responseChar;
+
   final String uuid;
   bool isConnected = false;
   Peripheral peripheral;
@@ -40,12 +46,13 @@ class AdaptorV1 {
 
   /// Writes data to the BLE device on the
   /// RobotControlService/CommandsCharacteristic.
-  Future<void> write(Uint8List data) => writeServiceCharacteristic(
-        RobotControlService,
-        CommandsCharacteristic,
-        data,
-        false, //data[0] == FIELDS.sop2_sync,
-      );
+  Future<void> write(Uint8List data) => _commandChar.write(data, false);
+  //writeServiceCharacteristic(
+  //   RobotControlService,
+  //   CommandsCharacteristic,
+  //   data,
+  //   false, //data[0] == FIELDS.sop2_sync,
+  // );
 
   void Function(Uint8List) onRead;
   Future<void> close() async {
@@ -55,35 +62,46 @@ class AdaptorV1 {
   }
 
   Future<void> devModeOn() async {
+    print('Setting anti-dos############################');
     await setAntiDos();
+    print('Setting tx power!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     await setTXPower(7);
+    print('Waking##########################');
     await wake();
-    peripheral
-        .monitorCharacteristic(RobotControlService, ResponseCharacteristic)
-        .listen(
+    _responseChar.monitor().asBroadcastStream().listen(
       (cWithValue) {
-        final data = cWithValue.value;
-        if (data != null) {
-          onRead(data);
+        final data = cWithValue;
+        if (data != null && data.length > 5) {
+          try {
+            onRead(data);
+          } on Exception catch (e) {
+            print('Caught exception $e while reading');
+          }
         }
       },
       onError: (e) =>
           print('Error: $e while monitoring the response characteristic'),
-      onDone: () => print('Done'),
+      onDone: () => print(
+        'Done monitoring response characteristic#################!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+      ),
+      cancelOnError: false,
     );
   }
 
-  Future<void> wake() => writeServiceCharacteristic(
-      BLEService, WakeCharacteristic, Uint8List.fromList([1]), false);
+  Future<void> wake() => _wakeChar.write(Uint8List.fromList([1]), false);
+  // writeServiceCharacteristic(
+  //  BLEService, WakeCharacteristic, Uint8List.fromList([1]), false);
 
-  Future<void> setTXPower(int level) => writeServiceCharacteristic(
-      BLEService, TXPowerCharacteristic, Uint8List.fromList([level]), false);
+  Future<void> setTXPower(int level) =>
+      _txChar.write(Uint8List.fromList([level]), false);
+  //writeServiceCharacteristic(
+  //  BLEService, TXPowerCharacteristic, Uint8List.fromList([level]), false);
 
   Future<void> setAntiDos() {
     const str = '011i3';
     final bytes = Uint8List.fromList(utf8.encode(str));
-    return writeServiceCharacteristic(
-        BLEService, AntiDosCharacteristic, bytes, false);
+    return _antiDosChar.write(bytes, false); //writeServiceCharacteristic(
+    //BLEService, AntiDosCharacteristic, bytes, false);
   }
 
   Future<void> _connectPeripheral() async {
@@ -96,20 +114,25 @@ class AdaptorV1 {
         if (service.uuid == BLEService) {
           if (char.uuid == AntiDosCharacteristic) {
             print('Found Anti Dos characteristic');
+            _antiDosChar = char;
           }
           if (char.uuid == WakeCharacteristic) {
             print('Found wake characteristic');
+            _wakeChar = char;
           }
           if (char.uuid == TXPowerCharacteristic) {
             print('Found tx power characteristic');
+            _txChar = char;
           }
         }
         if (service.uuid == RobotControlService) {
           if (char.uuid == CommandsCharacteristic) {
             print('Found commands characteristic');
+            _commandChar = char;
           }
           if (char.uuid == ResponseCharacteristic) {
             print('Found response characteristic');
+            _responseChar = char;
           }
         }
       }
@@ -119,18 +142,18 @@ class AdaptorV1 {
 
   Future<void> _connectBLE() async {
     if (!await peripheral.isConnected()) {
-      await peripheral.connect();
+      await peripheral.connect(isAutoConnect: true);
       isConnected = true;
     }
   }
 
-  Future<void> writeServiceCharacteristic(
-    String serviceId,
-    String characteristicId,
-    Uint8List data,
-    bool withResponse,
-  ) async {
-    await peripheral.writeCharacteristic(
-        serviceId, characteristicId, data, true);
-  }
+  // Future<void> writeServiceCharacteristic(
+  //   String serviceId,
+  //   String characteristicId,
+  //   Uint8List data,
+  //   bool withResponse,
+  // ) async {
+  //   await peripheral.writeCharacteristic(
+  //       serviceId, characteristicId, data, true);
+  // }
 }

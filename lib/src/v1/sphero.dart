@@ -81,16 +81,6 @@ class Sphero extends SpheroBase with Custom {
   /// @return {void}
 
   Future<void> connect() async {
-    // connection.on('open', () {
-    //   emit('open');
-    // });
-    // connection.on('close', emit('close'));
-
-    // connection.on('error', () {
-    //   emit('error');
-    // });
-    // packet.on('error', emit('error'));
-
     connection.onRead = (payload) {
       emit('data', payload);
       final parsedPayload = packet.parse(payload);
