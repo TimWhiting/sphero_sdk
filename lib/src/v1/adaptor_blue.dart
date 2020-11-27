@@ -32,6 +32,7 @@ class AdaptorV1Blue extends AdaptorV1 {
 
   final String uuid;
   bool isConnected = false;
+  @override
   BluetoothDevice peripheral;
 
   @override

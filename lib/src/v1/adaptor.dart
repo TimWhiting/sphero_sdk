@@ -20,6 +20,8 @@ abstract class AdaptorV1 {
 
   void Function(Uint8List payload) onRead;
 
+  dynamic get peripheral;
+
   Future<void> open();
 
   Future<void> close();

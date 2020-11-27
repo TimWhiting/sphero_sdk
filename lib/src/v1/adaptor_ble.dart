@@ -1,9 +1,10 @@
-import 'adaptor.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_ble_lib/flutter_ble_lib.dart' as ble;
+
+import 'adaptor.dart';
 
 class AdaptorV1BLE extends AdaptorV1 {
   AdaptorV1BLE(String id, [this.peripheral])
@@ -25,6 +26,7 @@ class AdaptorV1BLE extends AdaptorV1 {
 
   final String uuid;
   bool isConnected = false;
+  @override
   ble.Peripheral peripheral;
 
   @override
