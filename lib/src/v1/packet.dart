@@ -111,6 +111,7 @@ class PacketParser {
 
   @visibleForTesting
   PacketV1 parseBuffer(Uint8List b) {
+    print(b);
     final packet = PacketV1();
     packet.sop1 = b[FIELDS.sop1_pos];
     packet.sop2 = b[FIELDS.sop2_pos];
@@ -175,12 +176,14 @@ class PacketParser {
   }
 
   Map<String, dynamic> parseAsyncData(PacketV1 payload, Map<String, int> ds) {
+    print('Parsing async data');
     final parser = ASYNC_PARSER[payload.idCode];
 
     return parseDataMap(parser, payload, ds);
   }
 
   Map<String, dynamic> parseResponseData(CommandID cmd, PacketV1 payload) {
+    print('Parsing sync data');
     if (cmd == null || cmd.did == null || cmd.cid == null) {
       throw Exception(payload);
     }

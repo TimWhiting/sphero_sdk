@@ -56,7 +56,15 @@ class AdaptorV1Blue extends AdaptorV1 {
   }
 
   @override
-  Future<void> write(Uint8List data) => _commandChar.write(data);
+  Future<void> write(Uint8List data) {
+    try {
+      return _commandChar.write(data, withoutResponse: true);
+    } on Exception catch (e) {
+      print(e);
+    }
+    return Future.value();
+  }
+
   @override
   Future<void> close() async {
     await peripheral.disconnect();
@@ -96,18 +104,13 @@ Done monitoring response characteristic
   }
 
   Future<void> wake() => _wakeChar.write([1]);
-  // writeServiceCharacteristic(
-  //  BLEService, WakeCharacteristic, Uint8List.fromList([1]), false);
 
   Future<void> setTXPower(int level) => _txChar.write([level]);
-  //writeServiceCharacteristic(
-  //  BLEService, TXPowerCharacteristic, Uint8List.fromList([level]), false);
 
   Future<void> setAntiDos() {
     const str = '011i3';
     final bytes = Uint8List.fromList(utf8.encode(str));
-    return _antiDosChar.write(bytes); //writeServiceCharacteristic(
-    //BLEService, AntiDosCharacteristic, bytes, false);
+    return _antiDosChar.write(bytes);
   }
 
   Future<void> _connectPeripheral() async {
@@ -116,7 +119,6 @@ Done monitoring response characteristic
     final services = await peripheral.discoverServices();
     for (final service in services) {
       for (final char in service.characteristics) {
-        // print('Found service: ${service.uuid}, char: ${char.uuid}');
         if (service.uuid == BLEService) {
           if (char.uuid == AntiDosCharacteristic) {
             print('Found Anti Dos characteristic');
@@ -147,20 +149,7 @@ Done monitoring response characteristic
   }
 
   Future<void> _connectBLE() async {
-    final state = await peripheral.state.first;
-    if (state != BluetoothDeviceState.connected) {
-      await peripheral.connect(timeout: const Duration(seconds: 2));
-      isConnected = true;
-    }
+    await peripheral.connect(timeout: const Duration(seconds: 6));
+    isConnected = true;
   }
-
-  // Future<void> writeServiceCharacteristic(
-  //   String serviceId,
-  //   String characteristicId,
-  //   Uint8List data,
-  //   bool withResponse,
-  // ) async {
-  //   await peripheral.writeCharacteristic(
-  //       serviceId, characteristicId, data, true);
-  // }
 }

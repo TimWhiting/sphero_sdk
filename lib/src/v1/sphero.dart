@@ -163,7 +163,8 @@ class Sphero extends SpheroBase with Custom {
 
     // ignore: prefer_function_declarations_over_variables, avoid_types_on_closure_parameters
     final handler = (Map<String, dynamic> packet) {
-      responseQueue.remove(seq);
+      final item = responseQueue.remove(seq);
+      item.timer.cancel();
       busy = false;
       if (!completer.isCompleted) {
         if (packet != null) {
@@ -182,7 +183,9 @@ class Sphero extends SpheroBase with Custom {
     );
     response.timer = Timer(Duration(milliseconds: timeout), () {
       responseQueue.remove(seq);
-      completer.completeError('Sphero command timeout');
+      if (!completer.isCompleted) {
+        completer.completeError('Sphero command timeout');
+      }
     });
     responseQueue[seq] = response;
   }

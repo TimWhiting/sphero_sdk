@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter_ble_lib/flutter_ble_lib.dart' as ble;
 import 'package:flutter_blue/flutter_blue.dart' as blue;
@@ -28,14 +30,19 @@ class ToyDiscovered<T extends Sphero> extends ToyAdvertisement<T> {
 Future<T> startToy<T extends Sphero>(T toy) async {
   print('Starting...');
   await toy.connect();
+  try {
+    print('Started');
+    final version = await toy.version();
 
-  print('Started');
-  // final version = await toy.version();
+    print('Version $version');
+    final battery = await toy.getPowerState();
 
-  // print('Version $version');
-  // final battery = await toy.getPowerState();
+    print('Battery $battery');
+    Timer.periodic(100.milliseconds, (_) => toy.ping());
+  } on Exception {
+    print('Exception while starting toy');
+  }
 
-  // print('Battery $battery');
   return toy;
 }
 
@@ -70,8 +77,7 @@ extension BleManagerX on ble.BleManager {
       return null;
     }
 
-    final toy =
-        toyType.typeof(SpheroPeripheral(discoveredItem.peripheral.peripheral));
+    final toy = toyType.typeof(discoveredItem.peripheral);
 
     await startToy(toy);
     print('found toy');
@@ -85,8 +91,7 @@ extension BleManagerX on ble.BleManager {
     if (discovered.isNotEmpty) {
       // Init toys and return array
       return Future.wait(discovered.fold(<Future<Sphero>>[], (toyArray, item) {
-        final toy =
-            toyType.typeof(SpheroPeripheral(item.peripheral.peripheral));
+        final toy = toyType.typeof(item.peripheral);
         return [...toyArray, Future(() => startToy(toy))];
       }));
     } else {
@@ -116,7 +121,7 @@ extension on ble.ScanResult {
     for (final toyAdvertisement in validToys) {
       if (localName.indexOf(toyAdvertisement.prefix) == 0) {
         toys.add(ToyDiscovered.fromAdvertisement(toyAdvertisement,
-            peripheral: SpheroPeripheral(this)));
+            peripheral: SpheroPeripheral(peripheral)));
 
         print('''name: ${toyAdvertisement.name},
    uuid: ${peripheral.identifier},
@@ -133,9 +138,9 @@ extension BluetoothX on blue.FlutterBlue {
     final toys = <ToyDiscovered>[];
 
     print('Scanning devices...');
-    scan(timeout: 4.seconds).listen((sr) {
+    await scan(timeout: 4.seconds).listen((sr) {
       sr.discover(toysType, toys);
-    });
+    }).asFuture();
 
     print('Done scanning devices.');
     return toys;
@@ -155,8 +160,7 @@ extension BluetoothX on blue.FlutterBlue {
       return null;
     }
 
-    final toy =
-        toyType.typeof(SpheroPeripheral(discoveredItem.peripheral.peripheral));
+    final toy = toyType.typeof(discoveredItem.peripheral);
 
     await startToy(toy);
     print('found toy');
@@ -191,7 +195,9 @@ extension on blue.ScanResult {
     List<ToyDiscovered> toys,
   ) async {
     final localName = advertisementData.localName ?? '';
-    final peripheral = SpheroPeripheral(this);
+
+    final peripheral = SpheroPeripheral(device);
+    print(peripheral.name);
     for (final toyAdvertisement in validToys) {
       if (localName.indexOf(toyAdvertisement.prefix) == 0) {
         toys.add(ToyDiscovered.fromAdvertisement(toyAdvertisement,
