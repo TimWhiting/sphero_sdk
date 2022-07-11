@@ -1,8 +1,10 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
 
 import 'adaptor.dart';
 
@@ -24,16 +26,16 @@ class AdaptorV1Blue extends AdaptorV1 {
   static final ResponseCharacteristic =
       Guid('22bb746f-2ba6-7554-2d6f-726568705327');
 
-  BluetoothCharacteristic _antiDosChar;
-  BluetoothCharacteristic _wakeChar;
-  BluetoothCharacteristic _txChar;
-  BluetoothCharacteristic _commandChar;
-  BluetoothCharacteristic _responseChar;
+  late BluetoothCharacteristic _antiDosChar;
+  late BluetoothCharacteristic _wakeChar;
+  late BluetoothCharacteristic _txChar;
+  late BluetoothCharacteristic _commandChar;
+  late BluetoothCharacteristic _responseChar;
 
   final String uuid;
   bool isConnected = false;
   @override
-  BluetoothDevice peripheral;
+  BluetoothDevice? peripheral;
 
   @override
   Future<void> open() async {
@@ -44,7 +46,7 @@ class AdaptorV1Blue extends AdaptorV1 {
       final bleManager = FlutterBlue.instance;
       var completed = false;
 
-      bleManager.scan(timeout: const Duration(seconds: 10)).listen((sr) {
+      bleManager.startScan(timeout: const Duration(seconds: 10)).listen((sr) {
         if (sr.advertisementData.localName == uuid && !completed) {
           peripheral = sr.device;
           completed = true;
@@ -67,7 +69,7 @@ class AdaptorV1Blue extends AdaptorV1 {
 
   @override
   Future<void> close() async {
-    await peripheral.disconnect();
+    peripheral?.disconnect();
     isConnected = false;
     peripheral = null;
   }
@@ -83,7 +85,7 @@ class AdaptorV1Blue extends AdaptorV1 {
     _responseChar.value.asBroadcastStream().listen(
       (cWithValue) {
         final data = cWithValue;
-        if (data != null && data.length > 5) {
+        if (data.length > 5) {
           try {
             onRead(Uint8List.fromList(data));
           } on Exception catch (e) {
@@ -116,7 +118,7 @@ Done monitoring response characteristic
   Future<void> _connectPeripheral() async {
     print('connecting peripheral');
     await _connectBLE();
-    final services = await peripheral.discoverServices();
+    final services = await peripheral!.discoverServices();
     for (final service in services) {
       for (final char in service.characteristics) {
         if (service.uuid == BLEService) {
@@ -149,7 +151,7 @@ Done monitoring response characteristic
   }
 
   Future<void> _connectBLE() async {
-    await peripheral.connect(timeout: const Duration(seconds: 6));
+    await peripheral!.connect(timeout: const Duration(seconds: 6));
     isConnected = true;
   }
 }
