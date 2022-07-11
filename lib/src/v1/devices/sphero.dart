@@ -4,7 +4,7 @@ import 'command.dart';
 import 'core.dart';
 
 extension SpheroDevice on SpheroBase {
-  Future<Map<String, dynamic>> _command(int command, Uint8List data) =>
+  Future<Map<String, dynamic>> _command(int command, Uint8List? data) =>
       baseCommand(0x02, command, data);
 
   /// The Set Heading command tells Sphero to adjust it's orientation, by
@@ -24,7 +24,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setStabilization(1);
   /// ```
-  Future<Map<String, dynamic>> setStabiliation(bool enabled) => _command(
+  Future<Map<String, dynamic>> setStabilization(bool enabled) => _command(
       SpheroV1.setStabilization, Uint8List.fromList([enabled.intFlag]));
 
   /// The Set Rotation Rate command allows control of the [rotation] rate Sphero
@@ -76,7 +76,7 @@ extension SpheroDevice on SpheroBase {
   /// For more detail on opts param, see the Sphero API documentation.
   ///
   /// opts:
-  ///  - [angleLimit]: 0 for defaul, 1 - 90 to set.
+  ///  - [angleLimit]: 0 for default, 1 - 90 to set.
   ///  - [timeout]: 0 for default, 1 - 255 to set.
   ///  - [trueTime]: 0 for default, 1 - 255 to set.
   ///  - [options]: bitmask 4bit e.g. 0xF
@@ -119,8 +119,13 @@ extension SpheroDevice on SpheroBase {
   ///   mask2: 0x01800000,
   ///   pcnt: 0);
   /// ```
-  Future<Map<String, dynamic>> setDataStreaming(
-      int n, int m, int mask1, int mask2, int pcnt) {
+  Future<Map<String, dynamic>> setDataStreaming({
+    required int n,
+    required int m,
+    required int mask1,
+    required int mask2,
+    required int pcnt,
+  }) {
     ds['mask1'] = mask1;
     ds['mask2'] = mask2;
 
@@ -160,8 +165,14 @@ extension SpheroDevice on SpheroBase {
   ///   ys: 0x0A,
   ///   dead: 0x05);
   /// ```
-  Future<Map<String, dynamic>> configureCollisions(
-      {int meth, int xt, int xs, int yt, int ys, int dead}) {
+  Future<Map<String, dynamic>> configureCollisions({
+    required int meth,
+    required int xt,
+    required int xs,
+    required int yt,
+    required int ys,
+    required int dead,
+  }) {
     final data = [meth, xt, xs, yt, ys, dead];
     return _command(SpheroV1.setCollisionDetection, Uint8List.fromList(data));
   }
@@ -240,7 +251,7 @@ extension SpheroDevice on SpheroBase {
 
   /// The Set RGB LED command sets the colors of Sphero's RGB LED.
   ///
-  /// An object containaing [red], [green], and [blue] values must be provided.
+  /// An object containing [red], [green], and [blue] values must be provided.
   ///
   /// If [flag] is set to 1 (default), the color is persisted across power
   /// cycles.
@@ -407,7 +418,7 @@ extension SpheroDevice on SpheroBase {
   /// - `1-31`: Unassigned
   ///
   /// ```dart
-  /// // enable stop on disconnect behaviour
+  /// // enable stop on disconnect behavior
   /// await orb.setTempOptionFlags(0x01);
   /// ```
   Future<Map<String, dynamic>> setTempOptionFlags(int flags) =>
@@ -504,7 +515,7 @@ extension SpheroDevice on SpheroBase {
 
   /// The Get SSB command retrieves Sphero's Soul Block.
   ///
-  /// The response is simple, and then the actual block of soulular data returns
+  /// The response is simple, and then the actual block of soul data returns
   /// in an asynchronous message of type 0x0D, due to it's 0x440 byte length
   ///
   /// ```dart
@@ -873,7 +884,7 @@ extension SpheroDevice on SpheroBase {
   /// Refer to the orbBasic language document for further information.
   ///
   /// ```dart
-  /// await orb.submitValuetoInput(0x0000FFFF);
+  /// await orb.submitValueToInput(0x0000FFFF);
   /// ```
   Future<Map<String, dynamic>> submitValueToInput(int val) =>
       _command(SpheroV1.answerInput, val.toHexArray(4));
@@ -884,7 +895,7 @@ extension SpheroDevice on SpheroBase {
   /// It will fail if a program is currently executing out of flash.
   ///
   /// ```dart
-  /// await orb.commitToFlas);
+  /// await orb.commitToFlash();
   /// ```
   Future<Map<String, dynamic>> commitToFlash() =>
       _command(SpheroV1.commitToFlash, null);

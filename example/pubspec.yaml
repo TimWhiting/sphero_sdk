@@ -21,20 +21,16 @@ environment:
   sdk: '>=2.7.0 <3.0.0'
 
 dependencies:
+  enum_to_string: any
   flutter:
     sdk: flutter
+  flutter_ble_lib: any
   flutter_hooks: any
   flutter_riverpod: any
   hooks_riverpod: any
-  enum_to_string: any
-  flutter_ble_lib: any
   permission_handler: any
   sphero_sdk:
     path: ../
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.0
 
 dev_dependencies:
   flutter_test:

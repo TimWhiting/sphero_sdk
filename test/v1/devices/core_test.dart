@@ -4,12 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sphero_sdk/src/v1/devices/core.dart';
 
 class SpheroTest extends SpheroBase {
-  int deviceId;
-  int command;
-  Uint8List data;
+  late int deviceId;
+  late int command;
+  Uint8List? data;
   @override
   Future<Map<String, dynamic>> baseCommand(
-      int deviceId, int command, Uint8List data) async {
+      int deviceId, int command, Uint8List? data) async {
     this.deviceId = deviceId;
     this.command = command;
     this.data = data;
@@ -19,7 +19,7 @@ class SpheroTest extends SpheroBase {
 
 void main() {
   group('Core', () {
-    SpheroTest core;
+    late SpheroTest core;
     setUp(() {
       core = SpheroTest();
     });
@@ -116,7 +116,7 @@ void main() {
         expect(core.data, [0x00, 0x0F]);
       });
 
-      test('jumpToBotloader calls command with params', () async {
+      test('jumpToBootloader calls command with params', () async {
         await core.jumpToBootloader();
         expect(core.deviceId, 0x00);
         expect(core.command, 0x30);

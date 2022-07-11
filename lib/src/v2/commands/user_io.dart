@@ -63,8 +63,8 @@ class UserIO {
       commandId: AnimatronicsCommandIds.shoulderAction, payload: [waddle]));
   Command playR2D2Sound(int hex1, int hex2) => _encode(CommandPartial(
       commandId: UserIOCommandIds.playAudioFile, payload: [hex1, hex2, 0x00]));
-  Command startIdleLedAnimation() => _encode(
-      CommandPartial(commandId: UserIOCommandIds.startIdleLedAnimation));
+  Command startIdleLedAnimation() => _encode(CommandPartial(
+      commandId: UserIOCommandIds.startIdleLedAnimation, payload: []));
   Command setAudioVolume(int vol) => _encode(
       CommandPartial(commandId: UserIOCommandIds.audioVolume, payload: [vol]));
 }

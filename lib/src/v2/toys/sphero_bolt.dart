@@ -1,9 +1,10 @@
-import 'core.dart';
+import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
+
 import 'rollable_toy.dart';
 import 'types.dart';
 
 class SpheroBolt extends RollableToy {
-  SpheroBolt(Peripheral peripheral) : super(peripheral);
+  SpheroBolt(BluetoothDevice peripheral) : super(peripheral);
   static final advertisement = ToyAdvertisement(
       name: 'Sphero Bolt', prefix: 'SB-', typeof: (p) => SpheroBolt(p));
 

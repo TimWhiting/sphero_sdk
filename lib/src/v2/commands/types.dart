@@ -120,12 +120,12 @@ class DriveFlag {
 
 class AllFlags {
   AllFlags({
-    this.isResponse,
-    this.requestsResponse,
-    this.requestsOnlyErrorResponse,
-    this.resetsInactivityTimeout,
-    this.commandHasTargetId,
-    this.commandHasSourceId,
+    required this.isResponse,
+    required this.requestsResponse,
+    required this.requestsOnlyErrorResponse,
+    required this.resetsInactivityTimeout,
+    required this.commandHasTargetId,
+    required this.commandHasSourceId,
   });
   final bool isResponse;
   final bool requestsResponse;
@@ -147,33 +147,33 @@ enum CommandId {
 }
 
 class CommandOutput {
-  CommandOutput({this.bytes, this.checksum});
+  CommandOutput({required this.bytes, required this.checksum});
   final List<int> bytes;
   int checksum;
 }
 
 class CommandPartial {
   CommandPartial({
-    this.commandId,
-    this.payload,
+    required this.commandId,
+    this.payload = const [],
     this.targetId,
     this.sourceId,
   });
   List<int> payload;
   final int commandId;
-  int targetId;
-  int sourceId;
+  int? targetId;
+  int? sourceId;
 }
 
 class Command extends CommandPartial {
   Command({
-    List<int> payload,
-    int commandId,
-    int targetId,
-    int sourceId,
-    this.deviceId,
-    this.commandFlags,
-    this.sequenceNumber,
+    required List<int> payload,
+    required int commandId,
+    required this.sequenceNumber,
+    required this.deviceId,
+    int? targetId,
+    int? sourceId,
+    this.commandFlags = const [],
   }) : super(
           payload: payload,
           commandId: commandId,
@@ -181,10 +181,10 @@ class Command extends CommandPartial {
           sourceId: sourceId,
         );
   Command.fromPart({
-    CommandPartial part,
-    this.deviceId,
-    this.commandFlags,
-    this.sequenceNumber,
+    required CommandPartial part,
+    required this.deviceId,
+    required this.sequenceNumber,
+    this.commandFlags = const [],
   }) : super(
           commandId: part.commandId,
           payload: part.payload,
@@ -204,29 +204,36 @@ typedef CommandGenerator = CommandEncoder Function(int deviceId);
 typedef CommandEncoder = Command Function(CommandPartial partial);
 
 @freezed
-abstract class ThreeAxisSensor with _$ThreeAxisSensor {
-  const factory ThreeAxisSensor({double x, double y, double z}) =
-      _ThreeAxisSensor;
+class ThreeAxisSensor with _$ThreeAxisSensor {
+  const factory ThreeAxisSensor({
+    required double x,
+    required double y,
+    required double z,
+  }) = _ThreeAxisSensor;
 }
 
 @freezed
-abstract class TwoAxisSensor with _$TwoAxisSensor {
-  const factory TwoAxisSensor({double x, double y}) = _TwoAxisSensor;
+class TwoAxisSensor with _$TwoAxisSensor {
+  const factory TwoAxisSensor({required double x, required double y}) =
+      _TwoAxisSensor;
 }
 
 @freezed
-abstract class AngleSensor with _$AngleSensor {
-  const factory AngleSensor({double pitch, double roll, double yaw}) =
-      _AngleSensor;
+class AngleSensor with _$AngleSensor {
+  const factory AngleSensor({
+    required double pitch,
+    required double roll,
+    required double yaw,
+  }) = _AngleSensor;
 }
 
 @freezed
-abstract class SensorResponse with _$SensorResponse {
+class SensorResponse with _$SensorResponse {
   const factory SensorResponse({
-    @nullable AngleSensor angles,
-    @nullable ThreeAxisSensor accelerometer,
-    @nullable ThreeAxisSensor gyro,
-    @nullable TwoAxisSensor position,
-    @nullable TwoAxisSensor velocity,
+    AngleSensor? angles,
+    ThreeAxisSensor? accelerometer,
+    ThreeAxisSensor? gyro,
+    TwoAxisSensor? position,
+    TwoAxisSensor? velocity,
   }) = _SensorResponse;
 }

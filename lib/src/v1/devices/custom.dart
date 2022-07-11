@@ -34,17 +34,17 @@ mixin Custom on SpheroBase {
     var m = mask;
     if (remove) {
       m = xor32bit(m);
-      return ds[id] & m;
+      return ds[id]! & m;
     }
 
-    return ds[id] | m;
+    return ds[id]! | m;
   }
 
   void on(String name, Function(dynamic) data) {
     if (eventListeners[name] == null) {
       eventListeners[name] = [];
     }
-    eventListeners[name].add(data);
+    eventListeners[name]!.add(data);
   }
 
   void emit(String name, dynamic data) {
@@ -54,17 +54,17 @@ mixin Custom on SpheroBase {
     }
   }
 
-  /// Generic Data Streaming setup, using Sphero's setDataStraming command.
+  /// Generic Data Streaming setup, using Sphero's setDataStreaming command.
   ///
   /// Users need to listen for the `dataStreaming` event, or a custom event, to
   /// get the data.
   Future<Map<String, dynamic>> streamData({
-    String event,
-    int mask1,
+    required String event,
+    required List<String> fields,
+    required bool remove,
+    int mask1 = 0,
     int mask2 = 0,
-    List<String> fields,
     int sps = 2,
-    bool remove,
   }) {
     // options for streaming data
     final n = (400 / sps).round();
@@ -83,7 +83,7 @@ mixin Custom on SpheroBase {
       emit(event, params);
     });
 
-    return setDataStreaming(n, m, m1, m2, pcnt);
+    return setDataStreaming(n: n, m: m, mask1: m1, mask2: m2, pcnt: pcnt);
   }
 
   /// The Random Color command sets Sphero to a randomly-generated color.
@@ -126,8 +126,8 @@ mixin Custom on SpheroBase {
   ///   print('  y: ${data.['y']}');
   ///   print('  z: ${data.['z']}');
   ///   print('  axis: ${data.['axis']}');
-  ///   print('  xMagnitud: ${data.['xMagnitude']}');
-  ///   print('  yMagnitud: ${data.['yMagnitude']}');
+  ///   print('  xMagnitude: ${data.['xMagnitude']}');
+  ///   print('  yMagnitude: ${data.['yMagnitude']}');
   ///   print('  speed: ${data.['speed']}');
   ///   print('  timeStamp: ${data.['timeStamp'])}';
   /// });
@@ -192,7 +192,7 @@ mixin Custom on SpheroBase {
         blue: color['blue'] as int);
     await setRgbLed(0, 0, 0);
     await setBackLed(127);
-    return setStabiliation(false);
+    return setStabilization(false);
   }
 
   /// The Finish Calibration command ends Sphero's calibration mode, by setting
@@ -216,7 +216,7 @@ mixin Custom on SpheroBase {
   /// ```
   Future<Map<String, dynamic>> setDefaultSettings() {
     setBackLed(0);
-    return setStabiliation(true);
+    return setStabilization(true);
   }
 
   /// Starts streaming of odometer data at [sps] samples per second. Setting
@@ -230,8 +230,8 @@ mixin Custom on SpheroBase {
   ///
   /// orb.on('odometer', Function(data) {
   ///   print('data:');
-  ///   print('  xOdomoter:', data.xOdomoter);
-  ///   print('  yOdomoter:', data.yOdomoter);
+  ///   print('  xOdometer:', data.xOdometer);
+  ///   print('  yOdometer:', data.yOdometer);
   /// });
   /// ```
   Future<Map<String, dynamic>> streamOdometer(

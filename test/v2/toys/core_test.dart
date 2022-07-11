@@ -1,15 +1,15 @@
-import 'dart:typed_data';
+// ignore_for_file: null_argument_to_non_null_type
 
-import 'package:flutter_ble_lib/flutter_ble_lib.dart';
+import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sphero_sdk/src/v2/toys/index.dart';
 
-class PeripheralMock extends Mock implements Peripheral {
+class PeripheralMock extends Mock implements BluetoothDevice {
   PeripheralMock() {
-    when(discoverAllServicesAndCharacteristics()).thenReturn(null);
-    when(services()).thenAnswer((_) => Future.value(_services));
-    when(connect()).thenReturn(null);
+    when(discoverServices()).thenReturn(Future.value());
+    when(services).thenAnswer((_) => Stream.value(_services));
+    when(connect()).thenReturn(Future.value());
   }
   final _services = [
     ServiceMock(
@@ -30,29 +30,26 @@ class PeripheralMock extends Mock implements Peripheral {
 }
 
 // ignore: avoid_implementing_value_types
-class CharacteristicMock extends Mock implements Characteristic {
+class CharacteristicMock extends Mock implements BluetoothCharacteristic {
   CharacteristicMock(this.uuidMock) {
-    when(monitor(transactionId: anyNamed('transactionId'))).thenAnswer((_) {
-      print('Returning stream');
-      return Stream.value(Uint8List(1));
-    });
+    when(setNotifyValue(true)).thenAnswer((_) async => true);
     when(uuid).thenReturn(uuidMock);
 
-    when(write(any, true)).thenAnswer((realInvocation) => null);
+    when(write([], withoutResponse: true))
+        .thenAnswer((realInvocation) => Future.value(null));
   }
 
-  final String uuidMock;
+  final Guid uuidMock;
 }
 
 // ignore: avoid_implementing_value_types
-class ServiceMock extends Mock implements Service {
-  ServiceMock(this.characteristicsMock, {this.uuid}) {
-    when(characteristics())
-        .thenAnswer((_) => Future.value(characteristicsMock));
+class ServiceMock extends Mock implements BluetoothService {
+  ServiceMock(this.characteristicsMock, {required this.uuid}) {
+    when(characteristics).thenAnswer((_) => characteristicsMock);
   }
-  final List<Characteristic> characteristicsMock;
+  final List<BluetoothCharacteristic> characteristicsMock;
   @override
-  final String uuid;
+  final Guid uuid;
 }
 
 void main() {
@@ -61,6 +58,6 @@ void main() {
 
     final toy = Core(peripheral);
 
-    expect(toy.start, throwsA('Command Timedout'));
+    expect(toy.start, throwsA('Command Timed Out'));
   });
 }

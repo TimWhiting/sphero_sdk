@@ -4,7 +4,7 @@ import 'package:buffer/buffer.dart';
 
 import 'types.dart';
 
-const MINIMUN_PACKET_LENGTH = 6;
+const MINIMUM_PACKET_LENGTH = 6;
 
 int number(List<int> buffer, int offset) => (ByteDataReader(endian: Endian.big)
       ..add(buffer)
@@ -34,8 +34,8 @@ Command classifyPacket(Uint8List packet) {
   final flagsInt = packet[1];
   final flags = decodeFlags(flagsInt);
 
-  int sourceId;
-  int targetId;
+  int? sourceId;
+  int? targetId;
   var nextIndex = 2;
   // ignore: prefer_function_declarations_over_variables
   final shift = () {
@@ -62,16 +62,17 @@ Command classifyPacket(Uint8List packet) {
   final _endPacket = packet.last;
 
   return Command(
-      sourceId: sourceId,
-      targetId: targetId,
-      commandId: commandId,
-      deviceId: deviceId,
-      payload: payload,
-      sequenceNumber: sequenceNumber);
+    sourceId: sourceId,
+    targetId: targetId,
+    commandId: commandId,
+    deviceId: deviceId,
+    payload: payload,
+    sequenceNumber: sequenceNumber,
+  );
 }
 
 Function(int) decodeFactory(
-    void Function(String err, [Command response]) callback) {
+    void Function(String? err, Command? response) callback) {
   var msg = <int>[];
   var checksum = 0;
   var isEscaping = false;
@@ -85,18 +86,18 @@ Function(int) decodeFactory(
   // ignore: prefer_function_declarations_over_variables, avoid_types_on_closure_parameters
   final error = (String errorMessage) {
     init();
-    callback(errorMessage);
+    callback(errorMessage, null);
   };
   return (byte) {
     switch (byte) {
       case APIConstants.startOfPacket:
         if (msg.isNotEmpty) {
           init();
-          return callback('Invalid first byte');
+          return callback('Invalid first byte', null);
         }
         return msg.add(byte);
       case APIConstants.endOfPacket:
-        if (msg.isEmpty || msg.length < MINIMUN_PACKET_LENGTH) {
+        if (msg.isEmpty || msg.length < MINIMUM_PACKET_LENGTH) {
           return error('Invalid last byte ${msg.length}');
         }
 

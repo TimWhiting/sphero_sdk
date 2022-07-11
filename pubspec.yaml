@@ -2,7 +2,7 @@ name: sphero_sdk
 description: A Flutter SDK for Sphero
 version: 0.0.1
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   basics: any
@@ -10,20 +10,19 @@ dependencies:
   dartx: any
   flutter:
     sdk: flutter
-  flutter_ble_lib: any
-  flutter_blue: any
+  flutter_blue_plugin: any
   freezed_annotation: any
   meta: any
   rxdart: any
 
 dev_dependencies:
-  abide: any
   build_runner: any
   derry: any
   flutter_test:
     sdk: flutter
   freezed: any
   mockito: any
+  test: ^1.21.4
 
 flutter:
 

@@ -1,10 +1,9 @@
+import 'package:dartx/dartx.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:example/pages/version_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:hooks_riverpod/all.dart';
-import 'package:dartx/dartx.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'common/state.dart';
 import 'pages/bluetooth_info.dart';
@@ -115,61 +114,42 @@ extension NavX on Pages {
       case Pages.BluetoothInfo:
         return const BluetoothPage();
       case Pages.Calibration:
-        // TODO: Handle this case.
         break;
       case Pages.CollisionDetection:
-        // TODO: Handle this case.
         break;
       case Pages.Color:
-        // TODO: Handle this case.
         break;
       case Pages.Conway:
-        // TODO: Handle this case.
         break;
       case Pages.DataStreaming:
-        // TODO: Handle this case.
         break;
       case Pages.Freefall:
-        // TODO: Handle this case.
         break;
       case Pages.GetColor:
-        // TODO: Handle this case.
         break;
       case Pages.Keyboard:
-        // TODO: Handle this case.
         break;
       case Pages.Location:
-        // TODO: Handle this case.
         break;
       case Pages.Luminance:
-        // TODO: Handle this case.
         break;
       case Pages.Roll:
-        // TODO: Handle this case.
         break;
       case Pages.Shakeometer:
-        // TODO: Handle this case.
         break;
       case Pages.StreamAccelOne:
-        // TODO: Handle this case.
         break;
       case Pages.StreamAccel:
-        // TODO: Handle this case.
         break;
       case Pages.StreamGyro:
-        // TODO: Handle this case.
         break;
       case Pages.StreamIMUAngles:
-        // TODO: Handle this case.
         break;
       case Pages.StreamMotorsBackEMF:
-        // TODO: Handle this case.
         break;
       case Pages.StreamOdometer:
-        // TODO: Handle this case.
         break;
       case Pages.StreamVelocity:
-        // TODO: Handle this case.
         break;
       case Pages.Version:
         return const VersionPage();

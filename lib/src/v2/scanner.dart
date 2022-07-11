@@ -1,9 +1,11 @@
-import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:dartx/dartx.dart';
+import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
+
 import 'toys/index.dart';
 
 class ToyDiscovered<T extends Core> extends ToyAdvertisement<T> {
-  ToyDiscovered.fromAdvertisement(ToyAdvertisement<T> toy, {this.peripheral})
+  ToyDiscovered.fromAdvertisement(ToyAdvertisement<T> toy,
+      {required this.peripheral})
       : super(name: toy.name, typeof: toy.typeof, prefix: toy.prefix);
   final ScanResult peripheral;
 }
@@ -22,38 +24,38 @@ Future<Core> startToy(Core toy) async {
   return toy;
 }
 
-extension BleManagerXV2 on BleManager {
+extension BleManagerXV2 on FlutterBlue {
   /// Searches (but does not start) toys that match the passed criteria
   Future<List<ToyDiscovered>> findToys(List<ToyAdvertisement> toysType) async {
     print('findToys');
     final toys = <ToyDiscovered>[];
 
     print('Scanning devices...');
-    startPeripheralScan().listen((sr) {
+    startScan().listen((sr) {
       sr.discover(toysType, toys);
     });
     print('findToys-wait5seconds');
     await Future.delayed(5000.milliseconds);
-    await stopPeripheralScan();
+    await stopScan();
     print('Done scanning devices.');
     return toys;
   }
 
   /// Searches toys that match the passed criteria,
   /// starts the first found toy and returns it
-  Future<T> find<T extends Core>(ToyAdvertisement toyType,
-      [String name]) async {
+  Future<T?> find<T extends Core>(ToyAdvertisement toyType,
+      [String? name]) async {
     final discovered = await findToys([toyType]);
     final discoveredItem = discovered.firstOrNullWhere(
             (item) => item.peripheral.advertisementData.localName == name) ??
         discovered[0];
 
-    if (discoveredItem == null) {
-      print('Not found');
-      return null;
-    }
+    // if (discoveredItem == null) {
+    //   print('Not found');
+    //   return null;
+    // }
 
-    final toy = toyType.typeof(discoveredItem.peripheral.peripheral);
+    final toy = toyType.typeof(discoveredItem.peripheral.device);
 
     await startToy(toy);
 
@@ -66,11 +68,11 @@ extension BleManagerXV2 on BleManager {
     if (discovered.isNotEmpty) {
       // Init toys and return array
       return Future.wait(discovered.fold(<Future<Core>>[], (toyArray, item) {
-        final toy = toyType.typeof(item.peripheral.peripheral);
+        final toy = toyType.typeof(item.peripheral.device);
         return [...toyArray, Future(() => startToy(toy))];
       }));
     } else {
-      print('Not found');
+      throw Exception('Not found');
     }
   }
 
@@ -116,15 +118,15 @@ extension on ScanResult {
   ) async {
     // print('Discovered ${advertisementData.localName}');
 
-    final localName = advertisementData.localName ?? '';
+    final localName = advertisementData.localName;
     for (final toyAdvertisement in validToys) {
       if (localName.indexOf(toyAdvertisement.prefix) == 0) {
         toys.add(ToyDiscovered.fromAdvertisement(toyAdvertisement,
             peripheral: this));
 
         print('''name: ${toyAdvertisement.name},
-   uuid: ${peripheral.identifier},
-   mac-address: ${peripheral.identifier}''');
+   uuid: ${device.deviceId},
+   mac-address: ${advertisementData.localName}''');
       }
     }
   }

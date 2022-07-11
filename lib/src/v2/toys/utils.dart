@@ -6,7 +6,7 @@ import 'types.dart';
 List<int> sensorValuesToRawV2(List<int> sensorMask,
         [APIVersion apiVersion = APIVersion.V2]) =>
     sensorMask.fold([], (v2, m) {
-      int mask;
+      int? mask;
       switch (m) {
         case SensorMaskValues.accelerometer:
           mask = SensorMaskV2.accelerometerFilteredAll;
@@ -32,7 +32,7 @@ List<int> sensorValuesToRawV2(List<int> sensorMask,
 List<int> sensorValuesToRawV21(List<int> sensorMask,
         [APIVersion apiVersion = APIVersion.V2]) =>
     sensorMask.fold<List<int>>([], (v21, m) {
-      int mask;
+      int? mask;
       if (m == SensorMaskValues.gyro && apiVersion == APIVersion.V21) {
         mask = SensorMaskV2.gyroFilteredAllV21;
       }
@@ -69,7 +69,12 @@ double convertBinaryToFloat(List<int> nums, int offset) {
 }
 
 class ParserState {
-  ParserState({this.location, this.response, this.floats, this.sensorMask});
+  ParserState({
+    required this.location,
+    required this.response,
+    required this.floats,
+    required this.sensorMask,
+  });
   final int location;
   final SensorResponse response;
   final List<double> floats;
@@ -186,7 +191,7 @@ ParserState fillGyroV21(ParserState state) {
   return state;
 }
 
-List<double> tranformToFloat(List<int> bytes) {
+List<double> transformToFloat(List<int> bytes) {
   final floats = <double>[];
 
   for (var i = 0; i < bytes.length; i += 4) {
@@ -197,7 +202,7 @@ List<double> tranformToFloat(List<int> bytes) {
 
 SensorResponse parseSensorEvent(List<int> payload, SensorMaskRaw sensorMask) {
   var state = ParserState(
-    floats: tranformToFloat(payload),
+    floats: transformToFloat(payload),
     sensorMask: sensorMask,
     location: 0,
     response: const SensorResponse(),

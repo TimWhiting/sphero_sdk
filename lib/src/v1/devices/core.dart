@@ -5,12 +5,12 @@ import 'command.dart';
 abstract class SpheroBase {
   final Map<String, int> ds = {};
   Future<Map<String, dynamic>> baseCommand(
-      int deviceId, int command, Uint8List data);
+      int deviceId, int command, Uint8List? data);
   final Map<String, List<void Function(dynamic)>> eventListeners = {};
 }
 
 extension Core on SpheroBase {
-  Future<Map<String, dynamic>> _coreCommand(int command, Uint8List data) =>
+  Future<Map<String, dynamic>> _coreCommand(int command, Uint8List? data) =>
       baseCommand(0x00, command, data);
 
   /// The Ping command verifies the Sphero is awake and receiving commands.
@@ -130,7 +130,7 @@ extension Core on SpheroBase {
   ///
   /// [wakeup] the number of seconds for Sphero to
   /// re-awaken after.
-  /// 0x00 tells Sphero to sleep forever, 0xFFFF attemps to put Sphero into deep
+  /// 0x00 tells Sphero to sleep forever, 0xFFFF attempts to put Sphero into deep
   /// sleep.
   /// [startMacro] if non-zero, Sphero will
   /// attempt to run this macro ID
@@ -213,7 +213,7 @@ extension Core on SpheroBase {
       _coreCommand(CoreV1.goToBl, null);
 
   /// The Perform Level 1 Diagnostics command is a developer-level command to
-  /// help diagnose aberrant behaviour in Sphero.
+  /// help diagnose aberrant behavior in Sphero.
   ///
   /// Most process flags, system counters, and system states are decoded to
   /// human-readable ASCII.
@@ -227,7 +227,7 @@ extension Core on SpheroBase {
       _coreCommand(CoreV1.runL1Diags, null);
 
   /// The Perform Level 2 Diagnostics command is a developer-level command to
-  /// help diagnose aberrant behaviour in Sphero.
+  /// help diagnose aberrant behavior in Sphero.
   ///
   /// It's much less informative than the Level 1 command, but is in binary
   /// format and easier to parse.

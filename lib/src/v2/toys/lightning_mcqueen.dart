@@ -1,13 +1,16 @@
+import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
+
 import 'core.dart';
 import 'rollable_toy.dart';
 import 'types.dart';
 
 class LightningMcQueen extends RollableToy {
-  LightningMcQueen(Peripheral peripheral) : super(peripheral);
+  LightningMcQueen(BluetoothDevice peripheral) : super(peripheral);
   static final advertisement = ToyAdvertisement(
-      name: 'Lightning McQueen',
-      prefix: 'LM-',
-      typeof: (p) => LightningMcQueen(p));
+    name: 'Lightning McQueen',
+    prefix: 'LM-',
+    typeof: (p) => LightningMcQueen(p),
+  );
 
   Future<QueuePayload> driveAsRc(int heading, int speed) {
     final cmd = commands.driving.driveAsRc(heading, speed);

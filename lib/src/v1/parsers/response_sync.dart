@@ -1,7 +1,7 @@
 import 'response.dart';
 
-const RES_PARSER = {
-  '0:2': APIV1(
+final RES_PARSER = {
+  '0:2': const APIV1(
     desc: 'Get Version',
     did: 0x00,
     cid: 0x02,
@@ -20,7 +20,7 @@ const RES_PARSER = {
       // APIField(name: 'apiMin', type: 'number', from: 9, to: 10),
     ],
   ),
-  '0:11': APIV1(
+  '0:11': const APIV1(
     desc: 'Get Bluetooth Info',
     did: 0x00,
     cid: 0x11,
@@ -33,7 +33,7 @@ const RES_PARSER = {
       APIField(name: 'colors', type: 'number', format: 'hex', from: 29, to: 32)
     ],
   ),
-  '0:13': APIV1(
+  '0:13': const APIV1(
     desc: 'Get Auto-reconnect Info',
     did: 0x00,
     cid: 0x13,
@@ -43,7 +43,7 @@ const RES_PARSER = {
       APIField(name: 'time', type: 'number', from: 1, to: 2),
     ],
   ),
-  '0:20': APIV1(
+  '0:20': const APIV1(
       desc: 'Get Power State Info',
       did: 0x00,
       cid: 0x20,
@@ -65,7 +65,7 @@ const RES_PARSER = {
         APIField(name: 'chargeCount', type: 'number', from: 4, to: 6),
         APIField(name: 'secondsSinceCharge', type: 'number', from: 6, to: 8)
       ]),
-  '0:23': APIV1(
+  '0:23': const APIV1(
       desc: 'Get Voltage Trip Points',
       did: 0x00,
       cid: 0x23,
@@ -74,7 +74,7 @@ const RES_PARSER = {
         APIField(name: 'vLow', type: 'number', from: 0, to: 2),
         APIField(name: 'vCrit', type: 'number', from: 2, to: 4)
       ]),
-  '0:41': APIV1(
+  '0:41': const APIV1(
       desc: 'Level 2 Diagnostics',
       did: 0x00,
       cid: 0x41,
@@ -103,7 +103,7 @@ const RES_PARSER = {
         APIField(name: 'sensorFailures', type: 'number', from: 82, to: 84),
         APIField(name: 'gyroAdjustCount', type: 'number', from: 84, to: 88)
       ]),
-  '0:51': APIV1(
+  '0:51': const APIV1(
       desc: 'Poll Packet Times',
       did: 0x00,
       cid: 0x51,
@@ -113,7 +113,7 @@ const RES_PARSER = {
         APIField(name: 't2', type: 'number', from: 4, to: 8),
         APIField(name: 't3', type: 'number', from: 8, to: 12)
       ]),
-  '2:7': APIV1(
+  '2:7': const APIV1(
       desc: 'Get Chassis Id',
       did: 0x02,
       cid: 0x07,
@@ -124,7 +124,7 @@ const RES_PARSER = {
           type: 'number',
         )
       ]),
-  '2:15': APIV1(
+  '2:15': const APIV1(
       desc: 'Read Locator',
       did: 0x02,
       cid: 0x15,
@@ -136,7 +136,7 @@ const RES_PARSER = {
         APIField(name: 'yvel', type: 'number', from: 6, to: 8),
         APIField(name: 'sog', type: 'number', from: 8, to: 10)
       ]),
-  '2:22': APIV1(
+  '2:22': const APIV1(
       desc: 'Get RGB LED',
       did: 0x02,
       cid: 0x22,
@@ -147,7 +147,7 @@ const RES_PARSER = {
         APIField(name: 'green', type: 'number', from: 1, to: 2),
         APIField(name: 'blue', type: 'number', from: 2, to: 3)
       ]),
-  '2:36': APIV1(
+  '2:36': const APIV1(
       desc: 'Get Permanent Option Flags',
       did: 0x02,
       cid: 0x36,
@@ -199,7 +199,7 @@ const RES_PARSER = {
             mask: 0x100,
             values: {0x00: false, 0x100: true})
       ]),
-  '2:38': APIV1(
+  '2:38': const APIV1(
       desc: 'Get Temporal Option Flags',
       did: 0x02,
       cid: 0x38,
@@ -211,7 +211,7 @@ const RES_PARSER = {
             mask: 0x01,
             values: {0x00: false, 0x01: true})
       ]),
-  '2:44': APIV1(
+  '2:44': const APIV1(
       desc: 'Get Device Mode',
       did: 0x02,
       cid: 0x44,
@@ -222,7 +222,7 @@ const RES_PARSER = {
             type: 'predefined',
             values: {0x00: 'Normal', 0x01: 'User Hack'})
       ]),
-  '2:48': APIV1(
+  '2:48': const APIV1(
       desc: 'Refill Bank',
       did: 0x02,
       cid: 0x48,
@@ -230,7 +230,7 @@ const RES_PARSER = {
       fields: [
         APIField(name: 'coresRemaining', type: 'number'),
       ]),
-  '2:49': APIV1(
+  '2:49': const APIV1(
       desc: 'Buy Consumable',
       did: 0x02,
       cid: 0x49,
@@ -239,7 +239,7 @@ const RES_PARSER = {
         APIField(name: 'qtyRemaining', type: 'number', from: 0, to: 1),
         APIField(name: 'coresRemaining', type: 'number', from: 1, to: 5)
       ]),
-  '2:4A': APIV1(
+  '2:4A': const APIV1(
       desc: 'Use Consumable',
       did: 0x02,
       cid: 0x4A,
@@ -248,7 +248,7 @@ const RES_PARSER = {
         APIField(name: 'id', type: 'number', from: 0, to: 1),
         APIField(name: 'qtyRemaining', type: 'number', from: 1, to: 2)
       ]),
-  '2:4B': APIV1(
+  '2:4B': const APIV1(
       desc: 'Grant Cores',
       did: 0x02,
       cid: 0x4B,
@@ -259,13 +259,18 @@ const RES_PARSER = {
           type: 'number',
         )
       ]),
-  '2:4C': APIV1(desc: 'Add XP', did: 0x02, cid: 0x4C, event: 'addXp', fields: [
-    APIField(
-      name: 'toNextLevel',
-      type: 'number',
-    )
-  ]),
-  '2:4D': APIV1(
+  '2:4C': const APIV1(
+      desc: 'Add XP',
+      did: 0x02,
+      cid: 0x4C,
+      event: 'addXp',
+      fields: [
+        APIField(
+          name: 'toNextLevel',
+          type: 'number',
+        )
+      ]),
+  '2:4D': const APIV1(
       desc: 'Level up Attr',
       did: 0x02,
       cid: 0x4D,
@@ -275,13 +280,13 @@ const RES_PARSER = {
         APIField(name: 'attrLevel', type: 'number', from: 1, to: 2),
         APIField(name: 'attrPtsRemaining', type: 'number', from: 2, to: 4)
       ]),
-  '2:4E': APIV1(
+  '2:4E': const APIV1(
       desc: 'GET PWD SEED',
       did: 0x02,
       cid: 0x4E,
       event: 'passwordSeed',
       fields: [APIField(name: 'seed', type: 'number')]),
-  '2:55': APIV1(
+  '2:55': const APIV1(
       desc: 'Abort Macro',
       did: 0x02,
       cid: 0x55,
@@ -290,7 +295,7 @@ const RES_PARSER = {
         APIField(name: 'id', type: 'number', from: 0, to: 1),
         APIField(name: 'cmdNum', type: 'number', from: 1, to: 3)
       ]),
-  '2:56': APIV1(
+  '2:56': const APIV1(
       desc: 'Get Macro Status',
       did: 0x02,
       cid: 0x55,

@@ -15,19 +15,17 @@ extension Encoding on Command {
         true);
 
     if (targetId != null) {
-      encodeBytes(out, targetId, true);
+      encodeBytes(out, targetId!, true);
     }
 
     encodeBytes(out, deviceId, true);
     encodeBytes(out, commandId, true);
     encodeBytes(out, sequenceNumber, true);
 
-    if (payload != null) {
-      // ignore: avoid_function_literals_in_foreach_calls
-      payload.forEach((byte) {
-        encodeBytes(out, byte, true);
-      });
+    for (final byte in payload) {
+      encodeBytes(out, byte, true);
     }
+
     out.checksum = ~out.checksum;
     encodeBytes(out, out.checksum);
     out.bytes.add(APIConstants.endOfPacket);
