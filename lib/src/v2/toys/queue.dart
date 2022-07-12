@@ -10,7 +10,7 @@ class CommandQueueItem<T> {
 
 class QueueListener<T> {
   QueueListener({required this.onExecute, required this.match});
-  final Future<dynamic> Function(T command) onExecute;
+  final Future<Object?> Function(T command) onExecute;
   final bool Function(T commandA, T commandB) match;
 }
 

@@ -6,10 +6,10 @@ import 'types.dart';
 
 class LightningMcQueen extends RollableToy {
   LightningMcQueen(BluetoothDevice peripheral) : super(peripheral);
-  static final advertisement = ToyAdvertisement(
+  static const advertisement = ToyAdvertisement(
     name: 'Lightning McQueen',
     prefix: 'LM-',
-    typeof: (p) => LightningMcQueen(p),
+    typeof: LightningMcQueen.new,
   );
 
   Future<QueuePayload> driveAsRc(int heading, int speed) {

@@ -5,8 +5,8 @@ import 'types.dart';
 
 class SpheroBolt extends RollableToy {
   SpheroBolt(BluetoothDevice peripheral) : super(peripheral);
-  static final advertisement = ToyAdvertisement(
-      name: 'Sphero Bolt', prefix: 'SB-', typeof: (p) => SpheroBolt(p));
+  static const advertisement = ToyAdvertisement(
+      name: 'Sphero Bolt', prefix: 'SB-', typeof: SpheroBolt.new);
 
   @override
   double get maxVoltage => 3.9;

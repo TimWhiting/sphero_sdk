@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -41,7 +43,7 @@ class Core {
   bool started = false;
   late final Queue<QueuePayload> queue;
   final initCompleter = Completer<void>();
-  final eventsListeners = <String, Future<void> Function(dynamic args)>{};
+  final eventsListeners = <String, Future<void> Function(Object? args)>{};
   final sensorMask = SensorMaskRaw(v2: [], v21: []);
 
   Future<void> init() async {
@@ -114,15 +116,15 @@ class Core {
   }
 
   /// Determines and returns the system app version of the toy
-  Future<Map<String, dynamic>> appVersion() async {
+  Future<Map<String, int>> appVersion() async {
     final response = await queueCommand(commands.systemInfo.appVersion());
-    return {
+    return <String, int>{
       'major': number(response.command.payload, 1),
       'minor': number(response.command.payload, 3)
     };
   }
 
-  void on(String eventName, Future<void> Function(dynamic) handler) {
+  void on(String eventName, Future<void> Function(Object?) handler) {
     eventsListeners[eventName] = handler;
   }
 
@@ -134,18 +136,26 @@ class Core {
 
   Future<void> configureSensorStream() async {
     // save it so on response we can parse it
-    final sensorMask = sensorValuesToRaw([
-      SensorMaskValues.accelerometer,
-      SensorMaskValues.orientation,
-      SensorMaskValues.locator,
-      SensorMaskValues.gyro
-    ], apiVersion);
+    final sensorMask = sensorValuesToRaw(
+      [
+        SensorMaskValues.accelerometer,
+        SensorMaskValues.orientation,
+        SensorMaskValues.locator,
+        SensorMaskValues.gyro
+      ],
+      apiVersion,
+    );
 
-    await queueCommand(commands.sensor.sensorMask(
-        flatSensorMask(sensorMask.v2), SensorControlDefaults.interval));
+    await queueCommand(
+      commands.sensor.sensorMask(
+        flatSensorMask(sensorMask.v2),
+        SensorControlDefaults.interval,
+      ),
+    );
     if (sensorMask.v21.isNotEmpty) {
       await queueCommand(
-          commands.sensor.sensorMaskExtended(flatSensorMask(sensorMask.v21)));
+        commands.sensor.sensorMaskExtended(flatSensorMask(sensorMask.v21)),
+      );
     }
   }
 
@@ -160,12 +170,20 @@ class Core {
     int deadTime = 10,
     int method = 0x01,
   }) =>
-      queueCommand(commands.sensor.configureCollision(
-          xThreshold, yThreshold, xSpeed, ySpeed, deadTime,
-          method: method));
+      queueCommand(
+        commands.sensor.configureCollision(
+          xThreshold,
+          yThreshold,
+          xSpeed,
+          ySpeed,
+          deadTime,
+          method: method,
+        ),
+      );
 
   Future<QueuePayload> queueCommand(Command command) => queue.queue(
-      QueuePayload(characteristic: apiV2Characteristic, command: command));
+        QueuePayload(characteristic: apiV2Characteristic, command: command),
+      );
 
   Future<void> onExecute(QueuePayload item) async {
     if (!started) {
@@ -260,7 +278,7 @@ class Core {
     data.forEach(decoder);
   }
 
-  void onApiNotify(dynamic data) {
+  void onApiNotify(Object? data) {
     if (initCompleter.isCompleted) {
       print('onApiNotify $data');
       initCompleter.complete();
@@ -268,12 +286,12 @@ class Core {
     }
   }
 
-  Future<dynamic> onDFUControlNotify(dynamic data) {
+  Future<Object?> onDFUControlNotify(Object? data) {
     print('onDFUControlNotify $data');
     return write(dfuControlCharacteristic, Uint8List.fromList([0x30]));
   }
 
-  Future<dynamic> write(BluetoothCharacteristic c, dynamic data) async {
+  Future<Object?> write(BluetoothCharacteristic c, Object? data) async {
     Uint8List buff;
     if (data is String) {
       buff = Uint8List.fromList(utf8.encode(data));

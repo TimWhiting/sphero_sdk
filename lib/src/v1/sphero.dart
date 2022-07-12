@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:sphero_sdk/src/v1/devices/custom.dart';
-import 'package:sphero_sdk/src/v1/packet.dart';
+import 'devices/custom.dart';
+import 'packet.dart';
 
 import 'adaptor.dart';
 import 'devices/core.dart';
@@ -23,7 +23,7 @@ class CommandQueueItemV1 {
   CommandQueueItemV1({required this.packet, required this.completer});
 
   final PacketV1 packet;
-  final Completer<Map<String, dynamic>> completer;
+  final Completer<Map<String, Object?>> completer;
 }
 
 class Sphero extends SpheroBase with Custom {
@@ -71,7 +71,7 @@ class Sphero extends SpheroBase with Custom {
     connection.onRead = (payload) {
       emit('data', payload);
       final parsedPayload = packet.parse(payload);
-      Map<String, dynamic>? parsedData;
+      Map<String, Object?>? parsedData;
 
       if (parsedPayload!.sop2 == SOP2.sync) {
         // synchronous packet
@@ -111,10 +111,13 @@ class Sphero extends SpheroBase with Custom {
   /// Adds a command to the queue and calls for the next command in the queue
   /// to try to execute.
   @override
-  Future<Map<String, dynamic>> baseCommand(
-      int vDevice, int cmdName, Uint8List? data) {
+  Future<Map<String, Object?>> baseCommand(
+    int vDevice,
+    int cmdName,
+    Uint8List? data,
+  ) {
     final seq = _incSeq();
-    final completer = Completer<Map<String, dynamic>>();
+    final completer = Completer<Map<String, Object?>>();
     final cmdPacket = packet.create(
       sop2: sop2Bitfield,
       did: vDevice,
@@ -130,7 +133,9 @@ class Sphero extends SpheroBase with Custom {
   /// Adds a sphero [command] to the queue, with a [completer] that completes
   /// when the response comes back
   void _queueCommand(
-      PacketV1 command, Completer<Map<String, dynamic>> completer) {
+    PacketV1 command,
+    Completer<Map<String, Object?>> completer,
+  ) {
     if (commandQueue.length == 256) {
       commandQueue.removeAt(0);
     }
@@ -156,11 +161,13 @@ class Sphero extends SpheroBase with Custom {
   /// Adds a Future to the queue, to be executed when a response
   /// gets back from the sphero.
   void _queueFuture(
-      PacketV1 cmdPacket, Completer<Map<String, dynamic>> completer) {
+    PacketV1 cmdPacket,
+    Completer<Map<String, Object?>> completer,
+  ) {
     final seq = cmdPacket.seq;
 
     // ignore: prefer_function_declarations_over_variables, avoid_types_on_closure_parameters
-    final handler = (Map<String, dynamic>? packet) {
+    final handler = (Map<String, Object?>? packet) {
       final item = responseQueue.remove(seq);
       item?.timer?.cancel();
       busy = false;
@@ -192,7 +199,7 @@ class Sphero extends SpheroBase with Custom {
   /// back from the sphero or the deadtime for the commands sent expires.
   ///
   /// Based on the [seq] number of the response, and the parsed [packet]
-  void _execCallback(int seq, Map<String, dynamic> packet) {
+  void _execCallback(int seq, Map<String, Object?> packet) {
     final response = responseQueue[seq];
 
     if (response != null) {
@@ -224,7 +231,7 @@ class Sphero extends SpheroBase with Custom {
 class CommandQueueResponseItem {
   CommandQueueResponseItem({required this.handler, required this.commandID});
 
-  final Function(Map<String, dynamic>) handler;
+  final Function(Map<String, Object?>) handler;
   final CommandID commandID;
   Timer? timer;
 }

@@ -1,12 +1,15 @@
+// ignore_for_file: avoid_print
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
 
 import 'toys/index.dart';
 
 class ToyDiscovered<T extends Core> extends ToyAdvertisement<T> {
-  ToyDiscovered.fromAdvertisement(ToyAdvertisement<T> toy,
-      {required this.peripheral})
-      : super(name: toy.name, typeof: toy.typeof, prefix: toy.prefix);
+  ToyDiscovered.fromAdvertisement(
+    ToyAdvertisement<T> toy, {
+    required this.peripheral,
+  }) : super(name: toy.name, typeof: toy.typeof, prefix: toy.prefix);
   final ScanResult peripheral;
 }
 
@@ -35,7 +38,7 @@ extension BleManagerXV2 on FlutterBlue {
       sr.discover(toysType, toys);
     });
     print('findToys-wait5seconds');
-    await Future.delayed(5000.milliseconds);
+    await Future<void>.delayed(5000.milliseconds);
     await stopScan();
     print('Done scanning devices.');
     return toys;
@@ -43,11 +46,14 @@ extension BleManagerXV2 on FlutterBlue {
 
   /// Searches toys that match the passed criteria,
   /// starts the first found toy and returns it
-  Future<T?> find<T extends Core>(ToyAdvertisement toyType,
-      [String? name]) async {
+  Future<T?> find<T extends Core>(
+    ToyAdvertisement toyType, [
+    String? name,
+  ]) async {
     final discovered = await findToys([toyType]);
     final discoveredItem = discovered.firstOrNullWhere(
-            (item) => item.peripheral.advertisementData.localName == name) ??
+          (item) => item.peripheral.advertisementData.localName == name,
+        ) ??
         discovered[0];
 
     // if (discoveredItem == null) {
@@ -67,10 +73,12 @@ extension BleManagerXV2 on FlutterBlue {
     final discovered = await findToys([toyType]);
     if (discovered.isNotEmpty) {
       // Init toys and return array
-      return Future.wait(discovered.fold(<Future<Core>>[], (toyArray, item) {
-        final toy = toyType.typeof(item.peripheral.device);
-        return [...toyArray, Future(() => startToy(toy))];
-      }));
+      return Future.wait(
+        discovered.fold(<Future<Core>>[], (toyArray, item) {
+          final toy = toyType.typeof(item.peripheral.device);
+          return [...toyArray, Future(() => startToy(toy))];
+        }),
+      );
     } else {
       throw Exception('Not found');
     }
@@ -78,26 +86,26 @@ extension BleManagerXV2 on FlutterBlue {
 
   /// Searches BB9E toys, starts the first one that was found and returns it
   // ignore: unused_element
-  Future<BB9E> findBB9E() async => await find(BB9E.advertisement) as BB9E;
+  Future<BB9E> findBB9E() async => (await find(BB9E.advertisement))! as BB9E;
 
   /// Searches R2D2 toys, starts the first one that was found and returns it
   // ignore: unused_element
-  Future<R2D2> findR2D2() async => await find(R2D2.advertisement) as R2D2;
+  Future<R2D2> findR2D2() async => (await find(R2D2.advertisement))! as R2D2;
 
   /// Searches R2Q5 toys, starts the first one that was found and returns it
   // ignore: unused_element
-  Future<R2Q5> findR2Q5() async => await find(R2Q5.advertisement) as R2Q5;
+  Future<R2Q5> findR2Q5() async => (await find(R2Q5.advertisement))! as R2Q5;
 
   /// Searches Sphero Mini toys, starts the first one that was
   /// found and returns it
   // ignore: unused_element
   Future<SpheroMini> findSpheroMini() async =>
-      await find(SpheroMini.advertisement) as SpheroMini;
+      (await find(SpheroMini.advertisement))! as SpheroMini;
 
   /// Searches a Sphero Mini toy with the passed name, starts and returns it
   // ignore: unused_element
   Future<SpheroMini> findSpheroMiniByName(String name) async =>
-      await find(SpheroMini.advertisement, name) as SpheroMini;
+      (await find(SpheroMini.advertisement, name))! as SpheroMini;
 
   /// Searches for all available Sphero Mini toys, starts and returns them
   // ignore: unused_element
@@ -108,7 +116,7 @@ extension BleManagerXV2 on FlutterBlue {
   ///  that was found and returns it
   // ignore: unused_element
   Future<LightningMcQueen> findLightningMcQueen() async =>
-      await find(LightningMcQueen.advertisement) as LightningMcQueen;
+      (await find(LightningMcQueen.advertisement))! as LightningMcQueen;
 }
 
 extension on ScanResult {
@@ -121,8 +129,12 @@ extension on ScanResult {
     final localName = advertisementData.localName;
     for (final toyAdvertisement in validToys) {
       if (localName.indexOf(toyAdvertisement.prefix) == 0) {
-        toys.add(ToyDiscovered.fromAdvertisement(toyAdvertisement,
-            peripheral: this));
+        toys.add(
+          ToyDiscovered.fromAdvertisement(
+            toyAdvertisement,
+            peripheral: this,
+          ),
+        );
 
         print('''name: ${toyAdvertisement.name},
    uuid: ${device.deviceId},

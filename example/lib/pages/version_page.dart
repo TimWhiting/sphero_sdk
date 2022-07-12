@@ -1,8 +1,7 @@
-import 'package:example/common/state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
-import 'package:sphero_sdk/sphero_sdk.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../common/state.dart';
 
 final versionProvider = FutureProvider<String>((ref) async {
   final sphero = ref.watch(spheroProvider).maybeMap(
@@ -16,17 +15,17 @@ final versionProvider = FutureProvider<String>((ref) async {
   return '';
 });
 
-class VersionPage extends HookWidget {
-  const VersionPage();
+class VersionPage extends ConsumerWidget {
+  const VersionPage({super.key});
   @override
-  Widget build(BuildContext context) {
-    final version = useProvider(versionProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final version = ref.watch(versionProvider);
 
     return RefreshIndicator(
-      onRefresh: () => context.refresh(spheroProvider),
+      onRefresh: () async => ref.refresh(spheroProvider.future),
       child: ListView(
         children: [
-          Center(child: Text('Version: ${version.data?.value ?? ''}')),
+          Center(child: Text('Version: ${version.asData?.value ?? ''}')),
         ],
       ),
     );

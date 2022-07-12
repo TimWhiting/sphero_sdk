@@ -8,12 +8,15 @@ class SpheroTest extends SpheroBase {
   late int command;
   Uint8List? data;
   @override
-  Future<Map<String, dynamic>> baseCommand(
-      int deviceId, int command, Uint8List? data) async {
+  Future<Map<String, Object?>> baseCommand(
+    int deviceId,
+    int command,
+    Uint8List? data,
+  ) async {
     this.deviceId = deviceId;
     this.command = command;
     this.data = data;
-    return {};
+    return <String, Object?>{};
   }
 }
 

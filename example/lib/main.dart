@@ -1,18 +1,19 @@
 import 'package:dartx/dartx.dart';
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:example/pages/version_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'common/state.dart';
 import 'pages/bluetooth_info.dart';
+import 'pages/version_page.dart';
 
 void main() {
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -24,13 +25,13 @@ class MyApp extends StatelessWidget {
       );
 }
 
-class HomePage extends HookWidget {
-  const HomePage();
+class HomePage extends ConsumerWidget {
+  const HomePage({super.key});
   @override
-  Widget build(BuildContext context) {
-    useProvider(bleManagerProvider);
-    final devices = useProvider(allDevicesProvider).state;
-    final deviceName = useProvider(selectedDeviceNameProvider).state;
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(bleManagerProvider);
+    final devices = ref.watch(allDevicesProvider);
+    final deviceName = ref.watch(selectedDeviceNameProvider);
     final pageIndex = useState(0);
     return SafeArea(
       child: Scaffold(
@@ -41,22 +42,21 @@ class HomePage extends HookWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (devices != null)
-                  DropdownButton<String>(
-                    value: deviceName,
-                    onChanged: (v) =>
-                        context.read(selectedDeviceNameProvider).state = v,
-                    items: devices.entries
-                        .map(
-                          (d) => DropdownMenuItem(
-                            value: d.key,
-                            child: Text(
-                              d.value?.advertisementData?.localName ?? '',
-                            ),
+                DropdownButton<String>(
+                  value: deviceName,
+                  onChanged: (v) =>
+                      ref.read(selectedDeviceNameProvider.notifier).state = v,
+                  items: devices.entries
+                      .map(
+                        (d) => DropdownMenuItem(
+                          value: d.key,
+                          child: Text(
+                            d.value.advertisementData.localName,
                           ),
-                        )
-                        .toList(),
-                  ),
+                        ),
+                      )
+                      .toList(),
+                ),
               ],
             ),
             const SizedBox(height: 20),
@@ -71,8 +71,10 @@ class HomePage extends HookWidget {
               for (final tab in 0.rangeTo(Pages.values.length - 1))
                 TextButton(
                   child: Text(
-                    EnumToString.convertToString(Pages.values[tab],
-                        camelCase: true),
+                    EnumToString.convertToString(
+                      Pages.values[tab],
+                      camelCase: true,
+                    ),
                   ),
                   onPressed: () => pageIndex.value = tab,
                 )

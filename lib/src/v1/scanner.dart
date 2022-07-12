@@ -12,17 +12,21 @@ export 'adaptor_blue.dart';
 export 'sphero.dart';
 
 class ToyAdvertisement<T extends Sphero> {
-  const ToyAdvertisement(
-      {required this.name, required this.prefix, required this.typeof});
+  const ToyAdvertisement({
+    required this.name,
+    required this.prefix,
+    required this.typeof,
+  });
   final String name;
   final String prefix;
   final T Function(SpheroPeripheral) typeof;
 }
 
 class ToyDiscovered<T extends Sphero> extends ToyAdvertisement<T> {
-  ToyDiscovered.fromAdvertisement(ToyAdvertisement<T> toy,
-      {required this.peripheral})
-      : super(name: toy.name, typeof: toy.typeof, prefix: toy.prefix);
+  ToyDiscovered.fromAdvertisement(
+    ToyAdvertisement<T> toy, {
+    required this.peripheral,
+  }) : super(name: toy.name, typeof: toy.typeof, prefix: toy.prefix);
   final SpheroPeripheral peripheral;
 }
 
@@ -47,9 +51,10 @@ Future<T> startToy<T extends Sphero>(T toy) async {
 
 // ignore: non_constant_identifier_names
 final SPRKPlus = ToyAdvertisement(
-    name: 'Spark+',
-    prefix: 'SK',
-    typeof: (p) => Sphero(p.identifier, adaptor: AdaptorV1(p.identifier, p)));
+  name: 'Spark+',
+  prefix: 'SK',
+  typeof: (p) => Sphero(p.identifier, adaptor: AdaptorV1(p.identifier, p)),
+);
 
 extension BluetoothX on blue.FlutterBlue {
   /// Searches (but does not start) toys that match the passed criteria
@@ -60,7 +65,7 @@ extension BluetoothX on blue.FlutterBlue {
     print('Scanning devices...');
     await startScan(timeout: 4.seconds).listen((sr) {
       sr.discover(toysType, toys);
-    }).asFuture();
+    }).asFuture(null);
 
     print('Done scanning devices.');
     return toys;
@@ -68,8 +73,10 @@ extension BluetoothX on blue.FlutterBlue {
 
   /// Searches toys that match the passed criteria,
   /// starts the first found toy and returns it
-  Future<T?> find<T extends Sphero>(ToyAdvertisement toyType,
-      [String? name]) async {
+  Future<T?> find<T extends Sphero>(
+    ToyAdvertisement toyType, [
+    String? name,
+  ]) async {
     final discovered = await findToys([toyType]);
     final discoveredItem =
         discovered.firstOrNullWhere((item) => item.peripheral.name == name) ??
@@ -93,11 +100,13 @@ extension BluetoothX on blue.FlutterBlue {
     final discovered = await findToys([toyType]);
     if (discovered.isNotEmpty) {
       // Init toys and return array
-      return Future.wait(discovered.fold(<Future<Sphero>>[], (toyArray, item) {
-        final toy =
-            toyType.typeof(SpheroPeripheral(item.peripheral.peripheral));
-        return [...toyArray, Future(() => startToy(toy))];
-      }));
+      return Future.wait(
+        discovered.fold(<Future<Sphero>>[], (toyArray, item) {
+          final toy =
+              toyType.typeof(SpheroPeripheral(item.peripheral.peripheral));
+          return [...toyArray, Future(() => startToy(toy))];
+        }),
+      );
     } else {
       print('Not found');
       return [];
@@ -120,8 +129,12 @@ extension on blue.ScanResult {
     print(peripheral.name);
     for (final toyAdvertisement in validToys) {
       if (localName.indexOf(toyAdvertisement.prefix) == 0) {
-        toys.add(ToyDiscovered.fromAdvertisement(toyAdvertisement,
-            peripheral: peripheral));
+        toys.add(
+          ToyDiscovered.fromAdvertisement(
+            toyAdvertisement,
+            peripheral: peripheral,
+          ),
+        );
 
         print('''name: ${toyAdvertisement.name},
    uuid: ${peripheral.identifier},

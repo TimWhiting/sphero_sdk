@@ -245,7 +245,7 @@ mixin _$APIField {
   String? get format => throw _privateConstructorUsedError;
   int? get bitmask => throw _privateConstructorUsedError;
   String? get units => throw _privateConstructorUsedError;
-  Map<int, dynamic>? get values => throw _privateConstructorUsedError;
+  Map<int, Object?>? get values => throw _privateConstructorUsedError;
   int? get mask => throw _privateConstructorUsedError;
   String? get maskField => throw _privateConstructorUsedError;
   String? get sensor => throw _privateConstructorUsedError;
@@ -269,7 +269,7 @@ abstract class $APIFieldCopyWith<$Res> {
       String? format,
       int? bitmask,
       String? units,
-      Map<int, dynamic>? values,
+      Map<int, Object?>? values,
       int? mask,
       String? maskField,
       String? sensor,
@@ -327,7 +327,7 @@ class _$APIFieldCopyWithImpl<$Res> implements $APIFieldCopyWith<$Res> {
       values: values == freezed
           ? _value.values
           : values // ignore: cast_nullable_to_non_nullable
-              as Map<int, dynamic>?,
+              as Map<int, Object?>?,
       mask: mask == freezed
           ? _value.mask
           : mask // ignore: cast_nullable_to_non_nullable
@@ -372,7 +372,7 @@ abstract class _$$_APIFieldCopyWith<$Res> implements $APIFieldCopyWith<$Res> {
       String? format,
       int? bitmask,
       String? units,
-      Map<int, dynamic>? values,
+      Map<int, Object?>? values,
       int? mask,
       String? maskField,
       String? sensor,
@@ -432,7 +432,7 @@ class __$$_APIFieldCopyWithImpl<$Res> extends _$APIFieldCopyWithImpl<$Res>
       values: values == freezed
           ? _value._values
           : values // ignore: cast_nullable_to_non_nullable
-              as Map<int, dynamic>?,
+              as Map<int, Object?>?,
       mask: mask == freezed
           ? _value.mask
           : mask // ignore: cast_nullable_to_non_nullable
@@ -474,7 +474,7 @@ class _$_APIField implements _APIField {
       this.format,
       this.bitmask,
       this.units,
-      final Map<int, dynamic>? values,
+      final Map<int, Object?>? values,
       this.mask,
       this.maskField,
       this.sensor,
@@ -494,9 +494,9 @@ class _$_APIField implements _APIField {
   final int? bitmask;
   @override
   final String? units;
-  final Map<int, dynamic>? _values;
+  final Map<int, Object?>? _values;
   @override
-  Map<int, dynamic>? get values {
+  Map<int, Object?>? get values {
     final value = _values;
     if (value == null) return null;
     // ignore: implicit_dynamic_type
@@ -575,7 +575,7 @@ abstract class _APIField implements APIField {
       final String? format,
       final int? bitmask,
       final String? units,
-      final Map<int, dynamic>? values,
+      final Map<int, Object?>? values,
       final int? mask,
       final String? maskField,
       final String? sensor,
@@ -595,7 +595,7 @@ abstract class _APIField implements APIField {
   @override
   String? get units;
   @override
-  Map<int, dynamic>? get values;
+  Map<int, Object?>? get values;
   @override
   int? get mask;
   @override

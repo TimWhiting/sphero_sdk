@@ -21,7 +21,7 @@ class APIField with _$APIField {
     String? format,
     int? bitmask,
     String? units,
-    Map<int, dynamic>? values,
+    Map<int, Object?>? values,
     int? mask,
     String? maskField,
     String? sensor,

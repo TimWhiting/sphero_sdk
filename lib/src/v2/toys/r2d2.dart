@@ -7,8 +7,8 @@ import 'types.dart';
 
 class R2D2 extends RollableToy {
   R2D2(BluetoothDevice peripheral) : super(peripheral);
-  static final advertisement =
-      ToyAdvertisement(name: 'R2-D2', prefix: 'D2-', typeof: (p) => R2D2(p));
+  static const advertisement =
+      ToyAdvertisement(name: 'R2-D2', prefix: 'D2-', typeof: R2D2.new);
 
   @override
   double get maxVoltage => 3.65;

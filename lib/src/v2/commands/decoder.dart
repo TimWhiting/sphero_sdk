@@ -60,12 +60,12 @@ Command classifyPacket(Uint8List packet) {
   final _checkSum = packet[packet.length - 2];
   // ignore: unused_local_variable
   final _endPacket = packet.last;
-
+  final device = DeviceId.values.firstWhere((v) => v.value == deviceId);
   return Command(
     sourceId: sourceId,
     targetId: targetId,
-    commandId: commandId,
-    deviceId: deviceId,
+    commandId: device.commands.firstWhere((v) => v.value == commandId),
+    deviceId: device,
     payload: payload,
     sequenceNumber: sequenceNumber,
   );

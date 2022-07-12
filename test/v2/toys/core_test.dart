@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sphero_sdk/src/v2/toys/index.dart';
 
+// ignore: avoid_implementing_value_types
 class PeripheralMock extends Mock implements BluetoothDevice {
   PeripheralMock() {
     when(discoverServices()).thenReturn(Future.value());

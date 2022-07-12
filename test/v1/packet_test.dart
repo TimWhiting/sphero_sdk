@@ -16,9 +16,9 @@ void main() {
 
     group('create', () {
       late Uint8List buffer;
-      late Map<String, dynamic> opts;
+      late Map<String, Object?> opts;
 
-      Uint8List optsToPacket(Map<String, dynamic> opts) {
+      Uint8List optsToPacket(Map<String, Object?> opts) {
         if (opts.containsKey('sop1')) {
           return packet
               .create(
@@ -44,7 +44,7 @@ void main() {
       }
 
       setUp(() {
-        opts = {
+        opts = <String, Object?>{
           'sop2': 0xFE,
           'did': 0x01,
           'cid': 0x02,
@@ -184,9 +184,15 @@ void main() {
 
           test('emits an error event with a checksum Error param', () {
             expect(
-                () => packet.parse(buffer),
-                throwsA(isA<Exception>().having((e) => e.toString(), 'message',
-                    'Exception: Incorrect checksum, packet discarded!')));
+              () => packet.parse(buffer),
+              throwsA(
+                isA<Exception>().having(
+                  (e) => e.toString(),
+                  'message',
+                  'Exception: Incorrect checksum, packet discarded!',
+                ),
+              ),
+            );
           });
 
           test('partialBuffer should be empty', () {
@@ -242,7 +248,8 @@ void main() {
         group('buffer length is greater than expectedSize', () {
           setUp(() {
             buffer = Uint8List.fromList(
-                [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC, 0xFF, 0xFF, 0x00]);
+              [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC, 0xFF, 0xFF, 0x00],
+            );
 
             res = packet.parse(buffer)!;
           });
@@ -267,7 +274,7 @@ void main() {
           });
         });
 
-        group('SOPs don\'t pass validation', () {
+        group("SOPs don't pass validation", () {
           PacketV1? res;
           setUp(() {
             buffer = Uint8List.fromList([0xF0, 0x00, 0x02, 0x01, 0xFC]);
@@ -365,7 +372,7 @@ void main() {
     });
     group('parseResponseData', () {
       late PacketV1 payload;
-      late Map<String, dynamic> res;
+      late Map<String, Object?> res;
       setUp(() {
         payload = PacketV1.create(
           sop1: 0xFF,
@@ -390,63 +397,80 @@ void main() {
 
       test('throws if cmd is not valid', () {
         expect(
-            () => packet.parseResponseData(CommandID(cid: 1, did: 1), payload),
-            throwsA(isA<Exception>().having((e) => e.toString(), 'message',
-                'Exception: No parser found for that command')));
+          () => packet.parseResponseData(CommandID(cid: 1, did: 1), payload),
+          throwsA(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              'Exception: No parser found for that command',
+            ),
+          ),
+        );
       });
 
-      test('calls parseDataMap with params', () {
-        RES_PARSER['2:7'] = const APIV1(
+      test(
+        'calls parseDataMap with params',
+        () {
+          RES_PARSER['2:7'] = const APIV1(
             desc: 'Get Chassis Id',
             did: 2,
             cid: 7,
             event: 'chassisId',
-            fields: [APIField(name: 'chassisId', type: 'number')]);
-        res =
-            packet.parseResponseData(CommandID(did: 0x02, cid: 0x07), payload);
-        expect(res.containsKey('chassisId'), true);
-        expect(res['chassisId'], null);
-      }, skip: true);
+            fields: [APIField(name: 'chassisId', type: 'number')],
+          );
+          res = packet.parseResponseData(
+            CommandID(did: 0x02, cid: 0x07),
+            payload,
+          );
+          expect(res.containsKey('chassisId'), true);
+          expect(res['chassisId'], null);
+        },
+        skip: true,
+      );
     });
 
     group('checkDsMasks', () {
       test('returns null when idCode != 0x03', () {
         final res = packet.checkDSMasks(
-            {},
-            const APIV1(
-              idCode: 0x07,
-              desc: '',
-              event: '',
-              fields: [],
-            ));
+          {},
+          const APIV1(
+            idCode: 0x07,
+            desc: '',
+            event: '',
+            fields: [],
+          ),
+        );
         expect(res, isNull);
       });
 
       test('returns ds obj when ds is valid and idCode == 0x03', () {
         final ds = {'mask1': 0xFF00, 'mask2': 0x00FF};
         final res = packet.checkDSMasks(
-            {'mask1': 0xFF00, 'mask2': 0x00FF},
-            const APIV1(
-              idCode: 0x03,
-              desc: '',
-              event: '',
-              fields: [],
-            ));
+          {'mask1': 0xFF00, 'mask2': 0x00FF},
+          const APIV1(
+            idCode: 0x03,
+            desc: '',
+            event: '',
+            fields: [],
+          ),
+        );
         expect(res, ds);
       });
 
       test('returns -1 when ds is invalid and idCode == 0x03', () {
         final ds = {'mask1': 0xFF00};
         expect(
-            () => packet.checkDSMasks(
-                ds,
-                const APIV1(
-                  idCode: 0x03,
-                  desc: '',
-                  event: '',
-                  fields: [],
-                )),
-            throwsA(isA<Exception>()));
+          () => packet.checkDSMasks(
+            ds,
+            const APIV1(
+              idCode: 0x03,
+              desc: '',
+              event: '',
+              fields: [],
+            ),
+          ),
+          throwsA(isA<Exception>()),
+        );
       });
     });
 
@@ -458,29 +482,32 @@ void main() {
 
       test('returns i++ with i < fields.length', () {
         final res = packet.incParserIndex(
-            0,
-            [dummyAPIField, dummyAPIField, dummyAPIField],
-            Uint8List.fromList([4, 5, 6]));
+          0,
+          [dummyAPIField, dummyAPIField, dummyAPIField],
+          Uint8List.fromList([4, 5, 6]),
+        );
         expect(res, equals(1));
       });
 
       test('returns i++ with dsIndex = data.length', () {
         final res = packet.incParserIndex(
-            0,
-            [dummyAPIField, dummyAPIField, dummyAPIField],
-            Uint8List.fromList([4, 5, 6, 7]),
-            0,
-            4);
+          0,
+          [dummyAPIField, dummyAPIField, dummyAPIField],
+          Uint8List.fromList([4, 5, 6, 7]),
+          0,
+          4,
+        );
         expect(res, equals(1));
       });
 
       test('returns i = 0 when all conditions met', () {
         final res = packet.incParserIndex(
-            3,
-            [dummyAPIField, dummyAPIField, dummyAPIField, dummyAPIField],
-            Uint8List.fromList([4, 5, 6, 7]),
-            0,
-            2);
+          3,
+          [dummyAPIField, dummyAPIField, dummyAPIField, dummyAPIField],
+          Uint8List.fromList([4, 5, 6, 7]),
+          0,
+          2,
+        );
         expect(res, equals(0));
       });
     });
@@ -540,16 +567,25 @@ void main() {
         final res = packet.checkDSBit(
           {'mask1': 0xFFFF},
           const APIField(
-              bitmask: 0x1000, maskField: 'mask1', name: '', type: ''),
+            bitmask: 0x1000,
+            maskField: 'mask1',
+            name: '',
+            type: '',
+          ),
         );
         expect(res, equals(1));
       });
 
       test('returns 0 when DS valid and field not in mask1|2', () {
         final res = packet.checkDSBit(
-            {'mask1': 0x0FFF},
-            const APIField(
-                bitmask: 0x1000, maskField: 'mask1', name: '', type: ''));
+          {'mask1': 0x0FFF},
+          const APIField(
+            bitmask: 0x1000,
+            maskField: 'mask1',
+            name: '',
+            type: '',
+          ),
+        );
         expect(res, equals(0));
       });
     });
@@ -591,7 +627,9 @@ void main() {
         test('"string" returns a string with format == "ascii"', () {
           field = field.copyWith(type: 'string', format: 'ascii');
           final res = packet.parseField(
-              field, [0x48, 0x6F, 0x6C, 0x61, 0x21].asUint8List);
+            field,
+            [0x48, 0x6F, 0x6C, 0x61, 0x21].asUint8List,
+          );
           expect(res, equals('Hola!'));
         });
 
@@ -624,31 +662,38 @@ void main() {
           final res = packet
               .parseField(field, [0x01, 0x02].asUint8List, {'val1': 'one'});
           expect(
-              res,
-              equals({
-                'sensor': 'accelerometer axis X, raw',
-                'range': {'top': 2047, 'bottom': -2048},
-                'units': '4mg',
-                'value': [258]
-              }));
+            res,
+            equals({
+              'sensor': 'accelerometer axis X, raw',
+              'range': {'top': 2047, 'bottom': -2048},
+              'units': '4mg',
+              'value': [258]
+            }),
+          );
         });
 
         test('"bitmask" calls parseBitmaskField and errors', () {
           field = field.copyWith(type: 'thevoid');
           expect(
-              () => packet.parseField(field, [0x01, 0x02].asUint8List),
-              throwsA(isA<Exception>().having((e) => e.toString(), 'message',
-                  'Exception: Data could not be parsed!')));
+            () => packet.parseField(field, [0x01, 0x02].asUint8List),
+            throwsA(
+              isA<Exception>().having(
+                (e) => e.toString(),
+                'message',
+                'Exception: Data could not be parsed!',
+              ),
+            ),
+          );
         });
       });
     });
 
     group('_parseBitmaskField', () {
-      late Map<String, dynamic> fieldMap;
+      late Map<String, Object?> fieldMap;
       late APIField field;
 
       setUp(() {
-        fieldMap = {
+        fieldMap = <String, Object?>{
           'name': 'gyro',
           'sensor': 'gyro',
           'units': 'gyrons',
@@ -670,13 +715,13 @@ void main() {
 
       test(' if val > field.range.top calls utils twosToInt', () {
         final res = packet.parseBitmaskField(0xFF00, field, {});
-        expect(res['value'].length, 1);
+        expect((res['value']! as List).length, 1);
       });
 
       test('adds to the array if field already exist', () {
         final res = packet.parseBitmaskField(0xFF, field, {'gyro': fieldMap});
-        expect(res['value'].length, 2);
-        expect(res['value'][1], 255);
+        expect((res['value']! as List).length, 2);
+        expect((res['value']! as List)[1], 255);
       });
     });
   });

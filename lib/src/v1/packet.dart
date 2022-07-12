@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
@@ -49,8 +51,10 @@ class PacketV1 {
   Uint8List data;
   int partialCounter = 0;
 
+  // ignore: avoid_multiple_declarations_per_line
   int sop1, sop2, did, cid, seq, dlen; // adds checksum
   late int checksum;
+  // ignore: avoid_multiple_declarations_per_line
   int? dlenLsb, dlenMsb, idCode, mrsp;
   void printPacket() {
     print(
@@ -74,22 +78,24 @@ class PacketParser {
 
   Uint8List partialBuffer = Uint8List(0);
 
-  PacketV1 create(
-          {int? sop1,
-          int? sop2,
-          int? cid,
-          int? did,
-          int? seq,
-          int? checksum,
-          Uint8List? data}) =>
+  PacketV1 create({
+    int? sop1,
+    int? sop2,
+    int? cid,
+    int? did,
+    int? seq,
+    int? checksum,
+    Uint8List? data,
+  }) =>
       PacketV1.create(
-          sop1: sop1,
-          sop2: sop2,
-          cid: cid,
-          did: did,
-          seq: seq,
-          checksum: checksum,
-          data: data);
+        sop1: sop1,
+        sop2: sop2,
+        cid: cid,
+        did: did,
+        seq: seq,
+        checksum: checksum,
+        data: data,
+      );
 
   PacketV1? parse(Uint8List buffer) {
     var b = buffer;
@@ -153,7 +159,8 @@ class PacketParser {
     final expectedSize = checkExpectedSize(b);
     if (b.length > expectedSize) {
       partialBuffer = Uint8List.fromList(
-          [for (final byte in b.sublist(expectedSize)) byte]);
+        [for (final byte in b.sublist(expectedSize)) byte],
+      );
     } else {
       partialBuffer = Uint8List(0);
     }
@@ -176,14 +183,14 @@ class PacketParser {
     return packet;
   }
 
-  Map<String, dynamic> parseAsyncData(PacketV1 payload, Map<String, int> ds) {
+  Map<String, Object?> parseAsyncData(PacketV1 payload, Map<String, int> ds) {
     print('Parsing async data');
     final parser = ASYNC_PARSER[payload.idCode]!;
 
     return parseDataMap(parser, payload, ds);
   }
 
-  Map<String, dynamic> parseResponseData(CommandID cmd, PacketV1 payload) {
+  Map<String, Object?> parseResponseData(CommandID cmd, PacketV1 payload) {
     print('Parsing sync data');
     final parserId =
             // ignore: prefer_interpolation_to_compose_strings
@@ -195,10 +202,13 @@ class PacketParser {
   }
 
   @visibleForTesting
-  Map<String, dynamic> parseDataMap(APIV1 parser, PacketV1 payload,
-      [Map<String, int>? dsIn]) {
+  Map<String, Object?> parseDataMap(
+    APIV1 parser,
+    PacketV1 payload, [
+    Map<String, int>? dsIn,
+  ]) {
     final data = payload.data;
-    Map<String, dynamic> pData;
+    Map<String, Object?> pData;
     APIField field;
     var ds = dsIn;
     if (data.isNotEmpty) {
@@ -206,12 +216,12 @@ class PacketParser {
         ds = checkDSMasks(ds, parser);
       } on Exception catch (e) {
         print(e);
-        return {'payload': payload};
+        return <String, PacketV1>{'payload': payload};
       }
 
       final fields = parser.fields;
 
-      pData = {
+      pData = <String, Object?>{
         'desc': parser.desc,
         'idCode': parser.idCode,
         'event': parser.event,
@@ -220,6 +230,7 @@ class PacketParser {
         'packet': payload
       };
 
+      // ignore: avoid_multiple_declarations_per_line
       var dsIndex = 0, dsFlag = 0, i = 0;
 
       while (i < fields.length) {
@@ -240,11 +251,12 @@ class PacketParser {
         i = incParserIndex(i, fields, data, dsFlag, dsIndex);
       }
     } else {
-      print('''No parser found:  data: $payload, 
+      print('''
+No parser found:  data: $payload, 
           ${payload.cid},
           ${payload.did},
           ${payload.seq}''');
-      return {'payload': payload};
+      return <String, PacketV1>{'payload': payload};
     }
 
     return pData;
@@ -264,8 +276,13 @@ class PacketParser {
   }
 
   @visibleForTesting
-  int incParserIndex(int iIn, List<APIField> fields, Uint8List data,
-      [int dsFlag = 0, int? dsIndex]) {
+  int incParserIndex(
+    int iIn,
+    List<APIField> fields,
+    Uint8List data, [
+    int dsFlag = 0,
+    int? dsIndex,
+  ]) {
     var i = iIn + 1;
 
     if ((dsFlag >= 0) && (i == fields.length) && (dsIndex! < data.length)) {
@@ -285,9 +302,12 @@ class PacketParser {
   }
 
   @visibleForTesting
-  dynamic parseField(APIField field, Uint8List dataIn,
-      [Map<String, dynamic> pData = const {}]) {
-    dynamic pField;
+  Object? parseField(
+    APIField field,
+    Uint8List dataIn, [
+    Map<String, Object?> pData = const <String, Object?>{},
+  ]) {
+    Object? pField;
     if (field.from >= dataIn.length) {
       print('Big problem with field, returning 0');
       return 0;
@@ -309,7 +329,7 @@ class PacketParser {
         }
         break;
       case 'string':
-        pField = data.toStringFormat(field.format!).replaceAll('\0', '0');
+        pField = data.toStringFormat(field.format!).replaceAll('0', '0');
         break;
       case 'raw':
         pField = data;
@@ -327,7 +347,7 @@ class PacketParser {
         final width = 8 * (field.to! - field.from);
         pField = intField;
         if (intField >= pow(2, width - 1)) {
-          pField = pField - pow(2, width);
+          pField = (pField as int) - pow(2, width);
         }
         break;
       default:
@@ -338,20 +358,23 @@ class PacketParser {
   }
 
   @visibleForTesting
-  Map<String, dynamic> parseBitmaskField(
-      int valIn, APIField field, Map<String, dynamic> pData) {
-    var pField = <String, dynamic>{};
+  Map<String, Object?> parseBitmaskField(
+    int valIn,
+    APIField field,
+    Map<String, Object?> pData,
+  ) {
+    var pField = <String, Object?>{};
     print('valIn $valIn, $field, $pData');
     var val = valIn;
     if (val > field.rangeTop!) {
-      val = twosToInt(val, 2);
+      val = twosToInt(val);
     }
 
     if (pData[field.name] != null) {
-      pField = pData[field.name] as Map<String, dynamic>;
-      pField['value'].add(val);
+      pField = pData[field.name]! as Map<String, Object?>;
+      (pField['value']! as List).add(val);
     } else {
-      pField = {
+      pField = <String, Object?>{
         'sensor': field.sensor,
         'range': {'top': field.rangeTop, 'bottom': field.rangeBottom},
         'units': field.units,
@@ -372,7 +395,7 @@ class PacketParser {
       buffer[FIELDS.sop1_pos] == FIELDS.sop1_hex;
 
   @visibleForTesting
-  dynamic checkSOP2(Uint8List buffer) {
+  Object? checkSOP2(Uint8List buffer) {
     final sop2 = buffer[FIELDS.sop2_pos];
 
     if (sop2 == FIELDS.sop2_sync) {

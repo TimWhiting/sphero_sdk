@@ -18,8 +18,8 @@ extension Encoding on Command {
       encodeBytes(out, targetId!, true);
     }
 
-    encodeBytes(out, deviceId, true);
-    encodeBytes(out, commandId, true);
+    encodeBytes(out, deviceId.value, true);
+    encodeBytes(out, commandId.value, true);
     encodeBytes(out, sequenceNumber, true);
 
     for (final byte in payload) {

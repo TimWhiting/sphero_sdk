@@ -10,7 +10,7 @@ import 'adaptor.dart';
 
 class AdaptorV1Blue extends AdaptorV1 {
   AdaptorV1Blue(String id, [this.peripheral])
-      : uuid = id.split(':').join('').toLowerCase(),
+      : uuid = id.split(':').join().toLowerCase(),
         super.empty();
   static final BLEService = Guid('22bb746f-2bb0-7554-2d6f-726568705327');
   static final WakeCharacteristic =
@@ -93,7 +93,7 @@ class AdaptorV1Blue extends AdaptorV1 {
           }
         }
       },
-      onError: (e) =>
+      onError: (Object? e) =>
           print('Error: $e while monitoring the response characteristic'),
       onDone: () => print(
         '''

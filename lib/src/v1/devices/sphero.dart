@@ -4,7 +4,7 @@ import 'command.dart';
 import 'core.dart';
 
 extension SpheroDevice on SpheroBase {
-  Future<Map<String, dynamic>> _command(int command, Uint8List? data) =>
+  Future<Map<String, Object?>> _command(int command, Uint8List? data) =>
       baseCommand(0x02, command, data);
 
   /// The Set Heading command tells Sphero to adjust it's orientation, by
@@ -15,7 +15,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setHeading(180);
   /// ```
-  Future<Map<String, dynamic>> setHeading(int heading) =>
+  Future<Map<String, Object?>> setHeading(int heading) =>
       _command(SpheroV1.setHeading, heading.toHexArray(2));
 
   /// The Set Stabilization command turns Sphero's internal stabilization on or
@@ -24,7 +24,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setStabilization(1);
   /// ```
-  Future<Map<String, dynamic>> setStabilization(bool enabled) => _command(
+  Future<Map<String, Object?>> setStabilization(bool enabled) => _command(
       SpheroV1.setStabilization, Uint8List.fromList([enabled.intFlag]));
 
   /// The Set Rotation Rate command allows control of the [rotation] rate Sphero
@@ -39,7 +39,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setRotationRate(180);
   /// ```
-  Future<Map<String, dynamic>> setRotationRate(int rotation) =>
+  Future<Map<String, Object?>> setRotationRate(int rotation) =>
       _command(SpheroV1.setRotationRate, Uint8List.fromList([rotation]));
 
   /// The Get Chassis ID command returns the 16-bit chassis ID Sphero was
@@ -50,7 +50,7 @@ extension SpheroDevice on SpheroBase {
   /// print("data:");
   /// print("  chassisId:", data.chassisId);
   /// ```
-  Future<Map<String, dynamic>> getChassisId() =>
+  Future<Map<String, Object?>> getChassisId() =>
       _command(SpheroV1.getChassisId, null);
 
   /// The Set Chassis ID command assigns Sphero's chassis [id], a 16-bit value.
@@ -60,7 +60,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setChassisId(0xFE75);
   /// ```
-  Future<Map<String, dynamic>> setChassisId(int id) =>
+  Future<Map<String, Object?>> setChassisId(int id) =>
       _command(SpheroV1.setChassisId, id.toHexArray(2));
 
   /// The Self Level command controls Sphero's self-level routine.
@@ -87,7 +87,7 @@ extension SpheroDevice on SpheroBase {
   ///   trueTime: 0,
   ///   options: 0x7);
   /// ```
-  Future<Map<String, dynamic>> selfLevel(
+  Future<Map<String, Object?>> selfLevel(
           {int angleLimit = 0,
           int timeout = 0,
           int trueTime = 0,
@@ -119,7 +119,7 @@ extension SpheroDevice on SpheroBase {
   ///   mask2: 0x01800000,
   ///   pcnt: 0);
   /// ```
-  Future<Map<String, dynamic>> setDataStreaming({
+  Future<Map<String, Object?>> setDataStreaming({
     required int n,
     required int m,
     required int mask1,
@@ -165,7 +165,7 @@ extension SpheroDevice on SpheroBase {
   ///   ys: 0x0A,
   ///   dead: 0x05);
   /// ```
-  Future<Map<String, dynamic>> configureCollisions({
+  Future<Map<String, Object?>> configureCollisions({
     required int meth,
     required int xt,
     required int xs,
@@ -199,7 +199,7 @@ extension SpheroDevice on SpheroBase {
   ///   y: 0x0000,
   ///   yawTare: 0x0);
   /// ```
-  Future<Map<String, dynamic>> configureLocator(
+  Future<Map<String, Object?>> configureLocator(
           int flags, int x, int y, int yawTare) =>
       _command(
         SpheroV1.locator,
@@ -227,7 +227,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setAccelRange(0x02);
   /// ```
-  Future<Map<String, dynamic>> setAccelRange(int index) =>
+  Future<Map<String, Object?>> setAccelRange(int index) =>
       _command(SpheroV1.setAccelerometer, Uint8List.fromList([index & index]));
 
   /// The Read Locator command gets Sphero's current position (X,Y), component
@@ -246,7 +246,7 @@ extension SpheroDevice on SpheroBase {
   /// print("  yvel:", data.yvel);
   /// print("  sog:", data.sog);
   /// ```
-  Future<Map<String, dynamic>> readLocator() =>
+  Future<Map<String, Object?>> readLocator() =>
       _command(SpheroV1.readLocator, null);
 
   /// The Set RGB LED command sets the colors of Sphero's RGB LED.
@@ -259,7 +259,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setRgbLed( 0,  0, 255);
   /// ```
-  Future<Map<String, dynamic>> setRgbLed(int red, int green, int blue,
+  Future<Map<String, Object?>> setRgbLed(int red, int green, int blue,
           [int flag = 0x01]) =>
       _command(
           SpheroV1.setRgbLed, Uint8List.fromList([red, green, blue, flag]));
@@ -272,7 +272,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setbackLed(255);
   /// ```
-  Future<Map<String, dynamic>> setBackLed(int brightness) =>
+  Future<Map<String, Object?>> setBackLed(int brightness) =>
       _command(SpheroV1.setBackLed, Uint8List.fromList([brightness]));
 
   /// The Get RGB LED command fetches the current "user LED color" value, stored
@@ -288,7 +288,7 @@ extension SpheroDevice on SpheroBase {
   /// print("  green:", data.green);
   /// print("  blue:", data.blue);
   /// ```
-  Future<Map<String, dynamic>> getRgbLed() =>
+  Future<Map<String, Object?>> getRgbLed() =>
       _command(SpheroV1.getRgbLed, null);
 
   /// The Roll command tells Sphero to roll along the provided vector.
@@ -304,7 +304,7 @@ extension SpheroDevice on SpheroBase {
   /// orb.roll(100, 0);
   /// print("rolling...");
   /// ```
-  Future<Map<String, dynamic>> roll(int speed, int heading,
+  Future<Map<String, Object?>> roll(int speed, int heading,
           [int state = 0x01]) =>
       _command(SpheroV1.roll,
           Uint8List.fromList([speed, ...heading.toHexArray(2), state & 0x03]));
@@ -316,7 +316,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.boost(1);
   /// ```
-  Future<Map<String, dynamic>> boost(bool boost) =>
+  Future<Map<String, Object?>> boost(bool boost) =>
       _command(SpheroV1.boost, Uint8List.fromList([boost.intFlag]));
 
   /// The Set Raw Motors command allows manual control over one or both of
@@ -341,7 +341,7 @@ extension SpheroDevice on SpheroBase {
   ///   rmode: 0x02,
   ///   rpower: 180);
   /// ```
-  Future<Map<String, dynamic>> setRawMotors(
+  Future<Map<String, Object?>> setRawMotors(
           int lmode, int lpower, int rmode, int rpower) =>
       _command(SpheroV1.setRawMotors,
           Uint8List.fromList([lmode & 0x07, lpower, rmode & 0x07, rpower]));
@@ -357,7 +357,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setMotionTimeout(0x0FFF);
   /// ```
-  Future<Map<String, dynamic>> setMotionTimeout(int timeout) =>
+  Future<Map<String, Object?>> setMotionTimeout(int timeout) =>
       _command(SpheroV1.setMotionTimeout, timeout.toHexArray(2));
 
   /// The Set Permanent Option Flags command assigns Sphero's permanent option
@@ -370,7 +370,7 @@ extension SpheroDevice on SpheroBase {
   /// // Force tail LED always on
   /// await orb.setPermOptionFlags(0x00000008);
   /// ```
-  Future<Map<String, dynamic>> setPermOptionFlags(int flags) =>
+  Future<Map<String, Object?>> setPermOptionFlags(int flags) =>
       _command(SpheroV1.setOptionsFlag, flags.toHexArray(4));
 
   /// The Get Permanent Option Flags command returns Sphero's permanent option
@@ -408,7 +408,7 @@ extension SpheroDevice on SpheroBase {
   /// print("  awakeSensitivityHeavy:", data.awakeSensitivityHeavy);
   /// print("  gyroMaxAsyncMsg:", data.gyroMaxAsyncMsg);
   /// ```
-  Future<Map<String, dynamic>> getPermOptionFlags() =>
+  Future<Map<String, Object?>> getPermOptionFlags() =>
       _command(SpheroV1.getOptionsFlag, null);
 
   /// The Set Temporary Option Flags command assigns Sphero's temporary option
@@ -421,7 +421,7 @@ extension SpheroDevice on SpheroBase {
   /// // enable stop on disconnect behavior
   /// await orb.setTempOptionFlags(0x01);
   /// ```
-  Future<Map<String, dynamic>> setTempOptionFlags(int flags) =>
+  Future<Map<String, Object?>> setTempOptionFlags(int flags) =>
       _command(SpheroV1.setTempOptionFlags, flags.toHexArray(4));
 
   /// The Get Temporary Option Flags command returns Sphero's temporary option
@@ -435,7 +435,7 @@ extension SpheroDevice on SpheroBase {
   /// print("data:");
   /// print("  stopOnDisconnect:", data.stopOnDisconnect);
   /// ```
-  Future<Map<String, dynamic>> getTempOptionFlags() =>
+  Future<Map<String, Object?>> getTempOptionFlags() =>
       _command(SpheroV1.getTempOptionFlags, null);
 
   /// The Get Configuration Block command retrieves one of
@@ -453,10 +453,10 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.getConfigBloc);
   /// ```
-  Future<Map<String, dynamic>> getConfigBlock(int id) =>
+  Future<Map<String, Object?>> getConfigBlock(int id) =>
       _command(SpheroV1.getConfigBlock, Uint8List.fromList([id]));
 
-  Future<Map<String, dynamic>> _setSsbBlock(
+  Future<Map<String, Object?>> _setSsbBlock(
           int cmd, int password, Uint8List block) =>
       _command(cmd, Uint8List.fromList([...password.toHexArray(4), ...block]));
 
@@ -468,7 +468,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setSsbModBlock(0x0000000F, data);
   /// ```
-  Future<Map<String, dynamic>> setSsbModBlock(int password, Uint8List block) =>
+  Future<Map<String, Object?>> setSsbModBlock(int password, Uint8List block) =>
       _setSsbBlock(SpheroV1.setSsbParams, password, block);
 
   /// The Set Device Mode command assigns the operation [mode] of Sphero based
@@ -481,7 +481,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setDeviceMode(0x00);
   /// ```
-  Future<Map<String, dynamic>> setDeviceMode(bool mode) =>
+  Future<Map<String, Object?>> setDeviceMode(bool mode) =>
       _command(SpheroV1.setDeviceMode, Uint8List.fromList([mode.intFlag]));
 
   /// The Set Config Block command accepts an exact copy of the configuration
@@ -495,7 +495,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setConfigBlock(dataBlock);
   /// ```
-  Future<Map<String, dynamic>> setConfigBlock(Uint8List block) =>
+  Future<Map<String, Object?>> setConfigBlock(Uint8List block) =>
       _command(SpheroV1.setConfigBlock, block);
 
   /// The Get Device Mode command gets the current device mode of Sphero.
@@ -510,7 +510,7 @@ extension SpheroDevice on SpheroBase {
   /// print("data:");
   /// print("  mode:", data.mode);
   /// ```
-  Future<Map<String, dynamic>> getDeviceMode() =>
+  Future<Map<String, Object?>> getDeviceMode() =>
       _command(SpheroV1.getDeviceMode, null);
 
   /// The Get SSB command retrieves Sphero's Soul Block.
@@ -521,7 +521,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.getSsb();
   /// ```
-  Future<Map<String, dynamic>> getSsb() => _command(SpheroV1.getSsb, null);
+  Future<Map<String, Object?>> getSsb() => _command(SpheroV1.getSsb, null);
 
   /// The Set SSB command sets Sphero's Soul [block].
   ///
@@ -533,7 +533,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setSsb(pwd, block);
   /// ```
-  Future<Map<String, dynamic>> setSsb(int password, Uint8List block) =>
+  Future<Map<String, Object?>> setSsb(int password, Uint8List block) =>
       _setSsbBlock(SpheroV1.setSsb, password, block);
 
   /// The Refill Bank command attempts to refill either the Boost bank (0x00) or
@@ -551,7 +551,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.refillBank(0x00);
   /// ```
-  Future<Map<String, dynamic>> refillBank(int type) =>
+  Future<Map<String, Object?>> refillBank(int type) =>
       _command(SpheroV1.ssbRefill, Uint8List.fromList([type]));
 
   /// The Buy Consumable command attempts to spend cores on consumables.
@@ -570,7 +570,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.buyConsumable(0x00, 5);
   /// ```
-  Future<Map<String, dynamic>> buyConsumable(int id, int quantity) =>
+  Future<Map<String, Object?>> buyConsumable(int id, int quantity) =>
       _command(SpheroV1.ssbBuy, Uint8List.fromList([id, quantity]));
 
   /// The Use Consumable command attempts to use a consumable specified by [id]
@@ -585,7 +585,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.useConsumable(0x00);
   /// ```
-  Future<Map<String, dynamic>> useConsumable(int id) =>
+  Future<Map<String, Object?>> useConsumable(int id) =>
       _command(SpheroV1.ssbUseConsumeable, Uint8List.fromList([id]));
 
   /// The Grant Cores command adds the supplied [number] of cores.
@@ -600,14 +600,14 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.grantCores(pwd, 5, 0x01);
   /// ```
-  Future<Map<String, dynamic>> grantCores(
+  Future<Map<String, Object?>> grantCores(
           int password, int number, int flags) =>
       _command(
           SpheroV1.ssbGrantCores,
           Uint8List.fromList(
               [...password.toHexArray(4), ...number.toHexArray(4), flags]));
 
-  Future<Map<String, dynamic>> _xpOrLevelUp(int cmd, int password, int gen) =>
+  Future<Map<String, Object?>> _xpOrLevelUp(int cmd, int password, int gen) =>
       _command(cmd, Uint8List.fromList([...password.toHexArray(4), gen]));
 
   /// The add XP command increases XP by adding the supplied number of [minutes]
@@ -618,7 +618,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.addXp(pwd, 5);
   /// ```
-  Future<Map<String, dynamic>> addXp(int password, int minutes) =>
+  Future<Map<String, Object?>> addXp(int password, int minutes) =>
       _xpOrLevelUp(SpheroV1.ssbAddXp, password, minutes);
 
   /// The Level Up Attribute command attempts to increase the level of the
@@ -643,7 +643,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.levelUpAttr(pwd, 0x00);
   /// ```
-  Future<Map<String, dynamic>> levelUpAttr(int password, int id) =>
+  Future<Map<String, Object?>> levelUpAttr(int password, int id) =>
       _xpOrLevelUp(SpheroV1.ssbLevelUpAttr, password, id);
 
   /// The Get Password Seed command returns Sphero's password seed.
@@ -655,7 +655,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.getPasswordSee);
   /// ```
-  Future<Map<String, dynamic>> getPasswordSeed() =>
+  Future<Map<String, Object?>> getPasswordSeed() =>
       _command(SpheroV1.getPwSeed, null);
 
   /// The Enable SSB Async Messages command [enable]s soul block related
@@ -669,7 +669,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.enableSsbAsyncMsg(0x01);
   /// ```
-  Future<Map<String, dynamic>> enableSsbAsyncMsg(bool enable) =>
+  Future<Map<String, Object?>> enableSsbAsyncMsg(bool enable) =>
       _command(SpheroV1.ssbEnableAsync, Uint8List.fromList([enable.intFlag]));
 
   /// The Run Macro command attempts to execute the macro specified by [id].
@@ -694,7 +694,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.runMacro(0x01);
   /// ```
-  Future<Map<String, dynamic>> runMacro(int id) =>
+  Future<Map<String, Object?>> runMacro(int id) =>
       _command(SpheroV1.runMacro, Uint8List.fromList([id]));
 
   /// The Save Temporary Macro stores the attached [macro] definition into the
@@ -707,7 +707,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.saveTempMacro(0x01);
   /// ```
-  Future<Map<String, dynamic>> saveTempMacro(Uint8List macro) =>
+  Future<Map<String, Object?>> saveTempMacro(Uint8List macro) =>
       _command(SpheroV1.saveTempMacro, macro);
 
   /// Save [macro]
@@ -725,7 +725,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.saveMacro(0x01);
   /// ```
-  Future<Map<String, dynamic>> saveMacro(Uint8List macro) =>
+  Future<Map<String, Object?>> saveMacro(Uint8List macro) =>
       _command(SpheroV1.saveMacro, macro);
 
   /// The Reinit Macro Executive command terminates any running macro, and
@@ -736,7 +736,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.reInitMacroExec();
   /// ```
-  Future<Map<String, dynamic>> reInitMacroExec() =>
+  Future<Map<String, Object?>> reInitMacroExec() =>
       _command(SpheroV1.initMacroExecutive, null);
 
   /// The Abort Macro command aborts any executing macro, and returns both it's
@@ -753,7 +753,7 @@ extension SpheroDevice on SpheroBase {
   /// print("  id:", data.id);
   /// print("  cmdNum:", data.cmdNum);
   /// ```
-  Future<Map<String, dynamic>> abortMacro() =>
+  Future<Map<String, Object?>> abortMacro() =>
       _command(SpheroV1.abortMacro, null);
 
   /// The Get Macro Status command returns the ID code and command number of the
@@ -768,7 +768,7 @@ extension SpheroDevice on SpheroBase {
   /// print("  idCode:", data.idCode);
   /// print("  cmdNum:", data.cmdNum);
   /// ```
-  Future<Map<String, dynamic>> getMacroStatus() =>
+  Future<Map<String, Object?>> getMacroStatus() =>
       _command(SpheroV1.macroStatus, null);
 
   /// The Set Macro Parameter command allows system globals that influence
@@ -790,7 +790,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setMacroParam(0x02, 0xF0, 0x00);
   /// ```
-  Future<Map<String, dynamic>> setMacroParam(int index, int val1, int val2) =>
+  Future<Map<String, Object?>> setMacroParam(int index, int val1, int val2) =>
       _command(SpheroV1.setMacroParam, Uint8List.fromList([index, val1, val2]));
 
   /// The Append Macro Chunk stores the attached macro definition [chunk] into
@@ -813,7 +813,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.appendMacroChunk();
   /// ```
-  Future<Map<String, dynamic>> appendMacroChunk(Uint8List chunk) =>
+  Future<Map<String, Object?>> appendMacroChunk(Uint8List chunk) =>
       _command(SpheroV1.appendTempMacroChunk, chunk);
 
   /// The Erase orbBasic Storage command erases any existing program in the
@@ -825,7 +825,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.eraseOrbBasicStorage(0x00);
   /// ```
-  Future<Map<String, dynamic>> eraseOrbBasicStorage(int area) =>
+  Future<Map<String, Object?>> eraseOrbBasicStorage(int area) =>
       _command(SpheroV1.eraseOBStorage, Uint8List.fromList([area]));
 
   /// The Append orbBasic Fragment command appends a patch of orbBasic [code] to
@@ -844,7 +844,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.appendOrbBasicFragment(0x00, OrbBasicCode);
   /// ```
-  Future<Map<String, dynamic>> appendOrbBasicFragment(
+  Future<Map<String, Object?>> appendOrbBasicFragment(
       int area, Uint8List code) {
     final data = Uint8List.fromList([area, ...code]);
     return _command(SpheroV1.appendOBFragment, data);
@@ -861,7 +861,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.executeOrbBasicProgram(0x00, 0x00, 0x00);
   /// ```
-  Future<Map<String, dynamic>> executeOrbBasicProgram(
+  Future<Map<String, Object?>> executeOrbBasicProgram(
           int area, int slMSB, int slLSB) =>
       _command(
           SpheroV1.execOBProgram, Uint8List.fromList([area, slMSB, slLSB]));
@@ -872,7 +872,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.abortOrbBasicProgram();
   /// ```
-  Future<Map<String, dynamic>> abortOrbBasicProgram() =>
+  Future<Map<String, Object?>> abortOrbBasicProgram() =>
       _command(SpheroV1.abortOBProgram, null);
 
   /// The Submit value To Input command takes the place of the typical user
@@ -886,7 +886,7 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.submitValueToInput(0x0000FFFF);
   /// ```
-  Future<Map<String, dynamic>> submitValueToInput(int val) =>
+  Future<Map<String, Object?>> submitValueToInput(int val) =>
       _command(SpheroV1.answerInput, val.toHexArray(4));
 
   /// The Commit To Flash command copies the current orbBasic RAM program to
@@ -897,10 +897,10 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.commitToFlash();
   /// ```
-  Future<Map<String, dynamic>> commitToFlash() =>
+  Future<Map<String, Object?>> commitToFlash() =>
       _command(SpheroV1.commitToFlash, null);
 
   // ignore: unused_element
-  Future<Map<String, dynamic>> _commitToFlashAlias() =>
+  Future<Map<String, Object?>> _commitToFlashAlias() =>
       _command(SpheroV1.commitToFlashAlias, null);
 }
