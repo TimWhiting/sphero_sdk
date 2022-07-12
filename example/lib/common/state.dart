@@ -1,3 +1,7 @@
+// ignore_for_file: avoid_print
+
+import 'dart:io';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,14 +9,16 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sphero_sdk/sphero_sdk.dart';
 
 final bleManagerProvider = FutureProvider<FlutterBlue>((ref) async {
-  var res = await Permission.location.request();
-  assert(res.isGranted, 'Location permission');
-  res = await Permission.bluetoothScan.request();
-  assert(res.isGranted, 'Scan permission');
-  res = await Permission.bluetoothConnect.request();
-  assert(res.isGranted, 'Connect permission');
-  res = await Permission.bluetooth.request();
-  assert(res.isGranted, 'Bluetooth permission');
+  if (Platform.isAndroid) {
+    var res = await Permission.location.request();
+    assert(res.isGranted, 'Location permission');
+    res = await Permission.bluetoothScan.request();
+    assert(res.isGranted, 'Scan permission');
+    res = await Permission.bluetoothConnect.request();
+    assert(res.isGranted, 'Connect permission');
+    res = await Permission.bluetooth.request();
+    assert(res.isGranted, 'Bluetooth permission');
+  }
   final manager = FlutterBlue.instance;
   try {
     await manager.setLogLevel(LogLevel.error);
@@ -41,7 +47,7 @@ final selectedDeviceProvider = StateProvider<ScanResult?>((ref) {
   return null;
 });
 
-final spheroProvider = FutureProvider<Sphero?>((ref) async {
+final spheroProvider = FutureProvider.autoDispose<Sphero?>((ref) async {
   final manager = ref
       .watch(bleManagerProvider)
       .maybeMap(data: (b) => b, orElse: () => null);

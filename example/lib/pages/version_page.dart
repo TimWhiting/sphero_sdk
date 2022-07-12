@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../common/state.dart';
 
-final versionProvider = FutureProvider<String>((ref) async {
+final versionProvider = FutureProvider.autoDispose<String>((ref) async {
   final sphero = ref.watch(spheroProvider).maybeMap(
         data: (d) => d.value,
         orElse: () => null,

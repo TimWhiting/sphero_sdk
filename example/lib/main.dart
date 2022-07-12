@@ -29,7 +29,7 @@ class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(bleManagerProvider);
+    final result = ref.watch(bleManagerProvider);
     final devices = ref.watch(allDevicesProvider);
     final deviceName = ref.watch(selectedDeviceNameProvider);
     final pageIndex = useState(0);
@@ -42,6 +42,11 @@ class HomePage extends HookConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                result.when(
+                  data: (_) => const Text('Connected'),
+                  error: (e, st) => Text(e.toString()),
+                  loading: () => const Text('Connecting'),
+                ),
                 DropdownButton<String>(
                   value: deviceName,
                   onChanged: (v) =>
