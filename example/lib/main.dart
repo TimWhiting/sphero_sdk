@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       );
 }
 
-class HomePage extends ConsumerWidget {
+class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {

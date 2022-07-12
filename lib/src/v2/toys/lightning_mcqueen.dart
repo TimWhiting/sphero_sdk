@@ -1,11 +1,9 @@
-import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
-
 import 'core.dart';
 import 'rollable_toy.dart';
 import 'types.dart';
 
 class LightningMcQueen extends RollableToy {
-  LightningMcQueen(BluetoothDevice peripheral) : super(peripheral);
+  LightningMcQueen(super.peripheral);
   static const advertisement = ToyAdvertisement(
     name: 'Lightning McQueen',
     prefix: 'LM-',

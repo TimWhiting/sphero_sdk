@@ -9,10 +9,15 @@ extension Encoding on Command {
 
     out.bytes.add(APIConstants.startOfPacket);
     encodeBytes(
-        out,
-        combineFlags(
-            [...commandFlags, targetId != null ? Flags.commandHasTargetId : 0]),
-        true);
+      out,
+      combineFlags(
+        [
+          ...commandFlags,
+          if (targetId != null) Flags.commandHasTargetId else 0
+        ],
+      ),
+      true,
+    );
 
     if (targetId != null) {
       encodeBytes(out, targetId!, true);

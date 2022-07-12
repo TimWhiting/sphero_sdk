@@ -40,8 +40,11 @@ class Driving {
           ],
         ),
       );
-  Command driveAsRc(int heading, int speed) => _encode(CommandPartial(
-      // Value: 8d 08 16 02 8b bf 72 93 de 00 00 00 00 b2 d8
-      commandId: DrivingCommandIds.driveAsRc,
-      payload: [...encodeNumberLM(heading), ...encodeNumberLM(speed)]));
+  Command driveAsRc(int heading, int speed) => _encode(
+        CommandPartial(
+          // Value: 8d 08 16 02 8b bf 72 93 de 00 00 00 00 b2 d8
+          commandId: DrivingCommandIds.driveAsRc,
+          payload: [...encodeNumberLM(heading), ...encodeNumberLM(speed)],
+        ),
+      );
 }

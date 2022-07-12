@@ -1,12 +1,11 @@
 import 'dart:typed_data';
-import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
 
 import 'core.dart';
 import 'rollable_toy.dart';
 import 'types.dart';
 
 class R2D2 extends RollableToy {
-  R2D2(BluetoothDevice peripheral) : super(peripheral);
+  R2D2(super.peripheral);
   static const advertisement =
       ToyAdvertisement(name: 'R2-D2', prefix: 'D2-', typeof: R2D2.new);
 

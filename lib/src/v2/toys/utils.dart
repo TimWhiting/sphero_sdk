@@ -3,8 +3,10 @@ import 'package:buffer/buffer.dart';
 import 'core.dart';
 import 'types.dart';
 
-List<int> sensorValuesToRawV2(List<int> sensorMask,
-        [APIVersion apiVersion = APIVersion.V2]) =>
+List<int> sensorValuesToRawV2(
+  List<int> sensorMask, [
+  APIVersion apiVersion = APIVersion.V2,
+]) =>
     sensorMask.fold([], (v2, m) {
       int? mask;
       switch (m) {
@@ -29,8 +31,10 @@ List<int> sensorValuesToRawV2(List<int> sensorMask,
       return v2;
     });
 
-List<int> sensorValuesToRawV21(List<int> sensorMask,
-        [APIVersion apiVersion = APIVersion.V2]) =>
+List<int> sensorValuesToRawV21(
+  List<int> sensorMask, [
+  APIVersion apiVersion = APIVersion.V2,
+]) =>
     sensorMask.fold<List<int>>([], (v21, m) {
       int? mask;
       if (m == SensorMaskValues.gyro && apiVersion == APIVersion.V21) {
@@ -42,11 +46,14 @@ List<int> sensorValuesToRawV21(List<int> sensorMask,
       return v21;
     });
 
-SensorMaskRaw sensorValuesToRaw(List<int> sensorMask,
-        [APIVersion apiVersion = APIVersion.V2]) =>
+SensorMaskRaw sensorValuesToRaw(
+  List<int> sensorMask, [
+  APIVersion apiVersion = APIVersion.V2,
+]) =>
     SensorMaskRaw(
-        v2: sensorValuesToRawV2(sensorMask, apiVersion),
-        v21: sensorValuesToRawV21(sensorMask, apiVersion));
+      v2: sensorValuesToRawV2(sensorMask, apiVersion),
+      v21: sensorValuesToRawV21(sensorMask, apiVersion),
+    );
 
 int flatSensorMask(List<int> sensorMask) =>
     sensorMask.fold(0, (bits, m) => bits |= m);
@@ -62,7 +69,8 @@ double convertBinaryToFloat(List<int> nums, int offset) {
   }
   final reader = ByteDataReader();
   reader.add(
-      [nums[0 + offset], nums[1 + offset], nums[2 + offset], nums[3 + offset]]);
+    [nums[0 + offset], nums[1 + offset], nums[2 + offset], nums[3 + offset]],
+  );
 
   // return the float value as function of dataView class
   return reader.readFloat32();
@@ -88,16 +96,19 @@ ParserState fillAngles(ParserState state) {
   final location = state.location;
   if (sensorMask.v2.contains(SensorMaskV2.imuAnglesFilteredAll)) {
     response = response.copyWith(
-        angles: AngleSensor(
-            pitch: floats[location],
-            roll: floats[location + 1],
-            yaw: floats[location + 2]));
+      angles: AngleSensor(
+        pitch: floats[location],
+        roll: floats[location + 1],
+        yaw: floats[location + 2],
+      ),
+    );
 
     return ParserState(
-        floats: floats,
-        sensorMask: sensorMask,
-        response: response,
-        location: location + 3);
+      floats: floats,
+      sensorMask: sensorMask,
+      response: response,
+      location: location + 3,
+    );
   }
   return state;
 }
@@ -109,15 +120,18 @@ ParserState fillAccelerometer(ParserState state) {
   final location = state.location;
   if (state.sensorMask.v2.contains(SensorMaskV2.accelerometerFilteredAll)) {
     response = response.copyWith(
-        accelerometer: ThreeAxisSensor(
-            x: floats[location],
-            y: floats[location + 1],
-            z: floats[location + 2]));
+      accelerometer: ThreeAxisSensor(
+        x: floats[location],
+        y: floats[location + 1],
+        z: floats[location + 2],
+      ),
+    );
     return ParserState(
-        floats: floats,
-        sensorMask: sensorMask,
-        response: response,
-        location: location + 3);
+      floats: floats,
+      sensorMask: sensorMask,
+      response: response,
+      location: location + 3,
+    );
   }
   return state;
 }
@@ -130,19 +144,23 @@ ParserState fillLocator(ParserState state) {
   if (sensorMask.v2.contains(SensorMaskV2.locatorAll)) {
     const metersToCentimeters = 100.0;
     response = response.copyWith(
-        position: TwoAxisSensor(
-            x: floats[location] * metersToCentimeters,
-            y: floats[location + 1] * metersToCentimeters));
+      position: TwoAxisSensor(
+        x: floats[location] * metersToCentimeters,
+        y: floats[location + 1] * metersToCentimeters,
+      ),
+    );
     response = response.copyWith(
       velocity: TwoAxisSensor(
-          x: floats[location + 2] * metersToCentimeters,
-          y: floats[location + 3] * metersToCentimeters),
+        x: floats[location + 2] * metersToCentimeters,
+        y: floats[location + 3] * metersToCentimeters,
+      ),
     );
     return ParserState(
-        floats: floats,
-        response: response,
-        sensorMask: sensorMask,
-        location: location + 4);
+      floats: floats,
+      response: response,
+      sensorMask: sensorMask,
+      location: location + 4,
+    );
   }
 
   return state;
@@ -156,16 +174,19 @@ ParserState fillGyroV2(ParserState state) {
   if (sensorMask.v2.contains(SensorMaskV2.gyroFilteredAllV2)) {
     const multiplier = 2000.0 / 32767.0;
     response = response.copyWith(
-        gyro: ThreeAxisSensor(
-            x: floats[location] * multiplier,
-            y: floats[location + 1] * multiplier,
-            z: floats[location + 2] * multiplier));
+      gyro: ThreeAxisSensor(
+        x: floats[location] * multiplier,
+        y: floats[location + 1] * multiplier,
+        z: floats[location + 2] * multiplier,
+      ),
+    );
 
     return ParserState(
-        floats: floats,
-        sensorMask: sensorMask,
-        response: response,
-        location: location + 3);
+      floats: floats,
+      sensorMask: sensorMask,
+      response: response,
+      location: location + 3,
+    );
   }
   return state;
 }
@@ -177,16 +198,19 @@ ParserState fillGyroV21(ParserState state) {
   final location = state.location;
   if (sensorMask.v21.contains(SensorMaskV2.gyroFilteredAllV21)) {
     response = response.copyWith(
-        gyro: ThreeAxisSensor(
-            x: floats[location],
-            y: floats[location + 1],
-            z: floats[location + 2]));
+      gyro: ThreeAxisSensor(
+        x: floats[location],
+        y: floats[location + 1],
+        z: floats[location + 2],
+      ),
+    );
 
     return ParserState(
-        floats: floats,
-        sensorMask: sensorMask,
-        response: response,
-        location: location + 3);
+      floats: floats,
+      sensorMask: sensorMask,
+      response: response,
+      location: location + 3,
+    );
   }
   return state;
 }

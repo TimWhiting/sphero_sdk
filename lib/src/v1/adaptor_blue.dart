@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, avoid_print
 
 import 'dart:async';
 import 'dart:convert';
@@ -93,6 +93,7 @@ class AdaptorV1Blue extends AdaptorV1 {
           }
         }
       },
+      // ignore: avoid_types_on_closure_parameters
       onError: (Object? e) =>
           print('Error: $e while monitoring the response characteristic'),
       onDone: () => print(

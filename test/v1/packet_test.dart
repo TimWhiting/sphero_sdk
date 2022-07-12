@@ -22,22 +22,22 @@ void main() {
         if (opts.containsKey('sop1')) {
           return packet
               .create(
-                sop1: opts['sop1'] as int,
-                sop2: opts['sop2'] as int,
-                cid: opts['cid'] as int,
-                did: opts['did'] as int,
-                seq: opts['seq'] as int,
-                data: opts['data'] as Uint8List,
+                sop1: opts['sop1']! as int,
+                sop2: opts['sop2']! as int,
+                cid: opts['cid']! as int,
+                did: opts['did']! as int,
+                seq: opts['seq']! as int,
+                data: opts['data']! as Uint8List,
               )
               .packet;
         } else {
           return packet
               .create(
-                sop2: opts['sop2'] as int,
-                cid: opts['cid'] as int,
-                did: opts['did'] as int,
-                seq: opts['seq'] as int,
-                data: opts['data'] as Uint8List,
+                sop2: opts['sop2']! as int,
+                cid: opts['cid']! as int,
+                did: opts['did']! as int,
+                seq: opts['seq']! as int,
+                data: opts['data']! as Uint8List,
               )
               .packet;
         }
@@ -514,50 +514,50 @@ void main() {
 
     group('checker', () {
       test('_checksum should return 0xFC', () {
-        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
-            check = buffer.sublist(3, 5).checksum;
+        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC];
+        final check = buffer.sublist(3, 5).checksum;
         expect(check, 0xFC);
       });
 
       test('checkSOPs with SOP2 0xFF should return true', () {
-        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
-            check = packet.checkSOPs(buffer.asUint8List);
+        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC];
+        final check = packet.checkSOPs(buffer.asUint8List);
         expect(check, true);
       });
 
       test('checkSOPs with SOP2 0xFE should return true', () {
-        final buffer = [0xFF, 0xFE, 0x00, 0x02, 0x01, 0xFC],
-            check = packet.checkSOPs(buffer.asUint8List);
+        final buffer = [0xFF, 0xFE, 0x00, 0x02, 0x01, 0xFC];
+        final check = packet.checkSOPs(buffer.asUint8List);
         expect(check, true);
       });
 
       test('checkSOPs with SOP2 0xFC should return false', () {
-        final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x01, 0xFC],
-            check = packet.checkSOPs(buffer.asUint8List);
+        final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x01, 0xFC];
+        final check = packet.checkSOPs(buffer.asUint8List);
         expect(check, false);
       });
 
       test('checkExpectedSize should return 6 when size == expected', () {
-        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
-            check = packet.checkExpectedSize(buffer.asUint8List);
+        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC];
+        final check = packet.checkExpectedSize(buffer.asUint8List);
         expect(check, 6);
       });
 
       test('checkExpectedSize should return -1 when size < expected', () {
-        final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x04, 0x02, 0x03],
-            check = packet.checkExpectedSize(buffer.asUint8List);
+        final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x04, 0x02, 0x03];
+        final check = packet.checkExpectedSize(buffer.asUint8List);
         expect(check, -1);
       });
 
       test('checkMinSize should return true when size >= min', () {
-        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC],
-            check = packet.checkMinSize(buffer.asUint8List);
+        final buffer = [0xFF, 0xFF, 0x00, 0x02, 0x01, 0xFC];
+        final check = packet.checkMinSize(buffer.asUint8List);
         expect(check, true);
       });
 
       test('checkMinSize should return false when size < min', () {
-        final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x01],
-            check = packet.checkMinSize(buffer.asUint8List);
+        final buffer = [0xFF, 0xFC, 0x00, 0x02, 0x01];
+        final check = packet.checkMinSize(buffer.asUint8List);
         expect(check, false);
       });
     });

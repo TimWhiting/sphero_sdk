@@ -23,7 +23,8 @@ class Queue<T> {
 
   void onCommandProcessed(T payloadReceived) {
     final lastCommand = waitingForResponseQueue.firstOrNullWhere(
-        (command) => queueListener.match(command.payload, payloadReceived));
+      (command) => queueListener.match(command.payload, payloadReceived),
+    );
     if (lastCommand != null) {
       removeFromWaiting(lastCommand);
       lastCommand.completer.complete(payloadReceived);

@@ -1,10 +1,8 @@
-import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
-
 import 'rollable_toy.dart';
 import 'types.dart';
 
 class BB9E extends RollableToy {
-  BB9E(BluetoothDevice peripheral) : super(peripheral);
+  BB9E(super.peripheral);
   static const advertisement =
       ToyAdvertisement(name: 'BB-9E', prefix: 'GB-', typeof: BB9E.new);
 

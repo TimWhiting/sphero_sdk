@@ -17,7 +17,7 @@ abstract class AdaptorV1 {
 
   late void Function(Uint8List payload) onRead;
 
-  blue.BluetoothDevice get peripheral;
+  blue.BluetoothDevice? get peripheral;
 
   Future<void> open();
 
@@ -42,5 +42,5 @@ class SpheroPeripheral {
     throw Exception('Unknown peripheral type');
   }
 
-  blue.BluetoothDevice get peripheral;
+  blue.BluetoothDevice? peripheral;
 }

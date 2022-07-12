@@ -7,17 +7,17 @@ environment:
   sdk: '>=2.17.0 <3.0.0'
 
 dependencies:
+  dartx: ^1.1.0
   enum_to_string: any
   flutter:
     sdk: flutter
-  flutter_hooks: any
   flutter_blue_plugin: any
+  flutter_hooks: any
   flutter_riverpod: any
   hooks_riverpod: any
   permission_handler: any
   sphero_sdk:
     path: ../
-  dartx: ^1.1.0
 
 dev_dependencies:
   all_lint_rules_community: ^0.0.11

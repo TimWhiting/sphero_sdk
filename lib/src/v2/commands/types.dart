@@ -207,19 +207,14 @@ class CommandPartial<T extends IntValueEnum> {
 
 class Command<T extends IntValueEnum> extends CommandPartial<T> {
   Command({
-    required List<int> payload,
-    required T commandId,
+    required super.payload,
+    required super.commandId,
     required this.sequenceNumber,
     required this.deviceId,
-    int? targetId,
-    int? sourceId,
+    super.targetId,
+    super.sourceId,
     this.commandFlags = const [],
-  }) : super(
-          payload: payload,
-          commandId: commandId,
-          targetId: targetId,
-          sourceId: sourceId,
-        );
+  });
   Command.fromPart({
     required CommandPartial<T> part,
     required this.deviceId,

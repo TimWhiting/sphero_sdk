@@ -1,4 +1,4 @@
-// ignore_for_file: null_argument_to_non_null_type
+// ignore_for_file: null_argument_to_non_null_type, discarded_futures
 
 import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -37,7 +37,7 @@ class CharacteristicMock extends Mock implements BluetoothCharacteristic {
     when(uuid).thenReturn(uuidMock);
 
     when(write([], withoutResponse: true))
-        .thenAnswer((realInvocation) => Future.value(null));
+        .thenAnswer((realInvocation) => Future.value());
   }
 
   final Guid uuidMock;

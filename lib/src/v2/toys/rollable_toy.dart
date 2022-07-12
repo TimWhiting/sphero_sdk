@@ -1,10 +1,9 @@
 import 'package:dartx/dartx.dart';
-import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
 
 import 'core.dart';
 
 class RollableToy extends Core {
-  RollableToy(BluetoothDevice peripheral) : super(peripheral);
+  RollableToy(super.peripheral);
 
   /// Rolls the toy at [speed] (0 to 255) and [heading] (0 to 360) with [flags]
   Future<QueuePayload> roll(int speed, int heading, List<int> flags) =>
@@ -13,7 +12,11 @@ class RollableToy extends Core {
   /// Rolls the toy at [speed] (0 to 255) and [heading]
   /// (0 to 360) for [time] milliseconds with [flags]
   Future<QueuePayload> rollTime(
-      int speed, int heading, int time, List<int> flags) async {
+    int speed,
+    int heading,
+    int time,
+    List<int> flags,
+  ) async {
     var drive = true;
     Future.delayed(time.milliseconds, () => drive = false);
     while (drive) {

@@ -1,16 +1,29 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sphero_sdk/sphero_sdk.dart';
 
 final bleManagerProvider = FutureProvider<FlutterBlue>((ref) async {
-  await Permission.location.request();
+  var res = await Permission.location.request();
+  assert(res.isGranted, 'Location permission');
+  res = await Permission.bluetoothScan.request();
+  assert(res.isGranted, 'Scan permission');
+  res = await Permission.bluetoothConnect.request();
+  assert(res.isGranted, 'Connect permission');
+  res = await Permission.bluetooth.request();
+  assert(res.isGranted, 'Bluetooth permission');
   final manager = FlutterBlue.instance;
   try {
     await manager.setLogLevel(LogLevel.error);
-    manager.startScan().listen((sr) {
-      ref.read(allDevicesProvider.notifier).state =
-          ref.read(allDevicesProvider.notifier).state..[sr.device.name] = sr;
+
+    print('Searching');
+    manager.startScan(timeout: 5.seconds);
+    manager.scanResults.listen((sr) {
+      print('Found $sr');
+      ref
+          .read(allDevicesProvider.notifier)
+          .update((m) => {for (final s in sr) s.device.name: s});
     });
   } on Exception catch (e) {
     print(e);

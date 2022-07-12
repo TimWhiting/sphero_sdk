@@ -25,7 +25,9 @@ extension SpheroDevice on SpheroBase {
   /// await orb.setStabilization(1);
   /// ```
   Future<Map<String, Object?>> setStabilization(bool enabled) => _command(
-      SpheroV1.setStabilization, Uint8List.fromList([enabled.intFlag]));
+        SpheroV1.setStabilization,
+        Uint8List.fromList([enabled.intFlag]),
+      );
 
   /// The Set Rotation Rate command allows control of the [rotation] rate Sphero
   /// uses to meet new heading commands.
@@ -87,13 +89,16 @@ extension SpheroDevice on SpheroBase {
   ///   trueTime: 0,
   ///   options: 0x7);
   /// ```
-  Future<Map<String, Object?>> selfLevel(
-          {int angleLimit = 0,
-          int timeout = 0,
-          int trueTime = 0,
-          int options = 0}) =>
-      _command(SpheroV1.selfLevel,
-          Uint8List.fromList([options, angleLimit, timeout, trueTime]));
+  Future<Map<String, Object?>> selfLevel({
+    int angleLimit = 0,
+    int timeout = 0,
+    int trueTime = 0,
+    int options = 0,
+  }) =>
+      _command(
+        SpheroV1.selfLevel,
+        Uint8List.fromList([options, angleLimit, timeout, trueTime]),
+      );
 
   /// The Set Data Streaming command configures Sphero's built-in support for
   /// asynchronously streaming certain system and sensor data.
@@ -130,14 +135,15 @@ extension SpheroDevice on SpheroBase {
     ds['mask2'] = mask2;
 
     return _command(
-        SpheroV1.setDataStreaming,
-        Uint8List.fromList([
-          ...n.toHexArray(2),
-          ...m.toHexArray(2),
-          ...mask1.toHexArray(4),
-          pcnt,
-          ...mask2.toHexArray(4)
-        ]));
+      SpheroV1.setDataStreaming,
+      Uint8List.fromList([
+        ...n.toHexArray(2),
+        ...m.toHexArray(2),
+        ...mask1.toHexArray(4),
+        pcnt,
+        ...mask2.toHexArray(4)
+      ]),
+    );
   }
 
   /// The Configure Collisions command configures Sphero's collision detection
@@ -200,7 +206,11 @@ extension SpheroDevice on SpheroBase {
   ///   yawTare: 0x0);
   /// ```
   Future<Map<String, Object?>> configureLocator(
-          int flags, int x, int y, int yawTare) =>
+    int flags,
+    int x,
+    int y,
+    int yawTare,
+  ) =>
       _command(
         SpheroV1.locator,
         Uint8List.fromList([
@@ -259,10 +269,16 @@ extension SpheroDevice on SpheroBase {
   /// ```dart
   /// await orb.setRgbLed( 0,  0, 255);
   /// ```
-  Future<Map<String, Object?>> setRgbLed(int red, int green, int blue,
-          [int flag = 0x01]) =>
+  Future<Map<String, Object?>> setRgbLed(
+    int red,
+    int green,
+    int blue, [
+    int flag = 0x01,
+  ]) =>
       _command(
-          SpheroV1.setRgbLed, Uint8List.fromList([red, green, blue, flag]));
+        SpheroV1.setRgbLed,
+        Uint8List.fromList([red, green, blue, flag]),
+      );
 
   /// The Set Back LED command allows [brightness] adjustment of Sphero's tail
   /// light.
@@ -304,10 +320,15 @@ extension SpheroDevice on SpheroBase {
   /// orb.roll(100, 0);
   /// print("rolling...");
   /// ```
-  Future<Map<String, Object?>> roll(int speed, int heading,
-          [int state = 0x01]) =>
-      _command(SpheroV1.roll,
-          Uint8List.fromList([speed, ...heading.toHexArray(2), state & 0x03]));
+  Future<Map<String, Object?>> roll(
+    int speed,
+    int heading, [
+    int state = 0x01,
+  ]) =>
+      _command(
+        SpheroV1.roll,
+        Uint8List.fromList([speed, ...heading.toHexArray(2), state & 0x03]),
+      );
 
   /// The Boost command executes Sphero's boost macro.
   ///
@@ -342,9 +363,15 @@ extension SpheroDevice on SpheroBase {
   ///   rpower: 180);
   /// ```
   Future<Map<String, Object?>> setRawMotors(
-          int lmode, int lpower, int rmode, int rpower) =>
-      _command(SpheroV1.setRawMotors,
-          Uint8List.fromList([lmode & 0x07, lpower, rmode & 0x07, rpower]));
+    int lmode,
+    int lpower,
+    int rmode,
+    int rpower,
+  ) =>
+      _command(
+        SpheroV1.setRawMotors,
+        Uint8List.fromList([lmode & 0x07, lpower, rmode & 0x07, rpower]),
+      );
 
   /// The Set Motion Timeout command gives Sphero an ultimate timeout for the
   /// last motion command to keep Sphero from rolling away in the case of
@@ -457,7 +484,10 @@ extension SpheroDevice on SpheroBase {
       _command(SpheroV1.getConfigBlock, Uint8List.fromList([id]));
 
   Future<Map<String, Object?>> _setSsbBlock(
-          int cmd, int password, Uint8List block) =>
+    int cmd,
+    int password,
+    Uint8List block,
+  ) =>
       _command(cmd, Uint8List.fromList([...password.toHexArray(4), ...block]));
 
   /// The Set SSB Modifier Block command allows the SSB to be patched with a new
@@ -601,11 +631,16 @@ extension SpheroDevice on SpheroBase {
   /// await orb.grantCores(pwd, 5, 0x01);
   /// ```
   Future<Map<String, Object?>> grantCores(
-          int password, int number, int flags) =>
+    int password,
+    int number,
+    int flags,
+  ) =>
       _command(
-          SpheroV1.ssbGrantCores,
-          Uint8List.fromList(
-              [...password.toHexArray(4), ...number.toHexArray(4), flags]));
+        SpheroV1.ssbGrantCores,
+        Uint8List.fromList(
+          [...password.toHexArray(4), ...number.toHexArray(4), flags],
+        ),
+      );
 
   Future<Map<String, Object?>> _xpOrLevelUp(int cmd, int password, int gen) =>
       _command(cmd, Uint8List.fromList([...password.toHexArray(4), gen]));
@@ -845,7 +880,9 @@ extension SpheroDevice on SpheroBase {
   /// await orb.appendOrbBasicFragment(0x00, OrbBasicCode);
   /// ```
   Future<Map<String, Object?>> appendOrbBasicFragment(
-      int area, Uint8List code) {
+    int area,
+    Uint8List code,
+  ) {
     final data = Uint8List.fromList([area, ...code]);
     return _command(SpheroV1.appendOBFragment, data);
   }
@@ -862,9 +899,14 @@ extension SpheroDevice on SpheroBase {
   /// await orb.executeOrbBasicProgram(0x00, 0x00, 0x00);
   /// ```
   Future<Map<String, Object?>> executeOrbBasicProgram(
-          int area, int slMSB, int slLSB) =>
+    int area,
+    int slMSB,
+    int slLSB,
+  ) =>
       _command(
-          SpheroV1.execOBProgram, Uint8List.fromList([area, slMSB, slLSB]));
+        SpheroV1.execOBProgram,
+        Uint8List.fromList([area, slMSB, slLSB]),
+      );
 
   /// The Abort orbBasic Program command aborts execution of any currently
   /// running orbBasic program.

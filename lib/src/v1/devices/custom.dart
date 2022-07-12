@@ -171,7 +171,8 @@ mixin Custom on SpheroBase {
   Future<Map<String, Object?>> detectFreefall() {
     var falling = false;
     on('accelOne', (data) {
-      final d = data as Map<String, Map<String, List<int>>>;
+      data!;
+      data as Map<String, Map<String, List<int>>>;
       if (data['accelOne']!['value']![0] < 70 && !falling) {
         falling = true;
         emit(

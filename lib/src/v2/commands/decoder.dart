@@ -6,7 +6,7 @@ import 'types.dart';
 
 const MINIMUM_PACKET_LENGTH = 6;
 
-int number(List<int> buffer, int offset) => (ByteDataReader(endian: Endian.big)
+int number(List<int> buffer, int offset) => (ByteDataReader()
       ..add(buffer)
       ..readAhead(offset))
     .readInt16();
@@ -20,17 +20,18 @@ AllFlags decodeFlags(int flags) {
   final commandHasTargetId = (flags & Flags.commandHasTargetId) != 0;
   final commandHasSourceId = (flags & Flags.commandHasSourceId) != 0;
   return AllFlags(
-      isResponse: isResponse,
-      requestsResponse: requestsResponse,
-      requestsOnlyErrorResponse: requestsOnlyErrorResponse,
-      resetsInactivityTimeout: resetsInactivityTimeout,
-      commandHasTargetId: commandHasTargetId,
-      commandHasSourceId: commandHasSourceId);
+    isResponse: isResponse,
+    requestsResponse: requestsResponse,
+    requestsOnlyErrorResponse: requestsOnlyErrorResponse,
+    resetsInactivityTimeout: resetsInactivityTimeout,
+    commandHasTargetId: commandHasTargetId,
+    commandHasSourceId: commandHasSourceId,
+  );
 }
 
 Command classifyPacket(Uint8List packet) {
   // ignore: unused_local_variable
-  final _startPacket = packet[0];
+  final startPacket = packet[0];
   final flagsInt = packet[1];
   final flags = decodeFlags(flagsInt);
 
@@ -57,9 +58,9 @@ Command classifyPacket(Uint8List packet) {
   final sequenceNumber = shift();
   final payload = packet.sublist(nextIndex, packet.length - 2);
   // ignore: unused_local_variable
-  final _checkSum = packet[packet.length - 2];
+  final checkSum = packet[packet.length - 2];
   // ignore: unused_local_variable
-  final _endPacket = packet.last;
+  final endPacket = packet.last;
   final device = DeviceId.values.firstWhere((v) => v.value == deviceId);
   return Command(
     sourceId: sourceId,
@@ -72,7 +73,8 @@ Command classifyPacket(Uint8List packet) {
 }
 
 Function(int) decodeFactory(
-    void Function(String? err, Command? response) callback) {
+  void Function(String? err, Command? response) callback,
+) {
   var msg = <int>[];
   var checksum = 0;
   var isEscaping = false;
