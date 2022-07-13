@@ -2,7 +2,7 @@
 
 import 'dart:typed_data';
 
-import 'package:flutter_blue_plugin/flutter_blue_plugin.dart' as blue;
+import 'package:flutter_blue/flutter_blue.dart' as blue;
 
 import 'adaptor_blue.dart';
 

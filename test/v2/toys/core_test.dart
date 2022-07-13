@@ -1,6 +1,6 @@
 // ignore_for_file: null_argument_to_non_null_type, discarded_futures
 
-import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sphero_sdk/src/v2/toys/index.dart';

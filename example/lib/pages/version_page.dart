@@ -20,12 +20,24 @@ class VersionPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final version = ref.watch(versionProvider);
+    final sphero = ref.watch(spheroProvider);
 
     return RefreshIndicator(
       onRefresh: () async => ref.refresh(spheroProvider.future),
       child: ListView(
         children: [
           Center(child: Text('Version: ${version.asData?.value ?? ''}')),
+          ElevatedButton(
+            child: const Text('Change color'),
+            onPressed: () {
+              sphero.maybeWhen(
+                data: (sphero) {
+                  sphero?.randomColor();
+                },
+                orElse: () {},
+              );
+            },
+          ),
         ],
       ),
     );

@@ -17,8 +17,8 @@ final RES_PARSER = {
       APIField(name: 'bas', type: 'number', format: 'hex', from: 6, to: 7),
       APIField(name: 'macro', type: 'number', format: 'hex', from: 7, to: 8),
       // Note this is returning weird data.
-      // APIField(name: 'apiMaj', type: 'number', from: 8, to: 9),
-      // APIField(name: 'apiMin', type: 'number', from: 9, to: 10),
+      APIField(name: 'apiMaj', type: 'number', from: 8, to: 9),
+      APIField(name: 'apiMin', type: 'number', from: 9, to: 10),
     ],
   ),
   '0:11': const APIV1(
@@ -196,19 +196,19 @@ final RES_PARSER = {
         name: 'motionTimeouts',
         type: 'predefined',
         mask: 0x10,
-        values:<int, bool> {0x00: false, 0x10: true},
+        values: <int, bool>{0x00: false, 0x10: true},
       ),
       APIField(
         name: 'retailDemoOn',
         type: 'predefined',
         mask: 0x20,
-        values:<int, bool> {0x00: false, 0x20: true},
+        values: <int, bool>{0x00: false, 0x20: true},
       ),
       APIField(
         name: 'awakeSensitivityLight',
         type: 'predefined',
         mask: 0x40,
-        values:<int, bool> {0x00: false, 0x40: true},
+        values: <int, bool>{0x00: false, 0x40: true},
       ),
       APIField(
         name: 'awakeSensitivityHeavy',

@@ -3,7 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 import '../commands/index.dart';
 import 'queue.dart';

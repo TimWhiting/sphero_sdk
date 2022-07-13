@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:dartx/dartx.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:flutter_blue_plugin/flutter_blue_plugin.dart' as blue;
+import 'package:flutter_blue/flutter_blue.dart' as blue;
 
 import 'adaptor.dart';
 import 'sphero.dart';
@@ -65,9 +65,15 @@ extension BluetoothX on blue.FlutterBlue {
     final toys = <ToyDiscovered>[];
 
     print('Scanning devices...');
-    await startScan(timeout: 4.seconds).listen((sr) {
-      sr.discover(toysType, toys);
-    }).asFuture(null);
+    await startScan(timeout: 4.seconds);
+    scanResults.listen((sr) {
+      for (final s in sr) {
+        s.discover(toysType, toys);
+      }
+    });
+    await Future<void>.delayed(4.seconds);
+
+    await stopScan();
 
     print('Done scanning devices.');
     return toys;
@@ -90,7 +96,7 @@ extension BluetoothX on blue.FlutterBlue {
     }
 
     final toy = toyType.typeof(discoveredItem.peripheral);
-
+    print('connecting to $toy');
     await startToy(toy);
     print('found toy');
 
@@ -128,7 +134,6 @@ extension on blue.ScanResult {
     final localName = advertisementData.localName;
 
     final peripheral = SpheroPeripheral(device);
-    print(peripheral.name);
     for (final toyAdvertisement in validToys) {
       if (localName.indexOf(toyAdvertisement.prefix) == 0) {
         toys.add(
@@ -138,7 +143,8 @@ extension on blue.ScanResult {
           ),
         );
 
-        print('''name: ${toyAdvertisement.name},
+        print('''
+name: ${toyAdvertisement.name},
    uuid: ${peripheral.identifier},
    mac-address: ${peripheral.identifier}''');
       }

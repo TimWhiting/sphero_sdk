@@ -69,8 +69,10 @@ class Sphero extends SpheroBase with Custom {
 
   Future<void> connect() async {
     connection.onRead = (payload) {
+      print('Got payload $payload');
       emit('data', payload);
       final parsedPayload = packet.parse(payload);
+      print('Parsed $parsedPayload');
       Map<String, Object?>? parsedData;
 
       if (parsedPayload!.sop2 == SOP2.sync) {
@@ -189,7 +191,7 @@ class Sphero extends SpheroBase with Custom {
     response.timer = Timer(Duration(milliseconds: timeout), () {
       responseQueue.remove(seq);
       if (!completer.isCompleted) {
-        completer.completeError('Sphero command timeout');
+        completer.completeError('Sphero command timeout $cmdPacket');
       }
     });
     responseQueue[seq] = response;

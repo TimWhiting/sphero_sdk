@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 import 'adaptor.dart';
 
@@ -46,11 +46,14 @@ class AdaptorV1Blue extends AdaptorV1 {
       final bleManager = FlutterBlue.instance;
       var completed = false;
 
-      bleManager.startScan(timeout: const Duration(seconds: 10)).listen((sr) {
-        if (sr.advertisementData.localName == uuid && !completed) {
-          peripheral = sr.device;
-          completed = true;
-          _connectPeripheral().then((_) => completer.complete());
+      await bleManager.startScan(timeout: const Duration(seconds: 10));
+      bleManager.scanResults.listen((sr) {
+        for (final s in sr) {
+          if (s.advertisementData.localName == uuid && !completed) {
+            peripheral = s.device;
+            completed = true;
+            _connectPeripheral().then((_) => completer.complete());
+          }
         }
       });
       return completer.future;
@@ -69,24 +72,24 @@ class AdaptorV1Blue extends AdaptorV1 {
 
   @override
   Future<void> close() async {
-    peripheral?.disconnect();
+    await peripheral?.disconnect();
     isConnected = false;
     peripheral = null;
   }
 
   Future<void> devModeOn() async {
-    print('Setting anti-dos############################');
+    print('Setting anti-dos');
     await setAntiDos();
-    print('Setting tx power!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    print('Setting tx power');
     await setTXPower(7);
-    print('Waking##########################');
+    print('Waking');
     await wake();
-    await _responseChar.setNotifyValue(true);
     _responseChar.value.asBroadcastStream().listen(
       (cWithValue) {
         final data = cWithValue;
         if (data.length > 5) {
           try {
+            print('Got data on response characteristic $data');
             onRead(Uint8List.fromList(data));
           } on Exception catch (e) {
             print('Caught exception $e while reading');
@@ -104,6 +107,10 @@ Done monitoring response characteristic
       ),
       cancelOnError: false,
     );
+    assert(
+      await _responseChar.setNotifyValue(true),
+      'Notification Service Subscription',
+    );
   }
 
   Future<void> wake() => _wakeChar.write([1]);
@@ -113,6 +120,7 @@ Done monitoring response characteristic
   Future<void> setAntiDos() {
     const str = '011i3';
     final bytes = Uint8List.fromList(utf8.encode(str));
+    print('UTF8 $bytes');
     return _antiDosChar.write(bytes);
   }
 
@@ -152,7 +160,8 @@ Done monitoring response characteristic
   }
 
   Future<void> _connectBLE() async {
-    await peripheral!.connect(timeout: const Duration(seconds: 6));
+    await peripheral!.connect();
+    await Future<void>.delayed(const Duration(milliseconds: 200));
     isConnected = true;
   }
 }

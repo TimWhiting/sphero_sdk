@@ -57,9 +57,7 @@ class PacketV1 {
   // ignore: avoid_multiple_declarations_per_line
   int? dlenLsb, dlenMsb, idCode, mrsp;
   void printPacket() {
-    print(
-      '''sop1: $sop1, sop2: $sop2, did: $did, cid: $cid, seq: $seq, dlen: $dlen, data: $data''',
-    );
+    print(toString());
   }
 
   Uint8List get packet {
@@ -68,6 +66,10 @@ class PacketV1 {
     checksum = p.sublist(2).toList().checksum;
     return Uint8List.fromList([...p, checksum]);
   }
+
+  @override
+  String toString() =>
+      '''sop1: $sop1, sop2: $sop2, did: $did, cid: $cid, seq: $seq, dlen: $dlen, data: $data''';
 }
 
 class PacketParser {
@@ -105,15 +107,40 @@ class PacketParser {
     } else {
       partialBuffer = b;
     }
+    if (!checkSOPs(b)) {
+      print('Trying to find SOP');
+      // Offer one chance to fix SOPs
+      b = findSOP(b);
+      print('New packet buffer $b');
+    }
     if (checkSOPs(b)) {
-      // print('sop looks good');
+      print('sop looks good');
       if (checkMinSize(b) && checkExpectedSize(b) > -1) {
-        // print('size looks good');
+        print('size looks good');
         return parseBuffer(b);
       }
       partialBuffer = Uint8List.fromList(b);
     }
     return null;
+  }
+
+  Uint8List findSOP(Uint8List l) {
+    if (l[0] == FIELDS.sop1_hex) {
+      if (l.length > 1) {
+        if (checkSOP2(l) == false) {
+          return findSOP(l.sublist(1));
+        }
+      }
+    }
+    for (var i = 0; i < l.length - 1; i++) {
+      if (l[i] == FIELDS.sop1_hex) {
+        if (checkSOP2(Uint8List.sublistView(l, i)) != false) {
+          print('Found sop2');
+          return l.sublist(i);
+        }
+      }
+    }
+    return l;
   }
 
   @visibleForTesting
@@ -123,9 +150,9 @@ class PacketParser {
     packet.sop1 = b[FIELDS.sop1_pos];
     packet.sop2 = b[FIELDS.sop2_pos];
 
-    final bByte2 = b[FIELDS.mrspIdCode],
-        bByte3 = b[FIELDS.seqMsb],
-        bByte4 = b[FIELDS.dlenLsb];
+    final bByte2 = b[FIELDS.mrspIdCode];
+    final bByte3 = b[FIELDS.seqMsb];
+    final bByte4 = b[FIELDS.dlenLsb];
 
     if (FIELDS.sop2_sync == b[FIELDS.sop2_pos]) {
       packet.mrsp = bByte2;
@@ -185,7 +212,7 @@ class PacketParser {
 
   Map<String, Object?> parseAsyncData(PacketV1 payload, Map<String, int> ds) {
     print('Parsing async data');
-    final parser = ASYNC_PARSER[payload.idCode]!;
+    final parser = ASYNC_PARSER[payload.idCode];
 
     return parseDataMap(parser, payload, ds);
   }
@@ -193,17 +220,16 @@ class PacketParser {
   Map<String, Object?> parseResponseData(CommandID cmd, PacketV1 payload) {
     print('Parsing sync data');
     final parserId =
-            // ignore: prefer_interpolation_to_compose_strings
-            cmd.did.toRadixString(16) + ':' + cmd.cid.toRadixString(16),
-        parser = RES_PARSER[parserId] ??
-            (throw Exception('No parser found for that command'));
+        // ignore: prefer_interpolation_to_compose_strings
+        cmd.did.toRadixString(16) + ':' + cmd.cid.toRadixString(16);
+    final parser = RES_PARSER[parserId];
 
     return parseDataMap(parser, payload);
   }
 
   @visibleForTesting
   Map<String, Object?> parseDataMap(
-    APIV1 parser,
+    APIV1? parser,
     PacketV1 payload, [
     Map<String, int>? dsIn,
   ]) {
@@ -211,7 +237,7 @@ class PacketParser {
     Map<String, Object?> pData;
     APIField field;
     var ds = dsIn;
-    if (data.isNotEmpty) {
+    if (parser != null && data.isNotEmpty) {
       try {
         ds = checkDSMasks(ds, parser);
       } on Exception catch (e) {
@@ -263,13 +289,13 @@ No parser found:  data: $payload,
   }
 
   @visibleForTesting
-  Map<String, int> checkDSMasks(Map<String, int>? ds, APIV1 parser) {
+  Map<String, int>? checkDSMasks(Map<String, int>? ds, APIV1 parser) {
     if (parser.idCode == 0x03) {
       if (!(ds?['mask1'] != null && ds?['mask2'] != null)) {
         throw Exception();
       }
     } else {
-      throw Exception('Invalid idCode');
+      return null;
     }
 
     return ds!;
@@ -293,7 +319,10 @@ No parser found:  data: $payload,
   }
 
   @visibleForTesting
-  int checkDSBit(Map<String, int> ds, APIField field) {
+  int checkDSBit(Map<String, int>? ds, APIField field) {
+    if (ds == null) {
+      return -1;
+    }
     if ((ds[field.maskField]! & field.bitmask!).abs() > 0) {
       return 1;
     }
@@ -448,4 +477,8 @@ class CommandID {
   CommandID({required this.cid, required this.did});
   final int cid;
   final int did;
+  @override
+  String toString() {
+    return 'cid: $cid, did: $did';
+  }
 }

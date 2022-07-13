@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:dartx/dartx.dart';
-import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 import 'toys/index.dart';
 
@@ -34,8 +34,11 @@ extension BleManagerXV2 on FlutterBlue {
     final toys = <ToyDiscovered>[];
 
     print('Scanning devices...');
-    startScan().listen((sr) {
-      sr.discover(toysType, toys);
+    await startScan();
+    scanResults.listen((sr) {
+      for (final s in sr) {
+        s.discover(toysType, toys);
+      }
     });
     print('findToys-wait5seconds');
     await Future<void>.delayed(5000.milliseconds);
@@ -137,7 +140,7 @@ extension on ScanResult {
         );
 
         print('''name: ${toyAdvertisement.name},
-   uuid: ${device.deviceId},
+   uuid: ${device.id},
    mac-address: ${advertisementData.localName}''');
       }
     }

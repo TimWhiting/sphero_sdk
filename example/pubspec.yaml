@@ -11,7 +11,7 @@ dependencies:
   enum_to_string: any
   flutter:
     sdk: flutter
-  flutter_blue_plugin: any
+  flutter_blue: any
   flutter_hooks: any
   flutter_riverpod: any
   hooks_riverpod: any

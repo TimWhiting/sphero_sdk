@@ -119,7 +119,7 @@ extension NavX on Pages {
   Widget get widget {
     switch (this) {
       case Pages.BluetoothInfo:
-        return const BluetoothPage();
+        return const VersionPage();
       case Pages.Calibration:
         break;
       case Pages.CollisionDetection:
