@@ -4,9 +4,9 @@ import 'package:buffer/buffer.dart';
 
 import 'types.dart';
 
-const MINIMUN_PACKET_LENGTH = 6;
+const MINIMUM_PACKET_LENGTH = 6;
 
-int number(List<int> buffer, int offset) => (ByteDataReader(endian: Endian.big)
+int number(List<int> buffer, int offset) => (ByteDataReader()
       ..add(buffer)
       ..readAhead(offset))
     .readInt16();
@@ -20,22 +20,23 @@ AllFlags decodeFlags(int flags) {
   final commandHasTargetId = (flags & Flags.commandHasTargetId) != 0;
   final commandHasSourceId = (flags & Flags.commandHasSourceId) != 0;
   return AllFlags(
-      isResponse: isResponse,
-      requestsResponse: requestsResponse,
-      requestsOnlyErrorResponse: requestsOnlyErrorResponse,
-      resetsInactivityTimeout: resetsInactivityTimeout,
-      commandHasTargetId: commandHasTargetId,
-      commandHasSourceId: commandHasSourceId);
+    isResponse: isResponse,
+    requestsResponse: requestsResponse,
+    requestsOnlyErrorResponse: requestsOnlyErrorResponse,
+    resetsInactivityTimeout: resetsInactivityTimeout,
+    commandHasTargetId: commandHasTargetId,
+    commandHasSourceId: commandHasSourceId,
+  );
 }
 
 Command classifyPacket(Uint8List packet) {
   // ignore: unused_local_variable
-  final _startPacket = packet[0];
+  final startPacket = packet[0];
   final flagsInt = packet[1];
   final flags = decodeFlags(flagsInt);
 
-  int sourceId;
-  int targetId;
+  int? sourceId;
+  int? targetId;
   var nextIndex = 2;
   // ignore: prefer_function_declarations_over_variables
   final shift = () {
@@ -57,21 +58,23 @@ Command classifyPacket(Uint8List packet) {
   final sequenceNumber = shift();
   final payload = packet.sublist(nextIndex, packet.length - 2);
   // ignore: unused_local_variable
-  final _checkSum = packet[packet.length - 2];
+  final checkSum = packet[packet.length - 2];
   // ignore: unused_local_variable
-  final _endPacket = packet.last;
-
+  final endPacket = packet.last;
+  final device = DeviceId.values.firstWhere((v) => v.value == deviceId);
   return Command(
-      sourceId: sourceId,
-      targetId: targetId,
-      commandId: commandId,
-      deviceId: deviceId,
-      payload: payload,
-      sequenceNumber: sequenceNumber);
+    sourceId: sourceId,
+    targetId: targetId,
+    commandId: device.commands.firstWhere((v) => v.value == commandId),
+    deviceId: device,
+    payload: payload,
+    sequenceNumber: sequenceNumber,
+  );
 }
 
 Function(int) decodeFactory(
-    void Function(String err, [Command response]) callback) {
+  void Function(String? err, Command? response) callback,
+) {
   var msg = <int>[];
   var checksum = 0;
   var isEscaping = false;
@@ -85,18 +88,18 @@ Function(int) decodeFactory(
   // ignore: prefer_function_declarations_over_variables, avoid_types_on_closure_parameters
   final error = (String errorMessage) {
     init();
-    callback(errorMessage);
+    callback(errorMessage, null);
   };
   return (byte) {
     switch (byte) {
       case APIConstants.startOfPacket:
         if (msg.isNotEmpty) {
           init();
-          return callback('Invalid first byte');
+          return callback('Invalid first byte', null);
         }
         return msg.add(byte);
       case APIConstants.endOfPacket:
-        if (msg.isEmpty || msg.length < MINIMUN_PACKET_LENGTH) {
+        if (msg.isEmpty || msg.length < MINIMUM_PACKET_LENGTH) {
           return error('Invalid last byte ${msg.length}');
         }
 

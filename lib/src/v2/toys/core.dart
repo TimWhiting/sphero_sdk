@@ -1,21 +1,22 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter_ble_lib/flutter_ble_lib.dart';
+import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
 
 import '../commands/index.dart';
 import 'queue.dart';
 import 'types.dart';
 import 'utils.dart';
 
-export 'package:flutter_ble_lib/flutter_ble_lib.dart' show Peripheral;
 export '../commands/index.dart';
 export 'utils.dart';
 
 class QueuePayload {
-  QueuePayload({this.characteristic, this.command});
+  QueuePayload({required this.command, this.characteristic});
   Command command;
-  Characteristic characteristic;
+  BluetoothCharacteristic? characteristic;
 }
 
 class Event {
@@ -32,18 +33,41 @@ class Core {
   double minVoltage = 1;
   APIVersion apiVersion = APIVersion.V2;
 
-  Device commands;
-  Peripheral peripheral;
-  Characteristic apiV2Characteristic;
-  Characteristic dfuControlCharacteristic;
-  Characteristic subsCharacteristic;
-  Characteristic antiDoSCharacteristic;
-  Function(int) decoder;
-  bool started;
-  Queue<QueuePayload> queue;
-  Completer<void> initCompleter;
-  Map<String, Future<void> Function(dynamic args)> eventsListeners;
-  SensorMaskRaw sensorMask = SensorMaskRaw(v2: [], v21: []);
+  late final Device commands;
+  BluetoothDevice peripheral;
+  late final BluetoothCharacteristic apiV2Characteristic;
+  late final BluetoothCharacteristic dfuControlCharacteristic;
+  late final BluetoothCharacteristic subsCharacteristic;
+  late final BluetoothCharacteristic antiDoSCharacteristic;
+  late final Function(int) decoder;
+  bool started = false;
+  late final Queue<QueuePayload> queue;
+  final initCompleter = Completer<void>();
+  final eventsListeners = <String, Future<void> Function(Object? args)>{};
+  final sensorMask = SensorMaskRaw(v2: [], v21: []);
+
+  Future<void> init() async {
+    print('init-start');
+    final p = peripheral;
+
+    queue = Queue<QueuePayload>(
+      QueueListener(match: match, onExecute: onExecute),
+    );
+    commands = commandsFactory();
+    // ignore: unnecessary_lambdas
+    decoder = decodeFactory((error, [packet]) => onPacketRead(error, packet));
+
+    print('init-connect');
+    await p.connect(autoConnect: true);
+
+    print('init-discoverAllServicesAndCharacteristics');
+    await p.discoverServices();
+
+    await bindServices();
+    await bindListeners();
+
+    print('init-done');
+  }
 
   /// Determines and returns the current battery charging state
   Future<double> batteryVoltage() async {
@@ -76,9 +100,9 @@ class Core {
 
     // TODO: This
     print('start-dfuControlCharacteristic-subscribe');
-    dfuControlCharacteristic.monitor();
+    await dfuControlCharacteristic.setNotifyValue(true);
     print('start-apiV2Characteristic-subscribe');
-    apiV2Characteristic.monitor();
+    await apiV2Characteristic.setNotifyValue(true);
 
     started = true;
 
@@ -92,38 +116,46 @@ class Core {
   }
 
   /// Determines and returns the system app version of the toy
-  Future<Map<String, dynamic>> appVersion() async {
+  Future<Map<String, int>> appVersion() async {
     final response = await queueCommand(commands.systemInfo.appVersion());
-    return {
+    return <String, int>{
       'major': number(response.command.payload, 1),
       'minor': number(response.command.payload, 3)
     };
   }
 
-  void on(String eventName, Future<void> Function(dynamic) handler) {
+  void on(String eventName, Future<void> Function(Object?) handler) {
     eventsListeners[eventName] = handler;
   }
 
   Future<void> destroy() async {
     // TODO handle all unbind, disconnect, etc
-    eventsListeners = {}; // remove references
-    await peripheral.disconnectOrCancelConnection();
+    eventsListeners.clear(); // remove references
+    peripheral.disconnect();
   }
 
   Future<void> configureSensorStream() async {
     // save it so on response we can parse it
-    final sensorMask = sensorValuesToRaw([
-      SensorMaskValues.accelerometer,
-      SensorMaskValues.orientation,
-      SensorMaskValues.locator,
-      SensorMaskValues.gyro
-    ], apiVersion);
+    final sensorMask = sensorValuesToRaw(
+      [
+        SensorMaskValues.accelerometer,
+        SensorMaskValues.orientation,
+        SensorMaskValues.locator,
+        SensorMaskValues.gyro
+      ],
+      apiVersion,
+    );
 
-    await queueCommand(commands.sensor.sensorMask(
-        flatSensorMask(sensorMask.v2), SensorControlDefaults.interval));
+    await queueCommand(
+      commands.sensor.sensorMask(
+        flatSensorMask(sensorMask.v2),
+        SensorControlDefaults.interval,
+      ),
+    );
     if (sensorMask.v21.isNotEmpty) {
       await queueCommand(
-          commands.sensor.sensorMaskExtended(flatSensorMask(sensorMask.v21)));
+        commands.sensor.sensorMaskExtended(flatSensorMask(sensorMask.v21)),
+      );
     }
   }
 
@@ -138,46 +170,27 @@ class Core {
     int deadTime = 10,
     int method = 0x01,
   }) =>
-      queueCommand(commands.sensor.configureCollision(
-          xThreshold, yThreshold, xSpeed, ySpeed, deadTime,
-          method: method));
+      queueCommand(
+        commands.sensor.configureCollision(
+          xThreshold,
+          yThreshold,
+          xSpeed,
+          ySpeed,
+          deadTime,
+          method: method,
+        ),
+      );
 
   Future<QueuePayload> queueCommand(Command command) => queue.queue(
-      QueuePayload(characteristic: apiV2Characteristic, command: command));
-
-  Future<void> init() async {
-    print('init-start');
-    final p = peripheral;
-
-    initCompleter = Completer();
-
-    queue = Queue<QueuePayload>(
-      QueueListener(match: match, onExecute: onExecute),
-    );
-    eventsListeners = {};
-    commands = commandsFactory();
-    // ignore: unnecessary_lambdas
-    decoder = decodeFactory((error, [packet]) => onPacketRead(error, packet));
-    started = false;
-
-    print('init-connect');
-    await p.connect(isAutoConnect: true);
-
-    print('init-discoverAllServicesAndCharacteristics');
-    await p.discoverAllServicesAndCharacteristics();
-
-    await bindServices();
-    await bindListeners();
-
-    print('init-done');
-  }
+        QueuePayload(characteristic: apiV2Characteristic, command: command),
+      );
 
   Future<void> onExecute(QueuePayload item) async {
     if (!started) {
       return;
     }
 
-    await write(item.characteristic, item.command.raw);
+    await write(item.characteristic!, item.command.raw);
   }
 
   bool match(QueuePayload commandA, QueuePayload commandB) =>
@@ -187,9 +200,9 @@ class Core {
 
   Future<void> bindServices() async {
     print('bindServices');
-    final services = await peripheral.services();
+    final services = await peripheral.services.first;
     for (final s in services) {
-      final characteristics = await s.characteristics();
+      final characteristics = s.characteristics;
       for (final c in characteristics) {
         if (c.uuid == CharacteristicUUID.antiDoSCharacteristic) {
           antiDoSCharacteristic = c;
@@ -210,19 +223,16 @@ class Core {
   Future<void> bindListeners() async {
     print('bindListeners');
     // TODO: Figure this out
-    assert(apiV2Characteristic != null);
-    assert(dfuControlCharacteristic != null);
-    apiV2Characteristic.monitor(transactionId: 'read').listen(onApiRead);
-    apiV2Characteristic.monitor(transactionId: 'notify').listen(onApiNotify);
-    dfuControlCharacteristic
-        .monitor(transactionId: 'notify')
-        .listen(onDFUControlNotify);
+    await apiV2Characteristic.setNotifyValue(true);
+    apiV2Characteristic.value.listen(onApiRead);
+    await dfuControlCharacteristic.setNotifyValue(true);
+    dfuControlCharacteristic.value.listen(onDFUControlNotify);
   }
 
-  void onPacketRead(String error, Command command) {
+  void onPacketRead(String? error, Command? command) {
     if (error != null) {
       print('There was a parse error $error');
-    } else if (command.sequenceNumber == 255) {
+    } else if (command!.sequenceNumber == 255) {
       print('onEvent $error $command');
       eventHandler(command);
     } else {
@@ -239,7 +249,7 @@ class Core {
         command.commandId == SensorCommandIds.sensorResponse) {
       handleSensorUpdate(command);
     } else {
-      print('UNKOWN EVENT ${command.raw}');
+      print('UNKNOWN EVENT ${command.raw}');
     }
   }
 
@@ -263,12 +273,12 @@ class Core {
     }
   }
 
-  void onApiRead(Uint8List data) {
+  void onApiRead(List<int> data) {
     // ignore: avoid_function_literals_in_foreach_calls
-    data.forEach((byte) => decoder(byte));
+    data.forEach(decoder);
   }
 
-  void onApiNotify(dynamic data) {
+  void onApiNotify(Object? data) {
     if (initCompleter.isCompleted) {
       print('onApiNotify $data');
       initCompleter.complete();
@@ -276,12 +286,12 @@ class Core {
     }
   }
 
-  Future<dynamic> onDFUControlNotify(dynamic data) {
+  Future<Object?> onDFUControlNotify(Object? data) {
     print('onDFUControlNotify $data');
     return write(dfuControlCharacteristic, Uint8List.fromList([0x30]));
   }
 
-  Future<dynamic> write(Characteristic c, dynamic data) async {
+  Future<Object?> write(BluetoothCharacteristic c, Object? data) async {
     Uint8List buff;
     if (data is String) {
       buff = Uint8List.fromList(utf8.encode(data));
@@ -289,6 +299,6 @@ class Core {
       buff = Uint8List.fromList(data as List<int>);
     }
     print('write $data');
-    return c.write(buff, true);
+    return c.write(buff, withoutResponse: true);
   }
 }

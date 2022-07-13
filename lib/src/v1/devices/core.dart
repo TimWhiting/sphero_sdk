@@ -4,13 +4,16 @@ import 'command.dart';
 
 abstract class SpheroBase {
   final Map<String, int> ds = {};
-  Future<Map<String, dynamic>> baseCommand(
-      int deviceId, int command, Uint8List data);
-  final Map<String, List<void Function(dynamic)>> eventListeners = {};
+  Future<Map<String, Object?>> baseCommand(
+    int deviceId,
+    int command,
+    Uint8List? data,
+  );
+  final Map<String, List<void Function(Object?)>> eventListeners = {};
 }
 
 extension Core on SpheroBase {
-  Future<Map<String, dynamic>> _coreCommand(int command, Uint8List data) =>
+  Future<Map<String, Object?>> _coreCommand(int command, Uint8List? data) =>
       baseCommand(0x00, command, data);
 
   /// The Ping command verifies the Sphero is awake and receiving commands.
@@ -18,7 +21,7 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.ping();
   /// ```
-  Future<Map<String, dynamic>> ping() => _coreCommand(CoreV1.ping, null);
+  Future<Map<String, Object?>> ping() => _coreCommand(CoreV1.ping, null);
 
   /// The Version command returns a batch of software and hardware information
   /// about Sphero.
@@ -38,11 +41,11 @@ extension Core on SpheroBase {
   /// print("  apiMaj:", data.apiMaj);
   /// print("  apiMin:", data.apiMin);
   /// ```
-  Future<Map<String, dynamic>> version() => _coreCommand(CoreV1.version, null);
+  Future<Map<String, Object?>> version() => _coreCommand(CoreV1.version, null);
 
   /// The Control UART Tx command enables or disables the CPU's UART transmit
   /// line so another client can configure the Bluetooth module.
-  Future<Map<String, dynamic>> controlUartTX() =>
+  Future<Map<String, Object?>> controlUartTX() =>
       _coreCommand(CoreV1.controlUARTTx, null);
 
   /// The Set Device Name command assigns Sphero an internal name. This value is
@@ -55,7 +58,7 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.setDeviceName("rollingOrb");
   /// ```
-  Future<Map<String, dynamic>> setDeviceName(String name) =>
+  Future<Map<String, Object?>> setDeviceName(String name) =>
       _coreCommand(CoreV1.setDeviceName, name.asUint8List);
 
   /// Triggers the callback with a structure containing
@@ -73,14 +76,16 @@ extension Core on SpheroBase {
   /// print("  separator:", data.separator);
   /// print("  colors:", data.colors);
   /// ```
-  Future<Map<String, dynamic>> getBluetoothInfo() =>
+  Future<Map<String, Object?>> getBluetoothInfo() =>
       _coreCommand(CoreV1.getBtInfo, null);
 
   /// Sets auto reconnect feature to [enabled] for reconnecting to device
   /// after [seconds]
-  Future<Map<String, dynamic>> setAutoReconnect(bool enabled, int seconds) =>
-      _coreCommand(CoreV1.setAutoReconnect,
-          Uint8List.fromList([enabled.intFlag, seconds]));
+  Future<Map<String, Object?>> setAutoReconnect(bool enabled, int seconds) =>
+      _coreCommand(
+        CoreV1.setAutoReconnect,
+        Uint8List.fromList([enabled.intFlag, seconds]),
+      );
 
   /// The Get Auto Reconnect command returns the Bluetooth auto reconnect values
   /// as defined above in the Set Auto Reconnect command.
@@ -91,7 +96,7 @@ extension Core on SpheroBase {
   /// print("  flag:", data.flag);
   /// print("  time:", data.time);
   /// ```
-  Future<Map<String, dynamic>> getAutoReconnect() =>
+  Future<Map<String, Object?>> getAutoReconnect() =>
       _coreCommand(CoreV1.getAutoReconnect, null);
 
   /// The Get Power State command returns Sphero's current power state,
@@ -110,7 +115,7 @@ extension Core on SpheroBase {
   /// - 0x02 - Battery OK
   /// - 0x03 - Battery Low
   /// - 0x04 - Battery Critical
-  Future<Map<String, dynamic>> getPowerState() =>
+  Future<Map<String, Object?>> getPowerState() =>
       _coreCommand(CoreV1.getPwrState, null);
 
   /// The Set Power Notification command [enable]s sphero to asynchronously
@@ -123,14 +128,14 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.setPowerNotification(true);
   /// ```
-  Future<Map<String, dynamic>> setPowerNotification(bool enable) =>
+  Future<Map<String, Object?>> setPowerNotification(bool enable) =>
       _coreCommand(CoreV1.setPwrNotify, Uint8List.fromList([enable.intFlag]));
 
   /// The Sleep command puts Sphero to sleep immediately.
   ///
   /// [wakeup] the number of seconds for Sphero to
   /// re-awaken after.
-  /// 0x00 tells Sphero to sleep forever, 0xFFFF attemps to put Sphero into deep
+  /// 0x00 tells Sphero to sleep forever, 0xFFFF attempts to put Sphero into deep
   /// sleep.
   /// [startMacro] if non-zero, Sphero will
   /// attempt to run this macro ID
@@ -140,8 +145,11 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.sleep(10, 0, 0);
   /// ```
-  Future<Map<String, dynamic>> sleep(
-          int wakeup, int startMacro, int orbBasicLine) =>
+  Future<Map<String, Object?>> sleep(
+    int wakeup,
+    int startMacro,
+    int orbBasicLine,
+  ) =>
       _coreCommand(
         CoreV1.sleep,
         Uint8List.fromList(
@@ -161,7 +169,7 @@ extension Core on SpheroBase {
   /// print("  vLow:", data.vLow);
   /// print("  vCrit:", data.vCrit);
   /// ```
-  Future<Map<String, dynamic>> getVoltageTripPoints() =>
+  Future<Map<String, Object?>> getVoltageTripPoints() =>
       _coreCommand(CoreV1.getPowerTrips, null);
 
   /// The Set Voltage Trip Points command assigns the voltage trip
@@ -183,9 +191,11 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.setVoltageTripPoints(675, 650);
   /// ```
-  Future<Map<String, dynamic>> setVoltageTripPoints(int vLow, int vCrit) =>
-      _coreCommand(CoreV1.setPowerTrips,
-          Uint8List.fromList([...vLow.toHexArray(2), ...vCrit.toHexArray(2)]));
+  Future<Map<String, Object?>> setVoltageTripPoints(int vLow, int vCrit) =>
+      _coreCommand(
+        CoreV1.setPowerTrips,
+        Uint8List.fromList([...vLow.toHexArray(2), ...vCrit.toHexArray(2)]),
+      );
 
   /// The Set Inactivity Timeout command sets the timeout delay before Sphero
   /// goes to sleep automatically.
@@ -197,7 +207,7 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.setInactivityTimeout(120);
   /// ```
-  Future<Map<String, dynamic>> setInactivityTimeout(int time) =>
+  Future<Map<String, Object?>> setInactivityTimeout(int time) =>
       _coreCommand(CoreV1.setInactiveTimer, time.toHexArray(2));
 
   /// The Jump To Bootloader command requests a jump into the Bootloader to
@@ -209,11 +219,11 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.jumpToBootLoader();
   /// ```
-  Future<Map<String, dynamic>> jumpToBootloader() =>
+  Future<Map<String, Object?>> jumpToBootloader() =>
       _coreCommand(CoreV1.goToBl, null);
 
   /// The Perform Level 1 Diagnostics command is a developer-level command to
-  /// help diagnose aberrant behaviour in Sphero.
+  /// help diagnose aberrant behavior in Sphero.
   ///
   /// Most process flags, system counters, and system states are decoded to
   /// human-readable ASCII.
@@ -223,11 +233,11 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.runL1Diags();
   /// ```
-  Future<Map<String, dynamic>> runL1Diag() =>
+  Future<Map<String, Object?>> runL1Diag() =>
       _coreCommand(CoreV1.runL1Diags, null);
 
   /// The Perform Level 2 Diagnostics command is a developer-level command to
-  /// help diagnose aberrant behaviour in Sphero.
+  /// help diagnose aberrant behavior in Sphero.
   ///
   /// It's much less informative than the Level 1 command, but is in binary
   /// format and easier to parse.
@@ -255,7 +265,7 @@ extension Core on SpheroBase {
   /// print("  sensorFailures:", data.sensorFailures);
   /// print("  gyroAdjustCount:", data.gyroAdjustCount);
   /// ```
-  Future<Map<String, dynamic>> runL2Diag() =>
+  Future<Map<String, Object?>> runL2Diag() =>
       _coreCommand(CoreV1.runL2Diags, null);
 
   /// The Clear Counters command is a developer-only
@@ -267,10 +277,10 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.clearCounters();
   /// ```
-  Future<Map<String, dynamic>> clearCounters() =>
+  Future<Map<String, Object?>> clearCounters() =>
       _coreCommand(CoreV1.clearCounters, null);
 
-  Future<Map<String, dynamic>> _coreTimeCmd(int cmd, int time) =>
+  Future<Map<String, Object?>> _coreTimeCmd(int cmd, int time) =>
       _coreCommand(cmd, time.toHexArray(4));
 
   /// The Assign Time command sets a specific value to Sphero's internal 32-bit
@@ -280,7 +290,7 @@ extension Core on SpheroBase {
   /// ```dart
   /// await orb.assignTime(0x00ffff00);
   /// ```
-  Future<Map<String, dynamic>> assignTime(int time) =>
+  Future<Map<String, Object?>> assignTime(int time) =>
       _coreTimeCmd(CoreV1.assignTime, time);
 
   /// The Poll Packet Times command helps users profile the transmission and
@@ -296,6 +306,6 @@ extension Core on SpheroBase {
   /// print("  t2:", data.t2);
   /// print("  t3:", data.t3);
   /// ```
-  Future<Map<String, dynamic>> pollPacketTimes(int time) =>
+  Future<Map<String, Object?>> pollPacketTimes(int time) =>
       _coreTimeCmd(CoreV1.pollTimes, time);
 }

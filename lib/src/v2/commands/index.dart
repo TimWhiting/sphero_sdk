@@ -30,10 +30,10 @@ int Function() sequencer() {
   };
 }
 
-Device commandsFactory([int Function() seq]) {
+Device commandsFactory([int Function()? seq]) {
   final getSequence = seq ?? sequencer();
 
-  Command Function(CommandPartial part) gen(int deviceId) => (part) =>
+  Command Function(CommandPartial part) gen(DeviceId deviceId) => (part) =>
       Command.fromPart(
         commandFlags: [Flags.requestsResponse, Flags.resetsInactivityTimeout],
         deviceId: deviceId,
@@ -54,13 +54,13 @@ Device commandsFactory([int Function() seq]) {
 
 class Device {
   const Device({
-    this.api,
-    this.driving,
-    this.power,
-    this.somethingApi,
-    this.systemInfo,
-    this.userIO,
-    this.sensor,
+    required this.api,
+    required this.driving,
+    required this.power,
+    required this.somethingApi,
+    required this.systemInfo,
+    required this.userIO,
+    required this.sensor,
   });
   final API api;
   final Driving driving;

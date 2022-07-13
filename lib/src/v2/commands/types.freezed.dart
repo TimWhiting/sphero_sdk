@@ -1,5 +1,7 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'types.dart';
 
@@ -9,31 +11,18 @@ part of 'types.dart';
 
 T _$identity<T>(T value) => value;
 
-/// @nodoc
-class _$ThreeAxisSensorTearOff {
-  const _$ThreeAxisSensorTearOff();
-
-// ignore: unused_element
-  _ThreeAxisSensor call({double x, double y, double z}) {
-    return _ThreeAxisSensor(
-      x: x,
-      y: y,
-      z: z,
-    );
-  }
-}
-
-/// @nodoc
-// ignore: unused_element
-const $ThreeAxisSensor = _$ThreeAxisSensorTearOff();
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$ThreeAxisSensor {
-  double get x;
-  double get y;
-  double get z;
+  double get x => throw _privateConstructorUsedError;
+  double get y => throw _privateConstructorUsedError;
+  double get z => throw _privateConstructorUsedError;
 
-  $ThreeAxisSensorCopyWith<ThreeAxisSensor> get copyWith;
+  @JsonKey(ignore: true)
+  $ThreeAxisSensorCopyWith<ThreeAxisSensor> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -55,56 +44,75 @@ class _$ThreeAxisSensorCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object x = freezed,
-    Object y = freezed,
-    Object z = freezed,
+    Object? x = freezed,
+    Object? y = freezed,
+    Object? z = freezed,
   }) {
     return _then(_value.copyWith(
-      x: x == freezed ? _value.x : x as double,
-      y: y == freezed ? _value.y : y as double,
-      z: z == freezed ? _value.z : z as double,
+      x: x == freezed
+          ? _value.x
+          : x // ignore: cast_nullable_to_non_nullable
+              as double,
+      y: y == freezed
+          ? _value.y
+          : y // ignore: cast_nullable_to_non_nullable
+              as double,
+      z: z == freezed
+          ? _value.z
+          : z // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
 
 /// @nodoc
-abstract class _$ThreeAxisSensorCopyWith<$Res>
+abstract class _$$_ThreeAxisSensorCopyWith<$Res>
     implements $ThreeAxisSensorCopyWith<$Res> {
-  factory _$ThreeAxisSensorCopyWith(
-          _ThreeAxisSensor value, $Res Function(_ThreeAxisSensor) then) =
-      __$ThreeAxisSensorCopyWithImpl<$Res>;
+  factory _$$_ThreeAxisSensorCopyWith(
+          _$_ThreeAxisSensor value, $Res Function(_$_ThreeAxisSensor) then) =
+      __$$_ThreeAxisSensorCopyWithImpl<$Res>;
   @override
   $Res call({double x, double y, double z});
 }
 
 /// @nodoc
-class __$ThreeAxisSensorCopyWithImpl<$Res>
+class __$$_ThreeAxisSensorCopyWithImpl<$Res>
     extends _$ThreeAxisSensorCopyWithImpl<$Res>
-    implements _$ThreeAxisSensorCopyWith<$Res> {
-  __$ThreeAxisSensorCopyWithImpl(
-      _ThreeAxisSensor _value, $Res Function(_ThreeAxisSensor) _then)
-      : super(_value, (v) => _then(v as _ThreeAxisSensor));
+    implements _$$_ThreeAxisSensorCopyWith<$Res> {
+  __$$_ThreeAxisSensorCopyWithImpl(
+      _$_ThreeAxisSensor _value, $Res Function(_$_ThreeAxisSensor) _then)
+      : super(_value, (v) => _then(v as _$_ThreeAxisSensor));
 
   @override
-  _ThreeAxisSensor get _value => super._value as _ThreeAxisSensor;
+  _$_ThreeAxisSensor get _value => super._value as _$_ThreeAxisSensor;
 
   @override
   $Res call({
-    Object x = freezed,
-    Object y = freezed,
-    Object z = freezed,
+    Object? x = freezed,
+    Object? y = freezed,
+    Object? z = freezed,
   }) {
-    return _then(_ThreeAxisSensor(
-      x: x == freezed ? _value.x : x as double,
-      y: y == freezed ? _value.y : y as double,
-      z: z == freezed ? _value.z : z as double,
+    return _then(_$_ThreeAxisSensor(
+      x: x == freezed
+          ? _value.x
+          : x // ignore: cast_nullable_to_non_nullable
+              as double,
+      y: y == freezed
+          ? _value.y
+          : y // ignore: cast_nullable_to_non_nullable
+              as double,
+      z: z == freezed
+          ? _value.z
+          : z // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
 
 /// @nodoc
+
 class _$_ThreeAxisSensor implements _ThreeAxisSensor {
-  const _$_ThreeAxisSensor({this.x, this.y, this.z});
+  const _$_ThreeAxisSensor({required this.x, required this.y, required this.z});
 
   @override
   final double x;
@@ -121,30 +129,31 @@ class _$_ThreeAxisSensor implements _ThreeAxisSensor {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _ThreeAxisSensor &&
-            (identical(other.x, x) ||
-                const DeepCollectionEquality().equals(other.x, x)) &&
-            (identical(other.y, y) ||
-                const DeepCollectionEquality().equals(other.y, y)) &&
-            (identical(other.z, z) ||
-                const DeepCollectionEquality().equals(other.z, z)));
+        (other.runtimeType == runtimeType &&
+            other is _$_ThreeAxisSensor &&
+            const DeepCollectionEquality().equals(other.x, x) &&
+            const DeepCollectionEquality().equals(other.y, y) &&
+            const DeepCollectionEquality().equals(other.z, z));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(x) ^
-      const DeepCollectionEquality().hash(y) ^
-      const DeepCollectionEquality().hash(z);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(x),
+      const DeepCollectionEquality().hash(y),
+      const DeepCollectionEquality().hash(z));
 
+  @JsonKey(ignore: true)
   @override
-  _$ThreeAxisSensorCopyWith<_ThreeAxisSensor> get copyWith =>
-      __$ThreeAxisSensorCopyWithImpl<_ThreeAxisSensor>(this, _$identity);
+  _$$_ThreeAxisSensorCopyWith<_$_ThreeAxisSensor> get copyWith =>
+      __$$_ThreeAxisSensorCopyWithImpl<_$_ThreeAxisSensor>(this, _$identity);
 }
 
 abstract class _ThreeAxisSensor implements ThreeAxisSensor {
-  const factory _ThreeAxisSensor({double x, double y, double z}) =
-      _$_ThreeAxisSensor;
+  const factory _ThreeAxisSensor(
+      {required final double x,
+      required final double y,
+      required final double z}) = _$_ThreeAxisSensor;
 
   @override
   double get x;
@@ -153,32 +162,19 @@ abstract class _ThreeAxisSensor implements ThreeAxisSensor {
   @override
   double get z;
   @override
-  _$ThreeAxisSensorCopyWith<_ThreeAxisSensor> get copyWith;
+  @JsonKey(ignore: true)
+  _$$_ThreeAxisSensorCopyWith<_$_ThreeAxisSensor> get copyWith =>
+      throw _privateConstructorUsedError;
 }
-
-/// @nodoc
-class _$TwoAxisSensorTearOff {
-  const _$TwoAxisSensorTearOff();
-
-// ignore: unused_element
-  _TwoAxisSensor call({double x, double y}) {
-    return _TwoAxisSensor(
-      x: x,
-      y: y,
-    );
-  }
-}
-
-/// @nodoc
-// ignore: unused_element
-const $TwoAxisSensor = _$TwoAxisSensorTearOff();
 
 /// @nodoc
 mixin _$TwoAxisSensor {
-  double get x;
-  double get y;
+  double get x => throw _privateConstructorUsedError;
+  double get y => throw _privateConstructorUsedError;
 
-  $TwoAxisSensorCopyWith<TwoAxisSensor> get copyWith;
+  @JsonKey(ignore: true)
+  $TwoAxisSensorCopyWith<TwoAxisSensor> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -200,52 +196,65 @@ class _$TwoAxisSensorCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object x = freezed,
-    Object y = freezed,
+    Object? x = freezed,
+    Object? y = freezed,
   }) {
     return _then(_value.copyWith(
-      x: x == freezed ? _value.x : x as double,
-      y: y == freezed ? _value.y : y as double,
+      x: x == freezed
+          ? _value.x
+          : x // ignore: cast_nullable_to_non_nullable
+              as double,
+      y: y == freezed
+          ? _value.y
+          : y // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
 
 /// @nodoc
-abstract class _$TwoAxisSensorCopyWith<$Res>
+abstract class _$$_TwoAxisSensorCopyWith<$Res>
     implements $TwoAxisSensorCopyWith<$Res> {
-  factory _$TwoAxisSensorCopyWith(
-          _TwoAxisSensor value, $Res Function(_TwoAxisSensor) then) =
-      __$TwoAxisSensorCopyWithImpl<$Res>;
+  factory _$$_TwoAxisSensorCopyWith(
+          _$_TwoAxisSensor value, $Res Function(_$_TwoAxisSensor) then) =
+      __$$_TwoAxisSensorCopyWithImpl<$Res>;
   @override
   $Res call({double x, double y});
 }
 
 /// @nodoc
-class __$TwoAxisSensorCopyWithImpl<$Res>
+class __$$_TwoAxisSensorCopyWithImpl<$Res>
     extends _$TwoAxisSensorCopyWithImpl<$Res>
-    implements _$TwoAxisSensorCopyWith<$Res> {
-  __$TwoAxisSensorCopyWithImpl(
-      _TwoAxisSensor _value, $Res Function(_TwoAxisSensor) _then)
-      : super(_value, (v) => _then(v as _TwoAxisSensor));
+    implements _$$_TwoAxisSensorCopyWith<$Res> {
+  __$$_TwoAxisSensorCopyWithImpl(
+      _$_TwoAxisSensor _value, $Res Function(_$_TwoAxisSensor) _then)
+      : super(_value, (v) => _then(v as _$_TwoAxisSensor));
 
   @override
-  _TwoAxisSensor get _value => super._value as _TwoAxisSensor;
+  _$_TwoAxisSensor get _value => super._value as _$_TwoAxisSensor;
 
   @override
   $Res call({
-    Object x = freezed,
-    Object y = freezed,
+    Object? x = freezed,
+    Object? y = freezed,
   }) {
-    return _then(_TwoAxisSensor(
-      x: x == freezed ? _value.x : x as double,
-      y: y == freezed ? _value.y : y as double,
+    return _then(_$_TwoAxisSensor(
+      x: x == freezed
+          ? _value.x
+          : x // ignore: cast_nullable_to_non_nullable
+              as double,
+      y: y == freezed
+          ? _value.y
+          : y // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
 
 /// @nodoc
+
 class _$_TwoAxisSensor implements _TwoAxisSensor {
-  const _$_TwoAxisSensor({this.x, this.y});
+  const _$_TwoAxisSensor({required this.x, required this.y});
 
   @override
   final double x;
@@ -260,60 +269,47 @@ class _$_TwoAxisSensor implements _TwoAxisSensor {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _TwoAxisSensor &&
-            (identical(other.x, x) ||
-                const DeepCollectionEquality().equals(other.x, x)) &&
-            (identical(other.y, y) ||
-                const DeepCollectionEquality().equals(other.y, y)));
+        (other.runtimeType == runtimeType &&
+            other is _$_TwoAxisSensor &&
+            const DeepCollectionEquality().equals(other.x, x) &&
+            const DeepCollectionEquality().equals(other.y, y));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(x) ^
-      const DeepCollectionEquality().hash(y);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(x),
+      const DeepCollectionEquality().hash(y));
 
+  @JsonKey(ignore: true)
   @override
-  _$TwoAxisSensorCopyWith<_TwoAxisSensor> get copyWith =>
-      __$TwoAxisSensorCopyWithImpl<_TwoAxisSensor>(this, _$identity);
+  _$$_TwoAxisSensorCopyWith<_$_TwoAxisSensor> get copyWith =>
+      __$$_TwoAxisSensorCopyWithImpl<_$_TwoAxisSensor>(this, _$identity);
 }
 
 abstract class _TwoAxisSensor implements TwoAxisSensor {
-  const factory _TwoAxisSensor({double x, double y}) = _$_TwoAxisSensor;
+  const factory _TwoAxisSensor(
+      {required final double x, required final double y}) = _$_TwoAxisSensor;
 
   @override
   double get x;
   @override
   double get y;
   @override
-  _$TwoAxisSensorCopyWith<_TwoAxisSensor> get copyWith;
+  @JsonKey(ignore: true)
+  _$$_TwoAxisSensorCopyWith<_$_TwoAxisSensor> get copyWith =>
+      throw _privateConstructorUsedError;
 }
-
-/// @nodoc
-class _$AngleSensorTearOff {
-  const _$AngleSensorTearOff();
-
-// ignore: unused_element
-  _AngleSensor call({double pitch, double roll, double yaw}) {
-    return _AngleSensor(
-      pitch: pitch,
-      roll: roll,
-      yaw: yaw,
-    );
-  }
-}
-
-/// @nodoc
-// ignore: unused_element
-const $AngleSensor = _$AngleSensorTearOff();
 
 /// @nodoc
 mixin _$AngleSensor {
-  double get pitch;
-  double get roll;
-  double get yaw;
+  double get pitch => throw _privateConstructorUsedError;
+  double get roll => throw _privateConstructorUsedError;
+  double get yaw => throw _privateConstructorUsedError;
 
-  $AngleSensorCopyWith<AngleSensor> get copyWith;
+  @JsonKey(ignore: true)
+  $AngleSensorCopyWith<AngleSensor> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -334,55 +330,75 @@ class _$AngleSensorCopyWithImpl<$Res> implements $AngleSensorCopyWith<$Res> {
 
   @override
   $Res call({
-    Object pitch = freezed,
-    Object roll = freezed,
-    Object yaw = freezed,
+    Object? pitch = freezed,
+    Object? roll = freezed,
+    Object? yaw = freezed,
   }) {
     return _then(_value.copyWith(
-      pitch: pitch == freezed ? _value.pitch : pitch as double,
-      roll: roll == freezed ? _value.roll : roll as double,
-      yaw: yaw == freezed ? _value.yaw : yaw as double,
+      pitch: pitch == freezed
+          ? _value.pitch
+          : pitch // ignore: cast_nullable_to_non_nullable
+              as double,
+      roll: roll == freezed
+          ? _value.roll
+          : roll // ignore: cast_nullable_to_non_nullable
+              as double,
+      yaw: yaw == freezed
+          ? _value.yaw
+          : yaw // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
 
 /// @nodoc
-abstract class _$AngleSensorCopyWith<$Res>
+abstract class _$$_AngleSensorCopyWith<$Res>
     implements $AngleSensorCopyWith<$Res> {
-  factory _$AngleSensorCopyWith(
-          _AngleSensor value, $Res Function(_AngleSensor) then) =
-      __$AngleSensorCopyWithImpl<$Res>;
+  factory _$$_AngleSensorCopyWith(
+          _$_AngleSensor value, $Res Function(_$_AngleSensor) then) =
+      __$$_AngleSensorCopyWithImpl<$Res>;
   @override
   $Res call({double pitch, double roll, double yaw});
 }
 
 /// @nodoc
-class __$AngleSensorCopyWithImpl<$Res> extends _$AngleSensorCopyWithImpl<$Res>
-    implements _$AngleSensorCopyWith<$Res> {
-  __$AngleSensorCopyWithImpl(
-      _AngleSensor _value, $Res Function(_AngleSensor) _then)
-      : super(_value, (v) => _then(v as _AngleSensor));
+class __$$_AngleSensorCopyWithImpl<$Res> extends _$AngleSensorCopyWithImpl<$Res>
+    implements _$$_AngleSensorCopyWith<$Res> {
+  __$$_AngleSensorCopyWithImpl(
+      _$_AngleSensor _value, $Res Function(_$_AngleSensor) _then)
+      : super(_value, (v) => _then(v as _$_AngleSensor));
 
   @override
-  _AngleSensor get _value => super._value as _AngleSensor;
+  _$_AngleSensor get _value => super._value as _$_AngleSensor;
 
   @override
   $Res call({
-    Object pitch = freezed,
-    Object roll = freezed,
-    Object yaw = freezed,
+    Object? pitch = freezed,
+    Object? roll = freezed,
+    Object? yaw = freezed,
   }) {
-    return _then(_AngleSensor(
-      pitch: pitch == freezed ? _value.pitch : pitch as double,
-      roll: roll == freezed ? _value.roll : roll as double,
-      yaw: yaw == freezed ? _value.yaw : yaw as double,
+    return _then(_$_AngleSensor(
+      pitch: pitch == freezed
+          ? _value.pitch
+          : pitch // ignore: cast_nullable_to_non_nullable
+              as double,
+      roll: roll == freezed
+          ? _value.roll
+          : roll // ignore: cast_nullable_to_non_nullable
+              as double,
+      yaw: yaw == freezed
+          ? _value.yaw
+          : yaw // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
 
 /// @nodoc
+
 class _$_AngleSensor implements _AngleSensor {
-  const _$_AngleSensor({this.pitch, this.roll, this.yaw});
+  const _$_AngleSensor(
+      {required this.pitch, required this.roll, required this.yaw});
 
   @override
   final double pitch;
@@ -399,30 +415,31 @@ class _$_AngleSensor implements _AngleSensor {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _AngleSensor &&
-            (identical(other.pitch, pitch) ||
-                const DeepCollectionEquality().equals(other.pitch, pitch)) &&
-            (identical(other.roll, roll) ||
-                const DeepCollectionEquality().equals(other.roll, roll)) &&
-            (identical(other.yaw, yaw) ||
-                const DeepCollectionEquality().equals(other.yaw, yaw)));
+        (other.runtimeType == runtimeType &&
+            other is _$_AngleSensor &&
+            const DeepCollectionEquality().equals(other.pitch, pitch) &&
+            const DeepCollectionEquality().equals(other.roll, roll) &&
+            const DeepCollectionEquality().equals(other.yaw, yaw));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(pitch) ^
-      const DeepCollectionEquality().hash(roll) ^
-      const DeepCollectionEquality().hash(yaw);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(pitch),
+      const DeepCollectionEquality().hash(roll),
+      const DeepCollectionEquality().hash(yaw));
 
+  @JsonKey(ignore: true)
   @override
-  _$AngleSensorCopyWith<_AngleSensor> get copyWith =>
-      __$AngleSensorCopyWithImpl<_AngleSensor>(this, _$identity);
+  _$$_AngleSensorCopyWith<_$_AngleSensor> get copyWith =>
+      __$$_AngleSensorCopyWithImpl<_$_AngleSensor>(this, _$identity);
 }
 
 abstract class _AngleSensor implements AngleSensor {
-  const factory _AngleSensor({double pitch, double roll, double yaw}) =
-      _$_AngleSensor;
+  const factory _AngleSensor(
+      {required final double pitch,
+      required final double roll,
+      required final double yaw}) = _$_AngleSensor;
 
   @override
   double get pitch;
@@ -431,48 +448,22 @@ abstract class _AngleSensor implements AngleSensor {
   @override
   double get yaw;
   @override
-  _$AngleSensorCopyWith<_AngleSensor> get copyWith;
+  @JsonKey(ignore: true)
+  _$$_AngleSensorCopyWith<_$_AngleSensor> get copyWith =>
+      throw _privateConstructorUsedError;
 }
-
-/// @nodoc
-class _$SensorResponseTearOff {
-  const _$SensorResponseTearOff();
-
-// ignore: unused_element
-  _SensorResponse call(
-      {@nullable AngleSensor angles,
-      @nullable ThreeAxisSensor accelerometer,
-      @nullable ThreeAxisSensor gyro,
-      @nullable TwoAxisSensor position,
-      @nullable TwoAxisSensor velocity}) {
-    return _SensorResponse(
-      angles: angles,
-      accelerometer: accelerometer,
-      gyro: gyro,
-      position: position,
-      velocity: velocity,
-    );
-  }
-}
-
-/// @nodoc
-// ignore: unused_element
-const $SensorResponse = _$SensorResponseTearOff();
 
 /// @nodoc
 mixin _$SensorResponse {
-  @nullable
-  AngleSensor get angles;
-  @nullable
-  ThreeAxisSensor get accelerometer;
-  @nullable
-  ThreeAxisSensor get gyro;
-  @nullable
-  TwoAxisSensor get position;
-  @nullable
-  TwoAxisSensor get velocity;
+  AngleSensor? get angles => throw _privateConstructorUsedError;
+  ThreeAxisSensor? get accelerometer => throw _privateConstructorUsedError;
+  ThreeAxisSensor? get gyro => throw _privateConstructorUsedError;
+  TwoAxisSensor? get position => throw _privateConstructorUsedError;
+  TwoAxisSensor? get velocity => throw _privateConstructorUsedError;
 
-  $SensorResponseCopyWith<SensorResponse> get copyWith;
+  @JsonKey(ignore: true)
+  $SensorResponseCopyWith<SensorResponse> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -481,17 +472,17 @@ abstract class $SensorResponseCopyWith<$Res> {
           SensorResponse value, $Res Function(SensorResponse) then) =
       _$SensorResponseCopyWithImpl<$Res>;
   $Res call(
-      {@nullable AngleSensor angles,
-      @nullable ThreeAxisSensor accelerometer,
-      @nullable ThreeAxisSensor gyro,
-      @nullable TwoAxisSensor position,
-      @nullable TwoAxisSensor velocity});
+      {AngleSensor? angles,
+      ThreeAxisSensor? accelerometer,
+      ThreeAxisSensor? gyro,
+      TwoAxisSensor? position,
+      TwoAxisSensor? velocity});
 
-  $AngleSensorCopyWith<$Res> get angles;
-  $ThreeAxisSensorCopyWith<$Res> get accelerometer;
-  $ThreeAxisSensorCopyWith<$Res> get gyro;
-  $TwoAxisSensorCopyWith<$Res> get position;
-  $TwoAxisSensorCopyWith<$Res> get velocity;
+  $AngleSensorCopyWith<$Res>? get angles;
+  $ThreeAxisSensorCopyWith<$Res>? get accelerometer;
+  $ThreeAxisSensorCopyWith<$Res>? get gyro;
+  $TwoAxisSensorCopyWith<$Res>? get position;
+  $TwoAxisSensorCopyWith<$Res>? get velocity;
 }
 
 /// @nodoc
@@ -505,159 +496,182 @@ class _$SensorResponseCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object angles = freezed,
-    Object accelerometer = freezed,
-    Object gyro = freezed,
-    Object position = freezed,
-    Object velocity = freezed,
+    Object? angles = freezed,
+    Object? accelerometer = freezed,
+    Object? gyro = freezed,
+    Object? position = freezed,
+    Object? velocity = freezed,
   }) {
     return _then(_value.copyWith(
-      angles: angles == freezed ? _value.angles : angles as AngleSensor,
+      angles: angles == freezed
+          ? _value.angles
+          : angles // ignore: cast_nullable_to_non_nullable
+              as AngleSensor?,
       accelerometer: accelerometer == freezed
           ? _value.accelerometer
-          : accelerometer as ThreeAxisSensor,
-      gyro: gyro == freezed ? _value.gyro : gyro as ThreeAxisSensor,
-      position:
-          position == freezed ? _value.position : position as TwoAxisSensor,
-      velocity:
-          velocity == freezed ? _value.velocity : velocity as TwoAxisSensor,
+          : accelerometer // ignore: cast_nullable_to_non_nullable
+              as ThreeAxisSensor?,
+      gyro: gyro == freezed
+          ? _value.gyro
+          : gyro // ignore: cast_nullable_to_non_nullable
+              as ThreeAxisSensor?,
+      position: position == freezed
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as TwoAxisSensor?,
+      velocity: velocity == freezed
+          ? _value.velocity
+          : velocity // ignore: cast_nullable_to_non_nullable
+              as TwoAxisSensor?,
     ));
   }
 
   @override
-  $AngleSensorCopyWith<$Res> get angles {
+  $AngleSensorCopyWith<$Res>? get angles {
     if (_value.angles == null) {
       return null;
     }
-    return $AngleSensorCopyWith<$Res>(_value.angles, (value) {
+
+    return $AngleSensorCopyWith<$Res>(_value.angles!, (value) {
       return _then(_value.copyWith(angles: value));
     });
   }
 
   @override
-  $ThreeAxisSensorCopyWith<$Res> get accelerometer {
+  $ThreeAxisSensorCopyWith<$Res>? get accelerometer {
     if (_value.accelerometer == null) {
       return null;
     }
-    return $ThreeAxisSensorCopyWith<$Res>(_value.accelerometer, (value) {
+
+    return $ThreeAxisSensorCopyWith<$Res>(_value.accelerometer!, (value) {
       return _then(_value.copyWith(accelerometer: value));
     });
   }
 
   @override
-  $ThreeAxisSensorCopyWith<$Res> get gyro {
+  $ThreeAxisSensorCopyWith<$Res>? get gyro {
     if (_value.gyro == null) {
       return null;
     }
-    return $ThreeAxisSensorCopyWith<$Res>(_value.gyro, (value) {
+
+    return $ThreeAxisSensorCopyWith<$Res>(_value.gyro!, (value) {
       return _then(_value.copyWith(gyro: value));
     });
   }
 
   @override
-  $TwoAxisSensorCopyWith<$Res> get position {
+  $TwoAxisSensorCopyWith<$Res>? get position {
     if (_value.position == null) {
       return null;
     }
-    return $TwoAxisSensorCopyWith<$Res>(_value.position, (value) {
+
+    return $TwoAxisSensorCopyWith<$Res>(_value.position!, (value) {
       return _then(_value.copyWith(position: value));
     });
   }
 
   @override
-  $TwoAxisSensorCopyWith<$Res> get velocity {
+  $TwoAxisSensorCopyWith<$Res>? get velocity {
     if (_value.velocity == null) {
       return null;
     }
-    return $TwoAxisSensorCopyWith<$Res>(_value.velocity, (value) {
+
+    return $TwoAxisSensorCopyWith<$Res>(_value.velocity!, (value) {
       return _then(_value.copyWith(velocity: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$SensorResponseCopyWith<$Res>
+abstract class _$$_SensorResponseCopyWith<$Res>
     implements $SensorResponseCopyWith<$Res> {
-  factory _$SensorResponseCopyWith(
-          _SensorResponse value, $Res Function(_SensorResponse) then) =
-      __$SensorResponseCopyWithImpl<$Res>;
+  factory _$$_SensorResponseCopyWith(
+          _$_SensorResponse value, $Res Function(_$_SensorResponse) then) =
+      __$$_SensorResponseCopyWithImpl<$Res>;
   @override
   $Res call(
-      {@nullable AngleSensor angles,
-      @nullable ThreeAxisSensor accelerometer,
-      @nullable ThreeAxisSensor gyro,
-      @nullable TwoAxisSensor position,
-      @nullable TwoAxisSensor velocity});
+      {AngleSensor? angles,
+      ThreeAxisSensor? accelerometer,
+      ThreeAxisSensor? gyro,
+      TwoAxisSensor? position,
+      TwoAxisSensor? velocity});
 
   @override
-  $AngleSensorCopyWith<$Res> get angles;
+  $AngleSensorCopyWith<$Res>? get angles;
   @override
-  $ThreeAxisSensorCopyWith<$Res> get accelerometer;
+  $ThreeAxisSensorCopyWith<$Res>? get accelerometer;
   @override
-  $ThreeAxisSensorCopyWith<$Res> get gyro;
+  $ThreeAxisSensorCopyWith<$Res>? get gyro;
   @override
-  $TwoAxisSensorCopyWith<$Res> get position;
+  $TwoAxisSensorCopyWith<$Res>? get position;
   @override
-  $TwoAxisSensorCopyWith<$Res> get velocity;
+  $TwoAxisSensorCopyWith<$Res>? get velocity;
 }
 
 /// @nodoc
-class __$SensorResponseCopyWithImpl<$Res>
+class __$$_SensorResponseCopyWithImpl<$Res>
     extends _$SensorResponseCopyWithImpl<$Res>
-    implements _$SensorResponseCopyWith<$Res> {
-  __$SensorResponseCopyWithImpl(
-      _SensorResponse _value, $Res Function(_SensorResponse) _then)
-      : super(_value, (v) => _then(v as _SensorResponse));
+    implements _$$_SensorResponseCopyWith<$Res> {
+  __$$_SensorResponseCopyWithImpl(
+      _$_SensorResponse _value, $Res Function(_$_SensorResponse) _then)
+      : super(_value, (v) => _then(v as _$_SensorResponse));
 
   @override
-  _SensorResponse get _value => super._value as _SensorResponse;
+  _$_SensorResponse get _value => super._value as _$_SensorResponse;
 
   @override
   $Res call({
-    Object angles = freezed,
-    Object accelerometer = freezed,
-    Object gyro = freezed,
-    Object position = freezed,
-    Object velocity = freezed,
+    Object? angles = freezed,
+    Object? accelerometer = freezed,
+    Object? gyro = freezed,
+    Object? position = freezed,
+    Object? velocity = freezed,
   }) {
-    return _then(_SensorResponse(
-      angles: angles == freezed ? _value.angles : angles as AngleSensor,
+    return _then(_$_SensorResponse(
+      angles: angles == freezed
+          ? _value.angles
+          : angles // ignore: cast_nullable_to_non_nullable
+              as AngleSensor?,
       accelerometer: accelerometer == freezed
           ? _value.accelerometer
-          : accelerometer as ThreeAxisSensor,
-      gyro: gyro == freezed ? _value.gyro : gyro as ThreeAxisSensor,
-      position:
-          position == freezed ? _value.position : position as TwoAxisSensor,
-      velocity:
-          velocity == freezed ? _value.velocity : velocity as TwoAxisSensor,
+          : accelerometer // ignore: cast_nullable_to_non_nullable
+              as ThreeAxisSensor?,
+      gyro: gyro == freezed
+          ? _value.gyro
+          : gyro // ignore: cast_nullable_to_non_nullable
+              as ThreeAxisSensor?,
+      position: position == freezed
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as TwoAxisSensor?,
+      velocity: velocity == freezed
+          ? _value.velocity
+          : velocity // ignore: cast_nullable_to_non_nullable
+              as TwoAxisSensor?,
     ));
   }
 }
 
 /// @nodoc
+
 class _$_SensorResponse implements _SensorResponse {
   const _$_SensorResponse(
-      {@nullable this.angles,
-      @nullable this.accelerometer,
-      @nullable this.gyro,
-      @nullable this.position,
-      @nullable this.velocity});
+      {this.angles,
+      this.accelerometer,
+      this.gyro,
+      this.position,
+      this.velocity});
 
   @override
-  @nullable
-  final AngleSensor angles;
+  final AngleSensor? angles;
   @override
-  @nullable
-  final ThreeAxisSensor accelerometer;
+  final ThreeAxisSensor? accelerometer;
   @override
-  @nullable
-  final ThreeAxisSensor gyro;
+  final ThreeAxisSensor? gyro;
   @override
-  @nullable
-  final TwoAxisSensor position;
+  final TwoAxisSensor? position;
   @override
-  @nullable
-  final TwoAxisSensor velocity;
+  final TwoAxisSensor? velocity;
 
   @override
   String toString() {
@@ -667,59 +681,51 @@ class _$_SensorResponse implements _SensorResponse {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _SensorResponse &&
-            (identical(other.angles, angles) ||
-                const DeepCollectionEquality().equals(other.angles, angles)) &&
-            (identical(other.accelerometer, accelerometer) ||
-                const DeepCollectionEquality()
-                    .equals(other.accelerometer, accelerometer)) &&
-            (identical(other.gyro, gyro) ||
-                const DeepCollectionEquality().equals(other.gyro, gyro)) &&
-            (identical(other.position, position) ||
-                const DeepCollectionEquality()
-                    .equals(other.position, position)) &&
-            (identical(other.velocity, velocity) ||
-                const DeepCollectionEquality()
-                    .equals(other.velocity, velocity)));
+        (other.runtimeType == runtimeType &&
+            other is _$_SensorResponse &&
+            const DeepCollectionEquality().equals(other.angles, angles) &&
+            const DeepCollectionEquality()
+                .equals(other.accelerometer, accelerometer) &&
+            const DeepCollectionEquality().equals(other.gyro, gyro) &&
+            const DeepCollectionEquality().equals(other.position, position) &&
+            const DeepCollectionEquality().equals(other.velocity, velocity));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(angles) ^
-      const DeepCollectionEquality().hash(accelerometer) ^
-      const DeepCollectionEquality().hash(gyro) ^
-      const DeepCollectionEquality().hash(position) ^
-      const DeepCollectionEquality().hash(velocity);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(angles),
+      const DeepCollectionEquality().hash(accelerometer),
+      const DeepCollectionEquality().hash(gyro),
+      const DeepCollectionEquality().hash(position),
+      const DeepCollectionEquality().hash(velocity));
 
+  @JsonKey(ignore: true)
   @override
-  _$SensorResponseCopyWith<_SensorResponse> get copyWith =>
-      __$SensorResponseCopyWithImpl<_SensorResponse>(this, _$identity);
+  _$$_SensorResponseCopyWith<_$_SensorResponse> get copyWith =>
+      __$$_SensorResponseCopyWithImpl<_$_SensorResponse>(this, _$identity);
 }
 
 abstract class _SensorResponse implements SensorResponse {
   const factory _SensorResponse(
-      {@nullable AngleSensor angles,
-      @nullable ThreeAxisSensor accelerometer,
-      @nullable ThreeAxisSensor gyro,
-      @nullable TwoAxisSensor position,
-      @nullable TwoAxisSensor velocity}) = _$_SensorResponse;
+      {final AngleSensor? angles,
+      final ThreeAxisSensor? accelerometer,
+      final ThreeAxisSensor? gyro,
+      final TwoAxisSensor? position,
+      final TwoAxisSensor? velocity}) = _$_SensorResponse;
 
   @override
-  @nullable
-  AngleSensor get angles;
+  AngleSensor? get angles;
   @override
-  @nullable
-  ThreeAxisSensor get accelerometer;
+  ThreeAxisSensor? get accelerometer;
   @override
-  @nullable
-  ThreeAxisSensor get gyro;
+  ThreeAxisSensor? get gyro;
   @override
-  @nullable
-  TwoAxisSensor get position;
+  TwoAxisSensor? get position;
   @override
-  @nullable
-  TwoAxisSensor get velocity;
+  TwoAxisSensor? get velocity;
   @override
-  _$SensorResponseCopyWith<_SensorResponse> get copyWith;
+  @JsonKey(ignore: true)
+  _$$_SensorResponseCopyWith<_$_SensorResponse> get copyWith =>
+      throw _privateConstructorUsedError;
 }

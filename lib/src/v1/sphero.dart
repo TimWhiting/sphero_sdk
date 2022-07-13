@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:sphero_sdk/src/v1/devices/custom.dart';
-import 'package:sphero_sdk/src/v1/packet.dart';
-
 import 'adaptor.dart';
 import 'devices/core.dart';
+import 'devices/custom.dart';
+import 'packet.dart';
+
 export 'devices/core.dart';
 export 'devices/custom.dart';
 export 'devices/sphero.dart';
@@ -20,10 +20,10 @@ class SOP2 {
 }
 
 class CommandQueueItemV1 {
-  CommandQueueItemV1({this.packet, this.completer});
+  CommandQueueItemV1({required this.packet, required this.completer});
 
   final PacketV1 packet;
-  final Completer<Map<String, dynamic>> completer;
+  final Completer<Map<String, Object?>> completer;
 }
 
 class Sphero extends SpheroBase with Custom {
@@ -35,23 +35,23 @@ class Sphero extends SpheroBase with Custom {
   /// be created from that.
   Sphero(
     this.address, {
-    AdaptorV1 adaptor,
-    int sop2 = SOP2.answer,
+    AdaptorV1? adaptor,
+    int? sop2 = SOP2.answer,
     this.timeout = 500,
     this.emitPacketErrors = false,
-    SpheroPeripheral peripheral,
+    SpheroPeripheral? peripheral,
   }) {
-    connection = adaptor ?? AdaptorV1(address, peripheral);
+    connection = adaptor ?? AdaptorV1(address, peripheral!);
     sop2Bitfield = sop2 ?? SOP2.both;
   }
   final String address;
   bool busy = false;
   bool ready = false;
   final packet = PacketParser();
-  AdaptorV1 connection;
+  late AdaptorV1 connection;
   final responseQueue = <int, CommandQueueResponseItem>{};
   final commandQueue = <CommandQueueItemV1>[];
-  int sop2Bitfield;
+  late int sop2Bitfield;
   int seqCounter = 0;
   int timeout;
   final bool emitPacketErrors;
@@ -71,27 +71,25 @@ class Sphero extends SpheroBase with Custom {
     connection.onRead = (payload) {
       emit('data', payload);
       final parsedPayload = packet.parse(payload);
-      Map<String, dynamic> parsedData;
+      Map<String, Object?>? parsedData;
 
-      if (parsedPayload != null && parsedPayload.sop1 != null) {
-        if (parsedPayload.sop2 == SOP2.sync) {
-          // synchronous packet
-          emit('response', parsedPayload);
-          final cmd = _responseCmd(parsedPayload.seq);
-          print('response for command $cmd');
-          parsedPayload.printPacket();
-          parsedData = packet.parseResponseData(cmd, parsedPayload);
+      if (parsedPayload!.sop2 == SOP2.sync) {
+        // synchronous packet
+        emit('response', parsedPayload);
+        final cmd = _responseCmd(parsedPayload.seq);
+        print('response for command $cmd');
+        parsedPayload.printPacket();
+        parsedData = packet.parseResponseData(cmd!, parsedPayload);
 
-          _execCallback(parsedPayload.seq, parsedData);
-        } else if (parsedPayload.sop2 == SOP2.async) {
-          // async packet
-          parsedData = packet.parseAsyncData(parsedPayload, ds);
-          emit('async', parsedData);
-        }
+        _execCallback(parsedPayload.seq, parsedData);
+      } else if (parsedPayload.sop2 == SOP2.async) {
+        // async packet
+        parsedData = packet.parseAsyncData(parsedPayload, ds);
+        emit('async', parsedData);
+      }
 
-        if (parsedData != null && parsedData['event'] != null) {
-          emit(parsedData['event'] as String, parsedData);
-        }
+      if (parsedData?['event'] != null) {
+        emit(parsedData!['event'] as String, parsedData);
       }
     };
     await connection.open();
@@ -113,10 +111,13 @@ class Sphero extends SpheroBase with Custom {
   /// Adds a command to the queue and calls for the next command in the queue
   /// to try to execute.
   @override
-  Future<Map<String, dynamic>> baseCommand(
-      int vDevice, int cmdName, Uint8List data) {
+  Future<Map<String, Object?>> baseCommand(
+    int vDevice,
+    int cmdName,
+    Uint8List? data,
+  ) {
     final seq = _incSeq();
-    final completer = Completer<Map<String, dynamic>>();
+    final completer = Completer<Map<String, Object?>>();
     final cmdPacket = packet.create(
       sop2: sop2Bitfield,
       did: vDevice,
@@ -132,7 +133,9 @@ class Sphero extends SpheroBase with Custom {
   /// Adds a sphero [command] to the queue, with a [completer] that completes
   /// when the response comes back
   void _queueCommand(
-      PacketV1 command, Completer<Map<String, dynamic>> completer) {
+    PacketV1 command,
+    Completer<Map<String, Object?>> completer,
+  ) {
     if (commandQueue.length == 256) {
       commandQueue.removeAt(0);
     }
@@ -158,13 +161,15 @@ class Sphero extends SpheroBase with Custom {
   /// Adds a Future to the queue, to be executed when a response
   /// gets back from the sphero.
   void _queueFuture(
-      PacketV1 cmdPacket, Completer<Map<String, dynamic>> completer) {
+    PacketV1 cmdPacket,
+    Completer<Map<String, Object?>> completer,
+  ) {
     final seq = cmdPacket.seq;
 
     // ignore: prefer_function_declarations_over_variables, avoid_types_on_closure_parameters
-    final handler = (Map<String, dynamic> packet) {
+    final handler = (Map<String, Object?>? packet) {
       final item = responseQueue.remove(seq);
-      item.timer.cancel();
+      item?.timer?.cancel();
       busy = false;
       if (!completer.isCompleted) {
         if (packet != null) {
@@ -194,7 +199,7 @@ class Sphero extends SpheroBase with Custom {
   /// back from the sphero or the deadtime for the commands sent expires.
   ///
   /// Based on the [seq] number of the response, and the parsed [packet]
-  void _execCallback(int seq, Map<String, dynamic> packet) {
+  void _execCallback(int seq, Map<String, Object?> packet) {
     final response = responseQueue[seq];
 
     if (response != null) {
@@ -204,7 +209,7 @@ class Sphero extends SpheroBase with Custom {
 
   /// Returns the response [CommandID] (did, cid) passed to the sphero
   /// based on the [seq] from the response (used for parsing responses).
-  CommandID _responseCmd(int seq) {
+  CommandID? _responseCmd(int seq) {
     final response = responseQueue[seq];
     if (response != null) {
       return response.commandID;
@@ -224,9 +229,9 @@ class Sphero extends SpheroBase with Custom {
 }
 
 class CommandQueueResponseItem {
-  CommandQueueResponseItem({this.handler, this.commandID});
+  CommandQueueResponseItem({required this.handler, required this.commandID});
 
-  final Function(Map<String, dynamic>) handler;
+  final Function(Map<String, Object?>) handler;
   final CommandID commandID;
-  Timer timer;
+  Timer? timer;
 }

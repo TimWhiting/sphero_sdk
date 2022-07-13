@@ -5,22 +5,25 @@ import 'package:sphero_sdk/src/v1/devices/core.dart';
 import 'package:sphero_sdk/src/v1/devices/sphero.dart';
 
 class SpheroTest extends SpheroBase {
-  int deviceId;
-  int command;
-  Uint8List data;
+  late int deviceId;
+  late int command;
+  Uint8List? data;
   @override
-  Future<Map<String, dynamic>> baseCommand(
-      int deviceId, int command, Uint8List data) async {
+  Future<Map<String, Object?>> baseCommand(
+    int deviceId,
+    int command,
+    Uint8List? data,
+  ) async {
     this.deviceId = deviceId;
     this.command = command;
     this.data = data;
-    return {};
+    return <String, Object?>{};
   }
 }
 
 void main() {
   group('Sphero', () {
-    SpheroTest sphero;
+    late SpheroTest sphero;
     setUp(() {
       sphero = SpheroTest();
     });
@@ -32,7 +35,7 @@ void main() {
     });
 
     test('setStabilization calls command with params', () async {
-      await sphero.setStabiliation(true);
+      await sphero.setStabilization(true);
       expect(sphero.deviceId, 0x02);
       expect(sphero.command, 0x02);
       expect(sphero.data, [0x01]);
@@ -61,7 +64,11 @@ void main() {
 
     test('selfLevel calls command with params', () async {
       await sphero.selfLevel(
-          options: 0xF0, angleLimit: 0xB4, timeout: 0xFF, trueTime: 0x0F);
+        options: 0xF0,
+        angleLimit: 0xB4,
+        timeout: 0xFF,
+        trueTime: 0x0F,
+      );
       expect(sphero.deviceId, 0x02);
       expect(sphero.command, 0x09);
       expect(sphero.data, [0xF0, 0xB4, 0xFF, 0x0F]);
@@ -84,7 +91,13 @@ void main() {
         0xFF
       ];
 
-      await sphero.setDataStreaming(0x0F, 0xF0, 0x0F0F, 0x0F, 0x00FF);
+      await sphero.setDataStreaming(
+        n: 0x0F,
+        m: 0xF0,
+        mask1: 0x0F0F,
+        mask2: 0x00FF,
+        pcnt: 0x0F,
+      );
 
       expect(sphero.deviceId, 0x02);
       expect(sphero.command, 0x11);
@@ -94,7 +107,13 @@ void main() {
     test('configureCollisions calls command with params', () async {
       final byteArray = [0x0F, 0xF0, 0x01, 0x02, 0x03, 0xFF];
       await sphero.configureCollisions(
-          meth: 0x0F, xt: 0xF0, xs: 0x01, yt: 0x02, ys: 0x03, dead: 0xFF);
+        meth: 0x0F,
+        xt: 0xF0,
+        xs: 0x01,
+        yt: 0x02,
+        ys: 0x03,
+        dead: 0xFF,
+      );
 
       expect(sphero.deviceId, 0x02);
       expect(sphero.command, 0x12);
@@ -125,7 +144,7 @@ void main() {
       expect(sphero.data, null);
     });
 
-    test('setRgbLed defaults flag if not pressent', () async {
+    test('setRgbLed defaults flag if not present', () async {
       final byteArray = [0xFF, 0xFE, 0xFD, 0x01];
       await sphero.setRgbLed(0xFF, 0xFE, 0xFD);
 
@@ -136,7 +155,7 @@ void main() {
 
     test('setRgbLed calls command with params', () async {
       final byteArray = [0xFF, 0xFE, 0xFD, 0x01];
-      await sphero.setRgbLed(0xFF, 0xFE, 0xFD, 0x01);
+      await sphero.setRgbLed(0xFF, 0xFE, 0xFD);
 
       expect(sphero.deviceId, 0x02);
       expect(sphero.command, 0x20);
@@ -241,8 +260,10 @@ void main() {
     });
 
     test('setSsbModBlock calls command with params', () async {
-      await sphero.setSsbModBlock(0xAABBCCDD,
-          Uint8List.fromList(Uint8List.fromList([0x01, 0x02, 0x03])));
+      await sphero.setSsbModBlock(
+        0xAABBCCDD,
+        Uint8List.fromList(Uint8List.fromList([0x01, 0x02, 0x03])),
+      );
 
       expect(sphero.deviceId, 0x02);
       expect(sphero.command, 0x41);
@@ -430,7 +451,9 @@ void main() {
 
     test('appendOrbBasicFragment calls command with params', () async {
       await sphero.appendOrbBasicFragment(
-          0x0F, Uint8List.fromList([0x01, 0x02, 0x03]));
+        0x0F,
+        Uint8List.fromList([0x01, 0x02, 0x03]),
+      );
 
       expect(sphero.deviceId, 0x02);
       expect(sphero.command, 0x61);

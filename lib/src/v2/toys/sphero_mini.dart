@@ -3,10 +3,13 @@ import 'rollable_toy.dart';
 import 'types.dart';
 
 class SpheroMini extends RollableToy {
-  SpheroMini(Peripheral peripheral) : super(peripheral);
+  SpheroMini(super.peripheral);
 
-  static final advertisement = ToyAdvertisement(
-      name: 'Sphero Mini', prefix: 'SM-', typeof: (p) => SpheroMini(p));
+  static const advertisement = ToyAdvertisement(
+    name: 'Sphero Mini',
+    prefix: 'SM-',
+    typeof: SpheroMini.new,
+  );
 
   @override
   double get maxVoltage => 3.65;

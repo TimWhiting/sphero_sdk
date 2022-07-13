@@ -1,0 +1,27 @@
+include: package:all_lint_rules_community/all.yaml
+
+# REST OF YOUR ANALYSIS_OPTIONS.YAML FILE
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "test/.test_coverage.dart"
+    - "bin/cache/**"
+    - "lib/generated_plugin_registrant.dart"
+
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
+linter:
+  rules:
+    always_specify_types: false
+    prefer_double_quotes: false
+    avoid_final_parameters: false
+    unnecessary_final: false
+    public_member_api_docs: false
+    prefer_final_parameters: false
+    always_use_package_imports: false
+    constant_identifier_names: false
+    prefer_expression_function_bodies: false
+    lines_longer_than_80_chars: false

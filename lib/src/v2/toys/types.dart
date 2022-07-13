@@ -1,29 +1,37 @@
-import 'package:flutter/foundation.dart';
+// ignore_for_file: avoid_classes_with_only_static_members
+
+import 'package:flutter_blue_plugin/flutter_blue_plugin.dart';
 
 import 'core.dart';
 
 class ServicesUUID {
-  static const String apiV2ControlService = '00010001574f4f2053706865726f2121';
-  static const String nordicDfuService = '00020001574f4f2053706865726f2121';
+  static final Guid apiV2ControlService =
+      Guid('00010001574f4f2053706865726f2121');
+  static final Guid nordicDfuService = Guid('00020001574f4f2053706865726f2121');
 }
 
 class CharacteristicUUID {
-  static const String apiV2Characteristic = '00010002574f4f2053706865726f2121';
-  static const String dfuControlCharacteristic =
-      '00020002574f4f2053706865726f2121';
-  static const String dfuInfoCharacteristic =
-      '00020004574f4f2053706865726f2121';
-  static const String antiDoSCharacteristic =
-      '00020005574f4f2053706865726f2121';
-  static const String subsCharacteristic = '00020003574f4f2053706865726f2121';
+  static final Guid apiV2Characteristic =
+      Guid('00010002574f4f2053706865726f2121');
+  static final Guid dfuControlCharacteristic =
+      Guid('00020002574f4f2053706865726f2121');
+  static final Guid dfuInfoCharacteristic =
+      Guid('00020004574f4f2053706865726f2121');
+  static final Guid antiDoSCharacteristic =
+      Guid('00020005574f4f2053706865726f2121');
+  static final Guid subsCharacteristic =
+      Guid('00020003574f4f2053706865726f2121');
 }
 
 class ToyAdvertisement<T extends Core> {
-  const ToyAdvertisement(
-      {@required this.name, @required this.prefix, @required this.typeof});
+  const ToyAdvertisement({
+    required this.name,
+    required this.prefix,
+    required this.typeof,
+  });
   final String name;
   final String prefix;
-  final T Function(Peripheral) typeof;
+  final T Function(BluetoothDevice) typeof;
 }
 
 class Stance {
@@ -47,7 +55,7 @@ class SensorControlDefaults {
 }
 
 class SensorMaskRaw {
-  SensorMaskRaw({this.v2, this.v21});
+  SensorMaskRaw({required this.v2, required this.v21});
   List<int> v2;
   List<int> v21;
 }

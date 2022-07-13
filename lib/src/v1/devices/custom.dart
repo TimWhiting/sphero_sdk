@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_Object?_calls
+
 import 'dart:math';
 
 import '../utils.dart';
@@ -9,9 +11,10 @@ final hexRegex = RegExp(r'^[A-Fa-f0-9]{6}$');
 
 /// Converts a hex color [number] to RGB values
 RGB hexToRgb(int number) => RGB(
-    red: (number >> 16) & 0xff,
-    green: (number >> 8) & 0xff,
-    blue: number & 0xff);
+      red: (number >> 16) & 0xff,
+      green: (number >> 8) & 0xff,
+      blue: number & 0xff,
+    );
 
 /// Converts a [hex] color number to luminance adjusted value based on the [lum]
 /// percentage of luminance
@@ -30,41 +33,42 @@ RGB adjustLuminance(RGB rgb, int lum) {
 mixin Custom on SpheroBase {
   RGB originalColor = const RGB(red: 0, green: 0, blue: 0);
 
+  // ignore: avoid_positional_boolean_parameters
   int mergeMasks(String id, int mask, [bool remove = false]) {
     var m = mask;
     if (remove) {
       m = xor32bit(m);
-      return ds[id] & m;
+      return ds[id]! & m;
     }
 
-    return ds[id] | m;
+    return ds[id]! | m;
   }
 
-  void on(String name, Function(dynamic) data) {
+  void on(String name, void Function(Object?) data) {
     if (eventListeners[name] == null) {
-      eventListeners[name] = [];
+      eventListeners[name] = <void Function(Object?)>[];
     }
-    eventListeners[name].add(data);
+    eventListeners[name]!.add(data);
   }
 
-  void emit(String name, dynamic data) {
+  void emit(String name, Object? data) {
     // print('Emitting: $name, $data');'
-    for (final l in eventListeners[name] ?? []) {
+    for (final l in eventListeners[name] ?? const <void Function(Object?)>[]) {
       l(data);
     }
   }
 
-  /// Generic Data Streaming setup, using Sphero's setDataStraming command.
+  /// Generic Data Streaming setup, using Sphero's setDataStreaming command.
   ///
   /// Users need to listen for the `dataStreaming` event, or a custom event, to
   /// get the data.
-  Future<Map<String, dynamic>> streamData({
-    String event,
-    int mask1,
+  Future<Map<String, Object?>> streamData({
+    required String event,
+    required List<String> fields,
+    required bool remove,
+    int mask1 = 0,
     int mask2 = 0,
-    List<String> fields,
     int sps = 2,
-    bool remove,
   }) {
     // options for streaming data
     final n = (400 / sps).round();
@@ -74,7 +78,9 @@ mixin Custom on SpheroBase {
     final m2 = mergeMasks('mask2', mask2, remove);
 
     on('dataStreaming', (data) {
-      final params = {};
+      final params = <String, Object?>{};
+      data!;
+      data as Map;
 
       for (var i = 0; i < fields.length; i++) {
         params[fields[i]] = data[fields[i]];
@@ -83,7 +89,7 @@ mixin Custom on SpheroBase {
       emit(event, params);
     });
 
-    return setDataStreaming(n, m, m1, m2, pcnt);
+    return setDataStreaming(n: n, m: m, mask1: m1, mask2: m2, pcnt: pcnt);
   }
 
   /// The Random Color command sets Sphero to a randomly-generated color.
@@ -91,7 +97,7 @@ mixin Custom on SpheroBase {
   /// ```dart
   /// await orb.randomColor();
   /// ```
-  Future<Map<String, dynamic>> randomColor() {
+  Future<Map<String, Object?>> randomColor() {
     final rgb = randomRGBColor();
     return setRgbLed(rgb.red, rgb.green, rgb.blue);
   }
@@ -111,7 +117,7 @@ mixin Custom on SpheroBase {
   ///   }
   /// });
   /// ```
-  Future<Map<String, dynamic>> getColor() => getRgbLed();
+  Future<Map<String, Object?>> getColor() => getRgbLed();
 
   /// The Detect Collisions command sets up Sphero's collision detection system,
   /// and automatically parses asynchronous packets to re-emit collision events
@@ -126,18 +132,24 @@ mixin Custom on SpheroBase {
   ///   print('  y: ${data.['y']}');
   ///   print('  z: ${data.['z']}');
   ///   print('  axis: ${data.['axis']}');
-  ///   print('  xMagnitud: ${data.['xMagnitude']}');
-  ///   print('  yMagnitud: ${data.['yMagnitude']}');
+  ///   print('  xMagnitude: ${data.['xMagnitude']}');
+  ///   print('  yMagnitude: ${data.['yMagnitude']}');
   ///   print('  speed: ${data.['speed']}');
   ///   print('  timeStamp: ${data.['timeStamp'])}';
   /// });
   /// ```
-  Future<Map<String, dynamic>> detectCollisions([bool isBB8 = false]) {
+  Future<Map<String, Object?>> detectCollisions([bool isBB8 = false]) {
     final t = isBB8 ? 0x20 : 0x40;
     final s = isBB8 ? 0x20 : 0x50;
     final dead = isBB8 ? 0x01 : 0x50;
     return configureCollisions(
-        meth: 0x01, xt: t, yt: t, xs: s, ys: s, dead: dead);
+      meth: 0x01,
+      xt: t,
+      yt: t,
+      xs: s,
+      ys: s,
+      dead: dead,
+    );
   }
 
   /// The Detect Freefall command sets up Sphero's freefall detection system,
@@ -156,16 +168,24 @@ mixin Custom on SpheroBase {
   ///   print('  value:', data.value);
   /// });
   /// ```
-  Future<Map<String, dynamic>> detectFreefall() {
+  Future<Map<String, Object?>> detectFreefall() {
     var falling = false;
     on('accelOne', (data) {
-      if (data.accelOne.value[0] as int < 70 && !falling) {
+      data!;
+      data as Map<String, Map<String, List<int>>>;
+      if (data['accelOne']!['value']![0] < 70 && !falling) {
         falling = true;
-        emit('freefall', {'value': data.accelOne.value[0]});
+        emit(
+          'freefall',
+          <String, double>{'value': data['accelOne']!['value']![0] as double},
+        );
       }
-      if (data.accelOne.value[0] as int > 100 && falling) {
+      if (data['accelOne']!['value']![0] > 100 && falling) {
         falling = false;
-        emit('landed', {'value': data.accelOne.value[0]});
+        emit(
+          'landed',
+          <String, double>{'value': data['accelOne']!['value']![0] as double},
+        );
       }
     });
 
@@ -184,15 +204,16 @@ mixin Custom on SpheroBase {
   /// ```dart
   /// orb.startCalibration();
   /// ```
-  Future<Map<String, dynamic>> startCalibration() async {
+  Future<Map<String, Object?>> startCalibration() async {
     final color = await getColor();
     originalColor = RGB(
-        red: color['red'] as int,
-        green: color['green'] as int,
-        blue: color['blue'] as int);
+      red: color['red']! as int,
+      green: color['green']! as int,
+      blue: color['blue']! as int,
+    );
     await setRgbLed(0, 0, 0);
     await setBackLed(127);
-    return setStabiliation(false);
+    return setStabilization(false);
   }
 
   /// The Finish Calibration command ends Sphero's calibration mode, by setting
@@ -201,7 +222,7 @@ mixin Custom on SpheroBase {
   /// ```dart
   /// orb.finishCalibration();
   /// ```
-  Future<Map<String, dynamic>> finishCalibration() {
+  Future<Map<String, Object?>> finishCalibration() {
     setHeading(0);
     setRgbLed(originalColor.red, originalColor.green, originalColor.blue);
     return setDefaultSettings();
@@ -214,9 +235,9 @@ mixin Custom on SpheroBase {
   /// ```dart
   /// orb.setDefaultSettings();
   /// ```
-  Future<Map<String, dynamic>> setDefaultSettings() {
+  Future<Map<String, Object?>> setDefaultSettings() {
     setBackLed(0);
-    return setStabiliation(true);
+    return setStabilization(true);
   }
 
   /// Starts streaming of odometer data at [sps] samples per second. Setting
@@ -230,12 +251,14 @@ mixin Custom on SpheroBase {
   ///
   /// orb.on('odometer', Function(data) {
   ///   print('data:');
-  ///   print('  xOdomoter:', data.xOdomoter);
-  ///   print('  yOdomoter:', data.yOdomoter);
+  ///   print('  xOdometer:', data.xOdometer);
+  ///   print('  yOdometer:', data.yOdometer);
   /// });
   /// ```
-  Future<Map<String, dynamic>> streamOdometer(
-          [int sps = 5, bool remove = false]) =>
+  Future<Map<String, Object?>> streamOdometer([
+    int sps = 5,
+    bool remove = false,
+  ]) =>
       streamData(
         event: 'odometer',
         mask2: 0x0C000000,
@@ -259,8 +282,10 @@ mixin Custom on SpheroBase {
   ///   print('  yVelocity:', data.yVelocity);
   /// });
   /// ```
-  Future<Map<String, dynamic>> streamVelocity(
-          [int sps = 5, bool remove = false]) =>
+  Future<Map<String, Object?>> streamVelocity([
+    int sps = 5,
+    bool remove = false,
+  ]) =>
       streamData(
         event: 'velocity',
         mask2: 0x01800000,
@@ -283,8 +308,10 @@ mixin Custom on SpheroBase {
   ///   print('  accelOne:', data.accelOne);
   /// });
   /// ```
-  Future<Map<String, dynamic>> streamAccelOne(
-          [int sps = 5, bool remove = false]) =>
+  Future<Map<String, Object?>> streamAccelOne([
+    int sps = 5,
+    bool remove = false,
+  ]) =>
       streamData(
         event: 'accelOne',
         mask2: 0x02000000,
@@ -310,8 +337,10 @@ mixin Custom on SpheroBase {
   ///   print('  yawAngle:', data.yawAngle);
   /// });
   /// ```
-  Future<Map<String, dynamic>> streamImuAngles(
-          [int sps = 5, bool remove = false]) =>
+  Future<Map<String, Object?>> streamImuAngles([
+    int sps = 5,
+    bool remove = false,
+  ]) =>
       streamData(
         event: 'imuAngles',
         mask1: 0x00070000,
@@ -336,8 +365,10 @@ mixin Custom on SpheroBase {
   ///   print('  zAccel:', data.zAccel);
   /// });
   /// ```
-  Future<Map<String, dynamic>> streamAccelerometer(
-          [int sps = 5, bool remove = false]) =>
+  Future<Map<String, Object?>> streamAccelerometer([
+    int sps = 5,
+    bool remove = false,
+  ]) =>
       streamData(
         event: 'accelerometer',
         mask1: 0x0000E000,
@@ -362,8 +393,10 @@ mixin Custom on SpheroBase {
   ///   print('  zGyro:', data.zGyro);
   /// });
   /// ```
-  Future<Map<String, dynamic>> streamGyroscope(
-          [int sps = 5, bool remove = false]) =>
+  Future<Map<String, Object?>> streamGyroscope([
+    int sps = 5,
+    bool remove = false,
+  ]) =>
       streamData(
         event: 'gyroscope',
         mask1: 0x00001C00,
@@ -387,8 +420,10 @@ mixin Custom on SpheroBase {
   ///   print('  lMotorBackEmf:', data.lMotorBackEmf);
   /// });
   /// ```
-  Future<Map<String, dynamic>> streamMotorsBackEmf(
-          [int sps = 5, bool remove = false]) =>
+  Future<Map<String, Object?>> streamMotorsBackEmf([
+    int sps = 5,
+    bool remove = false,
+  ]) =>
       streamData(
         event: 'motorsBackEmf',
         mask1: 0x00000060,
@@ -404,7 +439,7 @@ mixin Custom on SpheroBase {
   /// ```dart
   /// await orb.stopOnDisconnect();
   /// ```
-  Future<Map<String, dynamic>> stopOnDisconnect([bool stop = false]) =>
+  Future<Map<String, Object?>> stopOnDisconnect([bool stop = false]) =>
       setTempOptionFlags(stop.intFlag);
 
   ///
@@ -414,5 +449,5 @@ mixin Custom on SpheroBase {
   /// ```dart
   /// await sphero.stop();
   /// ```
-  Future<Map<String, dynamic>> stop() => roll(0, 0, 0);
+  Future<Map<String, Object?>> stop() => roll(0, 0, 0);
 }

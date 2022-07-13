@@ -4,8 +4,12 @@ class Power {
   Power(CommandGenerator generator) : _encode = generator(DeviceId.powerInfo);
 
   final CommandEncoder _encode;
-  Command batteryVoltage() => _encode(CommandPartial(
-      targetId: 0x11, commandId: PowerCommandIds.batteryVoltage));
+  Command batteryVoltage() => _encode(
+        CommandPartial(
+          targetId: 0x11,
+          commandId: PowerCommandIds.batteryVoltage,
+        ),
+      );
   Command sleep() =>
       _encode(CommandPartial(targetId: 0x11, commandId: PowerCommandIds.sleep));
   Command something2() =>

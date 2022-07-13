@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
@@ -29,15 +31,15 @@ class FIELDS {
 }
 
 class PacketV1 {
-  PacketV1();
+  PacketV1() : this.create();
   PacketV1.create({
-    int sop1,
-    int sop2,
-    int cid,
-    int did,
-    int seq,
-    int checksum,
-    Uint8List data,
+    int? sop1,
+    int? sop2,
+    int? cid,
+    int? did,
+    int? seq,
+    int? checksum,
+    Uint8List? data,
   })  : data = data ?? Uint8List(0),
         dlen = data?.length ?? 0,
         sop1 = sop1 ?? FIELDS.sop1_hex,
@@ -49,8 +51,11 @@ class PacketV1 {
   Uint8List data;
   int partialCounter = 0;
 
-  int sop1, sop2, did, cid, seq, checksum, dlen; // adds checksum
-  int mrsp, idCode, dlenMsb, dlenLsb;
+  // ignore: avoid_multiple_declarations_per_line
+  int sop1, sop2, did, cid, seq, dlen; // adds checksum
+  late int checksum;
+  // ignore: avoid_multiple_declarations_per_line
+  int? dlenLsb, dlenMsb, idCode, mrsp;
   void printPacket() {
     print(
       '''sop1: $sop1, sop2: $sop2, did: $did, cid: $cid, seq: $seq, dlen: $dlen, data: $data''',
@@ -73,24 +78,26 @@ class PacketParser {
 
   Uint8List partialBuffer = Uint8List(0);
 
-  PacketV1 create(
-          {int sop1,
-          int sop2,
-          int cid,
-          int did,
-          int seq,
-          int checksum,
-          Uint8List data}) =>
+  PacketV1 create({
+    int? sop1,
+    int? sop2,
+    int? cid,
+    int? did,
+    int? seq,
+    int? checksum,
+    Uint8List? data,
+  }) =>
       PacketV1.create(
-          sop1: sop1,
-          sop2: sop2,
-          cid: cid,
-          did: did,
-          seq: seq,
-          checksum: checksum,
-          data: data);
+        sop1: sop1,
+        sop2: sop2,
+        cid: cid,
+        did: did,
+        seq: seq,
+        checksum: checksum,
+        data: data,
+      );
 
-  PacketV1 parse(Uint8List buffer) {
+  PacketV1? parse(Uint8List buffer) {
     var b = buffer;
     if (partialBuffer.isNotEmpty) {
       b = Uint8List.fromList([...partialBuffer, ...b]);
@@ -148,11 +155,12 @@ class PacketParser {
   void dealWithExtraBytes(Uint8List b) {
     // If the packet was parsed successfully, and the buffer and
     // expected size of the buffer are the same, clean up the
-    // partialBuffer, otherwise assign extrabytes to partialBuffer
+    // partialBuffer, otherwise assign extra bytes to partialBuffer
     final expectedSize = checkExpectedSize(b);
     if (b.length > expectedSize) {
       partialBuffer = Uint8List.fromList(
-          [for (final byte in b.sublist(expectedSize)) byte]);
+        [for (final byte in b.sublist(expectedSize)) byte],
+      );
     } else {
       partialBuffer = Uint8List(0);
     }
@@ -175,44 +183,45 @@ class PacketParser {
     return packet;
   }
 
-  Map<String, dynamic> parseAsyncData(PacketV1 payload, Map<String, int> ds) {
+  Map<String, Object?> parseAsyncData(PacketV1 payload, Map<String, int> ds) {
     print('Parsing async data');
-    final parser = ASYNC_PARSER[payload.idCode];
+    final parser = ASYNC_PARSER[payload.idCode]!;
 
     return parseDataMap(parser, payload, ds);
   }
 
-  Map<String, dynamic> parseResponseData(CommandID cmd, PacketV1 payload) {
+  Map<String, Object?> parseResponseData(CommandID cmd, PacketV1 payload) {
     print('Parsing sync data');
-    if (cmd == null || cmd.did == null || cmd.cid == null) {
-      throw Exception(payload);
-    }
     final parserId =
             // ignore: prefer_interpolation_to_compose_strings
             cmd.did.toRadixString(16) + ':' + cmd.cid.toRadixString(16),
-        parser = RES_PARSER[parserId];
+        parser = RES_PARSER[parserId] ??
+            (throw Exception('No parser found for that command'));
 
     return parseDataMap(parser, payload);
   }
 
   @visibleForTesting
-  Map<String, dynamic> parseDataMap(APIV1 parser, PacketV1 payload,
-      [Map<String, int> dsIn]) {
+  Map<String, Object?> parseDataMap(
+    APIV1 parser,
+    PacketV1 payload, [
+    Map<String, int>? dsIn,
+  ]) {
     final data = payload.data;
-    Map<String, dynamic> pData;
+    Map<String, Object?> pData;
     APIField field;
     var ds = dsIn;
-    if (parser != null && (data.isNotEmpty)) {
+    if (data.isNotEmpty) {
       try {
         ds = checkDSMasks(ds, parser);
       } on Exception catch (e) {
         print(e);
-        return {'payload': payload};
+        return <String, PacketV1>{'payload': payload};
       }
 
       final fields = parser.fields;
 
-      pData = {
+      pData = <String, Object?>{
         'desc': parser.desc,
         'idCode': parser.idCode,
         'event': parser.event,
@@ -221,6 +230,7 @@ class PacketParser {
         'packet': payload
       };
 
+      // ignore: avoid_multiple_declarations_per_line
       var dsIndex = 0, dsFlag = 0, i = 0;
 
       while (i < fields.length) {
@@ -241,35 +251,41 @@ class PacketParser {
         i = incParserIndex(i, fields, data, dsFlag, dsIndex);
       }
     } else {
-      print('''No parser found:  data: $payload, 
+      print('''
+No parser found:  data: $payload, 
           ${payload.cid},
           ${payload.did},
           ${payload.seq}''');
-      return {'payload': payload};
+      return <String, PacketV1>{'payload': payload};
     }
 
     return pData;
   }
 
   @visibleForTesting
-  Map<String, int> checkDSMasks(Map<String, int> ds, APIV1 parser) {
+  Map<String, int> checkDSMasks(Map<String, int>? ds, APIV1 parser) {
     if (parser.idCode == 0x03) {
-      if (!(ds != null && ds['mask1'] != null && ds['mask2'] != null)) {
+      if (!(ds?['mask1'] != null && ds?['mask2'] != null)) {
         throw Exception();
       }
     } else {
-      return null;
+      throw Exception('Invalid idCode');
     }
 
-    return ds;
+    return ds!;
   }
 
   @visibleForTesting
-  int incParserIndex(int iIn, List<APIField> fields, Uint8List data,
-      [int dsFlag = 0, int dsIndex]) {
+  int incParserIndex(
+    int iIn,
+    List<APIField> fields,
+    Uint8List data, [
+    int dsFlag = 0,
+    int? dsIndex,
+  ]) {
     var i = iIn + 1;
 
-    if ((dsFlag >= 0) && (i == fields.length) && (dsIndex < data.length)) {
+    if ((dsFlag >= 0) && (i == fields.length) && (dsIndex! < data.length)) {
       i = 0;
     }
 
@@ -278,11 +294,7 @@ class PacketParser {
 
   @visibleForTesting
   int checkDSBit(Map<String, int> ds, APIField field) {
-    if (ds == null) {
-      return -1;
-    }
-
-    if ((ds[field.maskField] & field.bitmask).abs() > 0) {
+    if ((ds[field.maskField]! & field.bitmask!).abs() > 0) {
       return 1;
     }
 
@@ -290,19 +302,22 @@ class PacketParser {
   }
 
   @visibleForTesting
-  dynamic parseField(APIField field, Uint8List dataIn,
-      [Map<String, dynamic> pData = const {}]) {
-    dynamic pField;
-    if (field.from != null && field.from >= dataIn.length) {
+  Object? parseField(
+    APIField field,
+    Uint8List dataIn, [
+    Map<String, Object?> pData = const <String, Object?>{},
+  ]) {
+    Object? pField;
+    if (field.from >= dataIn.length) {
       print('Big problem with field, returning 0');
       return 0;
     }
-    if (field.to != null && field.to > dataIn.length) {
+    if (field.to != null && field.to! > dataIn.length) {
       print('Big problem with field, but still returning field as int');
       final data = dataIn.sublist(field.from);
       return data.isNotEmpty ? bufferToInt(data) : 0;
     }
-    final data = dataIn.sublist(field.from ?? 0, field.to ?? dataIn.length);
+    final data = dataIn.sublist(field.from, field.to ?? dataIn.length);
     final intField = data.isNotEmpty ? bufferToInt(data) : 0;
     pField = intField;
 
@@ -314,51 +329,52 @@ class PacketParser {
         }
         break;
       case 'string':
-        pField = data.toStringFormat(field.format).replaceAll('\0', '0');
+        pField = data.toStringFormat(field.format!).replaceAll('0', '0');
         break;
       case 'raw':
         pField = data;
         break;
       case 'predefined':
         if (field.mask != null) {
-          pField = intField & field.mask;
+          pField = intField & field.mask!;
         }
-        pField = field.values[pField as int];
+        pField = field.values![pField as int];
         break;
       case 'bitmask':
         pField = parseBitmaskField(intField, field, pData);
         break;
       case 'signed':
-        final width = 8 * (field.to - field.from);
+        final width = 8 * (field.to! - field.from);
         pField = intField;
         if (intField >= pow(2, width - 1)) {
-          pField = pField - pow(2, width);
+          pField = (pField as int) - pow(2, width);
         }
         break;
       default:
         throw Exception('Data could not be parsed!');
-        pField = 'Data could not be parsed!';
-        break;
     }
 
     return pField;
   }
 
   @visibleForTesting
-  Map<String, dynamic> parseBitmaskField(
-      int valIn, APIField field, Map<String, dynamic> pData) {
-    var pField = <String, dynamic>{};
+  Map<String, Object?> parseBitmaskField(
+    int valIn,
+    APIField field,
+    Map<String, Object?> pData,
+  ) {
+    var pField = <String, Object?>{};
     print('valIn $valIn, $field, $pData');
     var val = valIn;
-    if (val > field.rangeTop) {
-      val = twosToInt(val, 2);
+    if (val > field.rangeTop!) {
+      val = twosToInt(val);
     }
 
     if (pData[field.name] != null) {
-      pField = pData[field.name] as Map<String, dynamic>;
-      pField['value'].add(val);
+      pField = pData[field.name]! as Map<String, Object?>;
+      (pField['value']! as List).add(val);
     } else {
-      pField = {
+      pField = <String, Object?>{
         'sensor': field.sensor,
         'range': {'top': field.rangeTop, 'bottom': field.rangeBottom},
         'units': field.units,
@@ -379,7 +395,7 @@ class PacketParser {
       buffer[FIELDS.sop1_pos] == FIELDS.sop1_hex;
 
   @visibleForTesting
-  dynamic checkSOP2(Uint8List buffer) {
+  Object? checkSOP2(Uint8List buffer) {
     final sop2 = buffer[FIELDS.sop2_pos];
 
     if (sop2 == FIELDS.sop2_sync) {
@@ -429,7 +445,7 @@ extension ToStringFormat on Uint8List {
 }
 
 class CommandID {
-  CommandID({this.cid, this.did});
+  CommandID({required this.cid, required this.did});
   final int cid;
   final int did;
 }

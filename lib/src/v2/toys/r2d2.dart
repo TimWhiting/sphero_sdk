@@ -5,17 +5,19 @@ import 'rollable_toy.dart';
 import 'types.dart';
 
 class R2D2 extends RollableToy {
-  R2D2(Peripheral peripheral) : super(peripheral);
-  static final advertisement =
-      ToyAdvertisement(name: 'R2-D2', prefix: 'D2-', typeof: (p) => R2D2(p));
+  R2D2(super.peripheral);
+  static const advertisement =
+      ToyAdvertisement(name: 'R2-D2', prefix: 'D2-', typeof: R2D2.new);
 
   @override
   double get maxVoltage => 3.65;
   @override
   double get minVoltage => 3.4;
 
+  @override
   Future<QueuePayload> wake() => queueCommand(commands.power.wake());
 
+  @override
   Future<QueuePayload> sleep() => queueCommand(commands.power.sleep());
 
   Future<QueuePayload> playAudioFile(int idx) =>

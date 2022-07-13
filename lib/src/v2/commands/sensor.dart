@@ -7,7 +7,7 @@ class Sensor {
   Command enableCollisionAsync() =>
       _encode(CommandPartial(commandId: SensorCommandIds.enableCollisionAsync));
 
-  /// Configures the collision seetings:
+  /// Configures the collision settings:
   ///
   /// [xThreshold] An 8-bit settable threshold for the X (left/right)
   /// and Y (front/back) axes of Sphero. A value of 00h disables the contribution of that axis.
@@ -24,12 +24,20 @@ class Sensor {
   /// [method] {method=0x01}  Detection method type to use. Currently the
   /// only method supported is 01h. Use 00h to completely disable this service.
   Command configureCollision(
-          int xThreshold, int yThreshold, int xSpeed, int ySpeed, int deadTime,
-          {int method = 0x01}) =>
-      _encode(CommandPartial(
+    int xThreshold,
+    int yThreshold,
+    int xSpeed,
+    int ySpeed,
+    int deadTime, {
+    int method = 0x01,
+  }) =>
+      _encode(
+        CommandPartial(
           commandId: SensorCommandIds.configureCollision,
           targetId: 0x12,
-          payload: [method, xThreshold, xSpeed, yThreshold, ySpeed, deadTime]));
+          payload: [method, xThreshold, xSpeed, yThreshold, ySpeed, deadTime],
+        ),
+      );
 
   Command sensorMask(int sensorRawValue, int streamingRate) {
     final bytes = [
@@ -41,10 +49,13 @@ class Sensor {
       (sensorRawValue >> 8) & 0xff,
       sensorRawValue & 0xff
     ];
-    return _encode(CommandPartial(
+    return _encode(
+      CommandPartial(
         commandId: SensorCommandIds.sensorMask,
         targetId: 0x12,
-        payload: bytes));
+        payload: bytes,
+      ),
+    );
   }
 
   Command sensorMaskExtended(int mask) {
@@ -54,9 +65,12 @@ class Sensor {
       (mask >> 8) & 0xff,
       mask & 0xff
     ];
-    return _encode(CommandPartial(
+    return _encode(
+      CommandPartial(
         commandId: SensorCommandIds.sensorMaskExtended,
         targetId: 0x12,
-        payload: bytes));
+        payload: bytes,
+      ),
+    );
   }
 }

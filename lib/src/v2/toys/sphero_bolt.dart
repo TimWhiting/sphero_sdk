@@ -1,11 +1,13 @@
-import 'core.dart';
 import 'rollable_toy.dart';
 import 'types.dart';
 
 class SpheroBolt extends RollableToy {
-  SpheroBolt(Peripheral peripheral) : super(peripheral);
-  static final advertisement = ToyAdvertisement(
-      name: 'Sphero Bolt', prefix: 'SB-', typeof: (p) => SpheroBolt(p));
+  SpheroBolt(super.peripheral);
+  static const advertisement = ToyAdvertisement(
+    name: 'Sphero Bolt',
+    prefix: 'SB-',
+    typeof: SpheroBolt.new,
+  );
 
   @override
   double get maxVoltage => 3.9;

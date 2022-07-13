@@ -1,19 +1,19 @@
+import 'package:dartx/dartx.dart';
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:example/pages/version_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:hooks_riverpod/all.dart';
-import 'package:dartx/dartx.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'common/state.dart';
 import 'pages/bluetooth_info.dart';
+import 'pages/version_page.dart';
 
 void main() {
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -25,13 +25,13 @@ class MyApp extends StatelessWidget {
       );
 }
 
-class HomePage extends HookWidget {
-  const HomePage();
+class HomePage extends HookConsumerWidget {
+  const HomePage({super.key});
   @override
-  Widget build(BuildContext context) {
-    useProvider(bleManagerProvider);
-    final devices = useProvider(allDevicesProvider).state;
-    final deviceName = useProvider(selectedDeviceNameProvider).state;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final result = ref.watch(bleManagerProvider);
+    final devices = ref.watch(allDevicesProvider);
+    final deviceName = ref.watch(selectedDeviceNameProvider);
     final pageIndex = useState(0);
     return SafeArea(
       child: Scaffold(
@@ -42,22 +42,26 @@ class HomePage extends HookWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (devices != null)
-                  DropdownButton<String>(
-                    value: deviceName,
-                    onChanged: (v) =>
-                        context.read(selectedDeviceNameProvider).state = v,
-                    items: devices.entries
-                        .map(
-                          (d) => DropdownMenuItem(
-                            value: d.key,
-                            child: Text(
-                              d.value?.advertisementData?.localName ?? '',
-                            ),
+                result.when(
+                  data: (_) => const Text('Connected'),
+                  error: (e, st) => Text(e.toString()),
+                  loading: () => const Text('Connecting'),
+                ),
+                DropdownButton<String>(
+                  value: deviceName,
+                  onChanged: (v) =>
+                      ref.read(selectedDeviceNameProvider.notifier).state = v,
+                  items: devices.entries
+                      .map(
+                        (d) => DropdownMenuItem(
+                          value: d.key,
+                          child: Text(
+                            d.value.advertisementData.localName,
                           ),
-                        )
-                        .toList(),
-                  ),
+                        ),
+                      )
+                      .toList(),
+                ),
               ],
             ),
             const SizedBox(height: 20),
@@ -72,8 +76,10 @@ class HomePage extends HookWidget {
               for (final tab in 0.rangeTo(Pages.values.length - 1))
                 TextButton(
                   child: Text(
-                    EnumToString.convertToString(Pages.values[tab],
-                        camelCase: true),
+                    EnumToString.convertToString(
+                      Pages.values[tab],
+                      camelCase: true,
+                    ),
                   ),
                   onPressed: () => pageIndex.value = tab,
                 )
@@ -115,61 +121,42 @@ extension NavX on Pages {
       case Pages.BluetoothInfo:
         return const BluetoothPage();
       case Pages.Calibration:
-        // TODO: Handle this case.
         break;
       case Pages.CollisionDetection:
-        // TODO: Handle this case.
         break;
       case Pages.Color:
-        // TODO: Handle this case.
         break;
       case Pages.Conway:
-        // TODO: Handle this case.
         break;
       case Pages.DataStreaming:
-        // TODO: Handle this case.
         break;
       case Pages.Freefall:
-        // TODO: Handle this case.
         break;
       case Pages.GetColor:
-        // TODO: Handle this case.
         break;
       case Pages.Keyboard:
-        // TODO: Handle this case.
         break;
       case Pages.Location:
-        // TODO: Handle this case.
         break;
       case Pages.Luminance:
-        // TODO: Handle this case.
         break;
       case Pages.Roll:
-        // TODO: Handle this case.
         break;
       case Pages.Shakeometer:
-        // TODO: Handle this case.
         break;
       case Pages.StreamAccelOne:
-        // TODO: Handle this case.
         break;
       case Pages.StreamAccel:
-        // TODO: Handle this case.
         break;
       case Pages.StreamGyro:
-        // TODO: Handle this case.
         break;
       case Pages.StreamIMUAngles:
-        // TODO: Handle this case.
         break;
       case Pages.StreamMotorsBackEMF:
-        // TODO: Handle this case.
         break;
       case Pages.StreamOdometer:
-        // TODO: Handle this case.
         break;
       case Pages.StreamVelocity:
-        // TODO: Handle this case.
         break;
       case Pages.Version:
         return const VersionPage();

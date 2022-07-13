@@ -9,25 +9,28 @@ extension Encoding on Command {
 
     out.bytes.add(APIConstants.startOfPacket);
     encodeBytes(
-        out,
-        combineFlags(
-            [...commandFlags, targetId != null ? Flags.commandHasTargetId : 0]),
-        true);
+      out,
+      combineFlags(
+        [
+          ...commandFlags,
+          if (targetId != null) Flags.commandHasTargetId else 0
+        ],
+      ),
+      true,
+    );
 
     if (targetId != null) {
-      encodeBytes(out, targetId, true);
+      encodeBytes(out, targetId!, true);
     }
 
-    encodeBytes(out, deviceId, true);
-    encodeBytes(out, commandId, true);
+    encodeBytes(out, deviceId.value, true);
+    encodeBytes(out, commandId.value, true);
     encodeBytes(out, sequenceNumber, true);
 
-    if (payload != null) {
-      // ignore: avoid_function_literals_in_foreach_calls
-      payload.forEach((byte) {
-        encodeBytes(out, byte, true);
-      });
+    for (final byte in payload) {
+      encodeBytes(out, byte, true);
     }
+
     out.checksum = ~out.checksum;
     encodeBytes(out, out.checksum);
     out.bytes.add(APIConstants.endOfPacket);

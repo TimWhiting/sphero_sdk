@@ -1,5 +1,7 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'response.dart';
 
@@ -9,43 +11,20 @@ part of 'response.dart';
 
 T _$identity<T>(T value) => value;
 
-/// @nodoc
-class _$APIV1TearOff {
-  const _$APIV1TearOff();
-
-// ignore: unused_element
-  _APIV1 call(
-      {int idCode,
-      String desc,
-      int did,
-      int cid,
-      String event,
-      List<APIField> fields}) {
-    return _APIV1(
-      idCode: idCode,
-      desc: desc,
-      did: did,
-      cid: cid,
-      event: event,
-      fields: fields,
-    );
-  }
-}
-
-/// @nodoc
-// ignore: unused_element
-const $APIV1 = _$APIV1TearOff();
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$APIV1 {
-  int get idCode;
-  String get desc;
-  int get did;
-  int get cid;
-  String get event;
-  List<APIField> get fields;
+  String get desc => throw _privateConstructorUsedError;
+  String get event => throw _privateConstructorUsedError;
+  List<APIField> get fields => throw _privateConstructorUsedError;
+  int? get did => throw _privateConstructorUsedError;
+  int? get cid => throw _privateConstructorUsedError;
+  int? get idCode => throw _privateConstructorUsedError;
 
-  $APIV1CopyWith<APIV1> get copyWith;
+  @JsonKey(ignore: true)
+  $APIV1CopyWith<APIV1> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -53,12 +32,12 @@ abstract class $APIV1CopyWith<$Res> {
   factory $APIV1CopyWith(APIV1 value, $Res Function(APIV1) then) =
       _$APIV1CopyWithImpl<$Res>;
   $Res call(
-      {int idCode,
-      String desc,
-      int did,
-      int cid,
+      {String desc,
       String event,
-      List<APIField> fields});
+      List<APIField> fields,
+      int? did,
+      int? cid,
+      int? idCode});
 }
 
 /// @nodoc
@@ -71,207 +50,213 @@ class _$APIV1CopyWithImpl<$Res> implements $APIV1CopyWith<$Res> {
 
   @override
   $Res call({
-    Object idCode = freezed,
-    Object desc = freezed,
-    Object did = freezed,
-    Object cid = freezed,
-    Object event = freezed,
-    Object fields = freezed,
+    Object? desc = freezed,
+    Object? event = freezed,
+    Object? fields = freezed,
+    Object? did = freezed,
+    Object? cid = freezed,
+    Object? idCode = freezed,
   }) {
     return _then(_value.copyWith(
-      idCode: idCode == freezed ? _value.idCode : idCode as int,
-      desc: desc == freezed ? _value.desc : desc as String,
-      did: did == freezed ? _value.did : did as int,
-      cid: cid == freezed ? _value.cid : cid as int,
-      event: event == freezed ? _value.event : event as String,
-      fields: fields == freezed ? _value.fields : fields as List<APIField>,
+      desc: desc == freezed
+          ? _value.desc
+          : desc // ignore: cast_nullable_to_non_nullable
+              as String,
+      event: event == freezed
+          ? _value.event
+          : event // ignore: cast_nullable_to_non_nullable
+              as String,
+      fields: fields == freezed
+          ? _value.fields
+          : fields // ignore: cast_nullable_to_non_nullable
+              as List<APIField>,
+      did: did == freezed
+          ? _value.did
+          : did // ignore: cast_nullable_to_non_nullable
+              as int?,
+      cid: cid == freezed
+          ? _value.cid
+          : cid // ignore: cast_nullable_to_non_nullable
+              as int?,
+      idCode: idCode == freezed
+          ? _value.idCode
+          : idCode // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
 
 /// @nodoc
-abstract class _$APIV1CopyWith<$Res> implements $APIV1CopyWith<$Res> {
-  factory _$APIV1CopyWith(_APIV1 value, $Res Function(_APIV1) then) =
-      __$APIV1CopyWithImpl<$Res>;
+abstract class _$$_APIV1CopyWith<$Res> implements $APIV1CopyWith<$Res> {
+  factory _$$_APIV1CopyWith(_$_APIV1 value, $Res Function(_$_APIV1) then) =
+      __$$_APIV1CopyWithImpl<$Res>;
   @override
   $Res call(
-      {int idCode,
-      String desc,
-      int did,
-      int cid,
+      {String desc,
       String event,
-      List<APIField> fields});
+      List<APIField> fields,
+      int? did,
+      int? cid,
+      int? idCode});
 }
 
 /// @nodoc
-class __$APIV1CopyWithImpl<$Res> extends _$APIV1CopyWithImpl<$Res>
-    implements _$APIV1CopyWith<$Res> {
-  __$APIV1CopyWithImpl(_APIV1 _value, $Res Function(_APIV1) _then)
-      : super(_value, (v) => _then(v as _APIV1));
+class __$$_APIV1CopyWithImpl<$Res> extends _$APIV1CopyWithImpl<$Res>
+    implements _$$_APIV1CopyWith<$Res> {
+  __$$_APIV1CopyWithImpl(_$_APIV1 _value, $Res Function(_$_APIV1) _then)
+      : super(_value, (v) => _then(v as _$_APIV1));
 
   @override
-  _APIV1 get _value => super._value as _APIV1;
+  _$_APIV1 get _value => super._value as _$_APIV1;
 
   @override
   $Res call({
-    Object idCode = freezed,
-    Object desc = freezed,
-    Object did = freezed,
-    Object cid = freezed,
-    Object event = freezed,
-    Object fields = freezed,
+    Object? desc = freezed,
+    Object? event = freezed,
+    Object? fields = freezed,
+    Object? did = freezed,
+    Object? cid = freezed,
+    Object? idCode = freezed,
   }) {
-    return _then(_APIV1(
-      idCode: idCode == freezed ? _value.idCode : idCode as int,
-      desc: desc == freezed ? _value.desc : desc as String,
-      did: did == freezed ? _value.did : did as int,
-      cid: cid == freezed ? _value.cid : cid as int,
-      event: event == freezed ? _value.event : event as String,
-      fields: fields == freezed ? _value.fields : fields as List<APIField>,
+    return _then(_$_APIV1(
+      desc: desc == freezed
+          ? _value.desc
+          : desc // ignore: cast_nullable_to_non_nullable
+              as String,
+      event: event == freezed
+          ? _value.event
+          : event // ignore: cast_nullable_to_non_nullable
+              as String,
+      fields: fields == freezed
+          ? _value._fields
+          : fields // ignore: cast_nullable_to_non_nullable
+              as List<APIField>,
+      did: did == freezed
+          ? _value.did
+          : did // ignore: cast_nullable_to_non_nullable
+              as int?,
+      cid: cid == freezed
+          ? _value.cid
+          : cid // ignore: cast_nullable_to_non_nullable
+              as int?,
+      idCode: idCode == freezed
+          ? _value.idCode
+          : idCode // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
 
 /// @nodoc
+
 class _$_APIV1 implements _APIV1 {
   const _$_APIV1(
-      {this.idCode, this.desc, this.did, this.cid, this.event, this.fields});
+      {required this.desc,
+      required this.event,
+      required final List<APIField> fields,
+      this.did,
+      this.cid,
+      this.idCode})
+      : _fields = fields;
 
-  @override
-  final int idCode;
   @override
   final String desc;
   @override
-  final int did;
-  @override
-  final int cid;
-  @override
   final String event;
+  final List<APIField> _fields;
   @override
-  final List<APIField> fields;
+  List<APIField> get fields {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_fields);
+  }
+
+  @override
+  final int? did;
+  @override
+  final int? cid;
+  @override
+  final int? idCode;
 
   @override
   String toString() {
-    return 'APIV1(idCode: $idCode, desc: $desc, did: $did, cid: $cid, event: $event, fields: $fields)';
+    return 'APIV1(desc: $desc, event: $event, fields: $fields, did: $did, cid: $cid, idCode: $idCode)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _APIV1 &&
-            (identical(other.idCode, idCode) ||
-                const DeepCollectionEquality().equals(other.idCode, idCode)) &&
-            (identical(other.desc, desc) ||
-                const DeepCollectionEquality().equals(other.desc, desc)) &&
-            (identical(other.did, did) ||
-                const DeepCollectionEquality().equals(other.did, did)) &&
-            (identical(other.cid, cid) ||
-                const DeepCollectionEquality().equals(other.cid, cid)) &&
-            (identical(other.event, event) ||
-                const DeepCollectionEquality().equals(other.event, event)) &&
-            (identical(other.fields, fields) ||
-                const DeepCollectionEquality().equals(other.fields, fields)));
+        (other.runtimeType == runtimeType &&
+            other is _$_APIV1 &&
+            const DeepCollectionEquality().equals(other.desc, desc) &&
+            const DeepCollectionEquality().equals(other.event, event) &&
+            const DeepCollectionEquality().equals(other._fields, _fields) &&
+            const DeepCollectionEquality().equals(other.did, did) &&
+            const DeepCollectionEquality().equals(other.cid, cid) &&
+            const DeepCollectionEquality().equals(other.idCode, idCode));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(idCode) ^
-      const DeepCollectionEquality().hash(desc) ^
-      const DeepCollectionEquality().hash(did) ^
-      const DeepCollectionEquality().hash(cid) ^
-      const DeepCollectionEquality().hash(event) ^
-      const DeepCollectionEquality().hash(fields);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(desc),
+      const DeepCollectionEquality().hash(event),
+      const DeepCollectionEquality().hash(_fields),
+      const DeepCollectionEquality().hash(did),
+      const DeepCollectionEquality().hash(cid),
+      const DeepCollectionEquality().hash(idCode));
 
+  @JsonKey(ignore: true)
   @override
-  _$APIV1CopyWith<_APIV1> get copyWith =>
-      __$APIV1CopyWithImpl<_APIV1>(this, _$identity);
+  _$$_APIV1CopyWith<_$_APIV1> get copyWith =>
+      __$$_APIV1CopyWithImpl<_$_APIV1>(this, _$identity);
 }
 
 abstract class _APIV1 implements APIV1 {
   const factory _APIV1(
-      {int idCode,
-      String desc,
-      int did,
-      int cid,
-      String event,
-      List<APIField> fields}) = _$_APIV1;
+      {required final String desc,
+      required final String event,
+      required final List<APIField> fields,
+      final int? did,
+      final int? cid,
+      final int? idCode}) = _$_APIV1;
 
   @override
-  int get idCode;
-  @override
   String get desc;
-  @override
-  int get did;
-  @override
-  int get cid;
   @override
   String get event;
   @override
   List<APIField> get fields;
   @override
-  _$APIV1CopyWith<_APIV1> get copyWith;
+  int? get did;
+  @override
+  int? get cid;
+  @override
+  int? get idCode;
+  @override
+  @JsonKey(ignore: true)
+  _$$_APIV1CopyWith<_$_APIV1> get copyWith =>
+      throw _privateConstructorUsedError;
 }
-
-/// @nodoc
-class _$APIFieldTearOff {
-  const _$APIFieldTearOff();
-
-// ignore: unused_element
-  _APIField call(
-      {String name,
-      String type,
-      int bitmask,
-      String maskField,
-      String sensor,
-      int rangeBottom,
-      int rangeTop,
-      String units,
-      int mask,
-      int from = 0,
-      @nullable int to,
-      String format,
-      Map<int, dynamic> values}) {
-    return _APIField(
-      name: name,
-      type: type,
-      bitmask: bitmask,
-      maskField: maskField,
-      sensor: sensor,
-      rangeBottom: rangeBottom,
-      rangeTop: rangeTop,
-      units: units,
-      mask: mask,
-      from: from,
-      to: to,
-      format: format,
-      values: values,
-    );
-  }
-}
-
-/// @nodoc
-// ignore: unused_element
-const $APIField = _$APIFieldTearOff();
 
 /// @nodoc
 mixin _$APIField {
-  String get name;
-  String get type;
-  int get bitmask;
-  String get maskField;
-  String get sensor;
-  int get rangeBottom;
-  int get rangeTop;
-  String get units;
-  int get mask;
-  int get from;
-  @nullable
-  int get to;
-  String get format;
-  Map<int, dynamic> get values;
+  String get name => throw _privateConstructorUsedError;
+  String get type => throw _privateConstructorUsedError;
+  String? get format => throw _privateConstructorUsedError;
+  int? get bitmask => throw _privateConstructorUsedError;
+  String? get units => throw _privateConstructorUsedError;
+  Map<int, Object?>? get values => throw _privateConstructorUsedError;
+  int? get mask => throw _privateConstructorUsedError;
+  String? get maskField => throw _privateConstructorUsedError;
+  String? get sensor => throw _privateConstructorUsedError;
+  int? get rangeBottom => throw _privateConstructorUsedError;
+  int? get rangeTop => throw _privateConstructorUsedError;
+  int get from => throw _privateConstructorUsedError;
+  int? get to => throw _privateConstructorUsedError;
 
-  $APIFieldCopyWith<APIField> get copyWith;
+  @JsonKey(ignore: true)
+  $APIFieldCopyWith<APIField> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -281,17 +266,17 @@ abstract class $APIFieldCopyWith<$Res> {
   $Res call(
       {String name,
       String type,
-      int bitmask,
-      String maskField,
-      String sensor,
-      int rangeBottom,
-      int rangeTop,
-      String units,
-      int mask,
+      String? format,
+      int? bitmask,
+      String? units,
+      Map<int, Object?>? values,
+      int? mask,
+      String? maskField,
+      String? sensor,
+      int? rangeBottom,
+      int? rangeTop,
       int from,
-      @nullable int to,
-      String format,
-      Map<int, dynamic> values});
+      int? to});
 }
 
 /// @nodoc
@@ -304,257 +289,329 @@ class _$APIFieldCopyWithImpl<$Res> implements $APIFieldCopyWith<$Res> {
 
   @override
   $Res call({
-    Object name = freezed,
-    Object type = freezed,
-    Object bitmask = freezed,
-    Object maskField = freezed,
-    Object sensor = freezed,
-    Object rangeBottom = freezed,
-    Object rangeTop = freezed,
-    Object units = freezed,
-    Object mask = freezed,
-    Object from = freezed,
-    Object to = freezed,
-    Object format = freezed,
-    Object values = freezed,
+    Object? name = freezed,
+    Object? type = freezed,
+    Object? format = freezed,
+    Object? bitmask = freezed,
+    Object? units = freezed,
+    Object? values = freezed,
+    Object? mask = freezed,
+    Object? maskField = freezed,
+    Object? sensor = freezed,
+    Object? rangeBottom = freezed,
+    Object? rangeTop = freezed,
+    Object? from = freezed,
+    Object? to = freezed,
   }) {
     return _then(_value.copyWith(
-      name: name == freezed ? _value.name : name as String,
-      type: type == freezed ? _value.type : type as String,
-      bitmask: bitmask == freezed ? _value.bitmask : bitmask as int,
-      maskField: maskField == freezed ? _value.maskField : maskField as String,
-      sensor: sensor == freezed ? _value.sensor : sensor as String,
-      rangeBottom:
-          rangeBottom == freezed ? _value.rangeBottom : rangeBottom as int,
-      rangeTop: rangeTop == freezed ? _value.rangeTop : rangeTop as int,
-      units: units == freezed ? _value.units : units as String,
-      mask: mask == freezed ? _value.mask : mask as int,
-      from: from == freezed ? _value.from : from as int,
-      to: to == freezed ? _value.to : to as int,
-      format: format == freezed ? _value.format : format as String,
-      values: values == freezed ? _value.values : values as Map<int, dynamic>,
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      type: type == freezed
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      format: format == freezed
+          ? _value.format
+          : format // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bitmask: bitmask == freezed
+          ? _value.bitmask
+          : bitmask // ignore: cast_nullable_to_non_nullable
+              as int?,
+      units: units == freezed
+          ? _value.units
+          : units // ignore: cast_nullable_to_non_nullable
+              as String?,
+      values: values == freezed
+          ? _value.values
+          : values // ignore: cast_nullable_to_non_nullable
+              as Map<int, Object?>?,
+      mask: mask == freezed
+          ? _value.mask
+          : mask // ignore: cast_nullable_to_non_nullable
+              as int?,
+      maskField: maskField == freezed
+          ? _value.maskField
+          : maskField // ignore: cast_nullable_to_non_nullable
+              as String?,
+      sensor: sensor == freezed
+          ? _value.sensor
+          : sensor // ignore: cast_nullable_to_non_nullable
+              as String?,
+      rangeBottom: rangeBottom == freezed
+          ? _value.rangeBottom
+          : rangeBottom // ignore: cast_nullable_to_non_nullable
+              as int?,
+      rangeTop: rangeTop == freezed
+          ? _value.rangeTop
+          : rangeTop // ignore: cast_nullable_to_non_nullable
+              as int?,
+      from: from == freezed
+          ? _value.from
+          : from // ignore: cast_nullable_to_non_nullable
+              as int,
+      to: to == freezed
+          ? _value.to
+          : to // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
 
 /// @nodoc
-abstract class _$APIFieldCopyWith<$Res> implements $APIFieldCopyWith<$Res> {
-  factory _$APIFieldCopyWith(_APIField value, $Res Function(_APIField) then) =
-      __$APIFieldCopyWithImpl<$Res>;
+abstract class _$$_APIFieldCopyWith<$Res> implements $APIFieldCopyWith<$Res> {
+  factory _$$_APIFieldCopyWith(
+          _$_APIField value, $Res Function(_$_APIField) then) =
+      __$$_APIFieldCopyWithImpl<$Res>;
   @override
   $Res call(
       {String name,
       String type,
-      int bitmask,
-      String maskField,
-      String sensor,
-      int rangeBottom,
-      int rangeTop,
-      String units,
-      int mask,
+      String? format,
+      int? bitmask,
+      String? units,
+      Map<int, Object?>? values,
+      int? mask,
+      String? maskField,
+      String? sensor,
+      int? rangeBottom,
+      int? rangeTop,
       int from,
-      @nullable int to,
-      String format,
-      Map<int, dynamic> values});
+      int? to});
 }
 
 /// @nodoc
-class __$APIFieldCopyWithImpl<$Res> extends _$APIFieldCopyWithImpl<$Res>
-    implements _$APIFieldCopyWith<$Res> {
-  __$APIFieldCopyWithImpl(_APIField _value, $Res Function(_APIField) _then)
-      : super(_value, (v) => _then(v as _APIField));
+class __$$_APIFieldCopyWithImpl<$Res> extends _$APIFieldCopyWithImpl<$Res>
+    implements _$$_APIFieldCopyWith<$Res> {
+  __$$_APIFieldCopyWithImpl(
+      _$_APIField _value, $Res Function(_$_APIField) _then)
+      : super(_value, (v) => _then(v as _$_APIField));
 
   @override
-  _APIField get _value => super._value as _APIField;
+  _$_APIField get _value => super._value as _$_APIField;
 
   @override
   $Res call({
-    Object name = freezed,
-    Object type = freezed,
-    Object bitmask = freezed,
-    Object maskField = freezed,
-    Object sensor = freezed,
-    Object rangeBottom = freezed,
-    Object rangeTop = freezed,
-    Object units = freezed,
-    Object mask = freezed,
-    Object from = freezed,
-    Object to = freezed,
-    Object format = freezed,
-    Object values = freezed,
+    Object? name = freezed,
+    Object? type = freezed,
+    Object? format = freezed,
+    Object? bitmask = freezed,
+    Object? units = freezed,
+    Object? values = freezed,
+    Object? mask = freezed,
+    Object? maskField = freezed,
+    Object? sensor = freezed,
+    Object? rangeBottom = freezed,
+    Object? rangeTop = freezed,
+    Object? from = freezed,
+    Object? to = freezed,
   }) {
-    return _then(_APIField(
-      name: name == freezed ? _value.name : name as String,
-      type: type == freezed ? _value.type : type as String,
-      bitmask: bitmask == freezed ? _value.bitmask : bitmask as int,
-      maskField: maskField == freezed ? _value.maskField : maskField as String,
-      sensor: sensor == freezed ? _value.sensor : sensor as String,
-      rangeBottom:
-          rangeBottom == freezed ? _value.rangeBottom : rangeBottom as int,
-      rangeTop: rangeTop == freezed ? _value.rangeTop : rangeTop as int,
-      units: units == freezed ? _value.units : units as String,
-      mask: mask == freezed ? _value.mask : mask as int,
-      from: from == freezed ? _value.from : from as int,
-      to: to == freezed ? _value.to : to as int,
-      format: format == freezed ? _value.format : format as String,
-      values: values == freezed ? _value.values : values as Map<int, dynamic>,
+    return _then(_$_APIField(
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      type: type == freezed
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      format: format == freezed
+          ? _value.format
+          : format // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bitmask: bitmask == freezed
+          ? _value.bitmask
+          : bitmask // ignore: cast_nullable_to_non_nullable
+              as int?,
+      units: units == freezed
+          ? _value.units
+          : units // ignore: cast_nullable_to_non_nullable
+              as String?,
+      values: values == freezed
+          ? _value._values
+          : values // ignore: cast_nullable_to_non_nullable
+              as Map<int, Object?>?,
+      mask: mask == freezed
+          ? _value.mask
+          : mask // ignore: cast_nullable_to_non_nullable
+              as int?,
+      maskField: maskField == freezed
+          ? _value.maskField
+          : maskField // ignore: cast_nullable_to_non_nullable
+              as String?,
+      sensor: sensor == freezed
+          ? _value.sensor
+          : sensor // ignore: cast_nullable_to_non_nullable
+              as String?,
+      rangeBottom: rangeBottom == freezed
+          ? _value.rangeBottom
+          : rangeBottom // ignore: cast_nullable_to_non_nullable
+              as int?,
+      rangeTop: rangeTop == freezed
+          ? _value.rangeTop
+          : rangeTop // ignore: cast_nullable_to_non_nullable
+              as int?,
+      from: from == freezed
+          ? _value.from
+          : from // ignore: cast_nullable_to_non_nullable
+              as int,
+      to: to == freezed
+          ? _value.to
+          : to // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
 
 /// @nodoc
+
 class _$_APIField implements _APIField {
   const _$_APIField(
-      {this.name,
-      this.type,
+      {required this.name,
+      required this.type,
+      this.format,
       this.bitmask,
+      this.units,
+      final Map<int, Object?>? values,
+      this.mask,
       this.maskField,
       this.sensor,
       this.rangeBottom,
       this.rangeTop,
-      this.units,
-      this.mask,
       this.from = 0,
-      @nullable this.to,
-      this.format,
-      this.values})
-      : assert(from != null);
+      this.to})
+      : _values = values;
 
   @override
   final String name;
   @override
   final String type;
   @override
-  final int bitmask;
+  final String? format;
   @override
-  final String maskField;
+  final int? bitmask;
   @override
-  final String sensor;
+  final String? units;
+  final Map<int, Object?>? _values;
   @override
-  final int rangeBottom;
+  Map<int, Object?>? get values {
+    final value = _values;
+    if (value == null) return null;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
   @override
-  final int rangeTop;
+  final int? mask;
   @override
-  final String units;
+  final String? maskField;
   @override
-  final int mask;
-  @JsonKey(defaultValue: 0)
+  final String? sensor;
   @override
+  final int? rangeBottom;
+  @override
+  final int? rangeTop;
+  @override
+  @JsonKey()
   final int from;
   @override
-  @nullable
-  final int to;
-  @override
-  final String format;
-  @override
-  final Map<int, dynamic> values;
+  final int? to;
 
   @override
   String toString() {
-    return 'APIField(name: $name, type: $type, bitmask: $bitmask, maskField: $maskField, sensor: $sensor, rangeBottom: $rangeBottom, rangeTop: $rangeTop, units: $units, mask: $mask, from: $from, to: $to, format: $format, values: $values)';
+    return 'APIField(name: $name, type: $type, format: $format, bitmask: $bitmask, units: $units, values: $values, mask: $mask, maskField: $maskField, sensor: $sensor, rangeBottom: $rangeBottom, rangeTop: $rangeTop, from: $from, to: $to)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _APIField &&
-            (identical(other.name, name) ||
-                const DeepCollectionEquality().equals(other.name, name)) &&
-            (identical(other.type, type) ||
-                const DeepCollectionEquality().equals(other.type, type)) &&
-            (identical(other.bitmask, bitmask) ||
-                const DeepCollectionEquality()
-                    .equals(other.bitmask, bitmask)) &&
-            (identical(other.maskField, maskField) ||
-                const DeepCollectionEquality()
-                    .equals(other.maskField, maskField)) &&
-            (identical(other.sensor, sensor) ||
-                const DeepCollectionEquality().equals(other.sensor, sensor)) &&
-            (identical(other.rangeBottom, rangeBottom) ||
-                const DeepCollectionEquality()
-                    .equals(other.rangeBottom, rangeBottom)) &&
-            (identical(other.rangeTop, rangeTop) ||
-                const DeepCollectionEquality()
-                    .equals(other.rangeTop, rangeTop)) &&
-            (identical(other.units, units) ||
-                const DeepCollectionEquality().equals(other.units, units)) &&
-            (identical(other.mask, mask) ||
-                const DeepCollectionEquality().equals(other.mask, mask)) &&
-            (identical(other.from, from) ||
-                const DeepCollectionEquality().equals(other.from, from)) &&
-            (identical(other.to, to) ||
-                const DeepCollectionEquality().equals(other.to, to)) &&
-            (identical(other.format, format) ||
-                const DeepCollectionEquality().equals(other.format, format)) &&
-            (identical(other.values, values) ||
-                const DeepCollectionEquality().equals(other.values, values)));
+        (other.runtimeType == runtimeType &&
+            other is _$_APIField &&
+            const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality().equals(other.type, type) &&
+            const DeepCollectionEquality().equals(other.format, format) &&
+            const DeepCollectionEquality().equals(other.bitmask, bitmask) &&
+            const DeepCollectionEquality().equals(other.units, units) &&
+            const DeepCollectionEquality().equals(other._values, _values) &&
+            const DeepCollectionEquality().equals(other.mask, mask) &&
+            const DeepCollectionEquality().equals(other.maskField, maskField) &&
+            const DeepCollectionEquality().equals(other.sensor, sensor) &&
+            const DeepCollectionEquality()
+                .equals(other.rangeBottom, rangeBottom) &&
+            const DeepCollectionEquality().equals(other.rangeTop, rangeTop) &&
+            const DeepCollectionEquality().equals(other.from, from) &&
+            const DeepCollectionEquality().equals(other.to, to));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(name) ^
-      const DeepCollectionEquality().hash(type) ^
-      const DeepCollectionEquality().hash(bitmask) ^
-      const DeepCollectionEquality().hash(maskField) ^
-      const DeepCollectionEquality().hash(sensor) ^
-      const DeepCollectionEquality().hash(rangeBottom) ^
-      const DeepCollectionEquality().hash(rangeTop) ^
-      const DeepCollectionEquality().hash(units) ^
-      const DeepCollectionEquality().hash(mask) ^
-      const DeepCollectionEquality().hash(from) ^
-      const DeepCollectionEquality().hash(to) ^
-      const DeepCollectionEquality().hash(format) ^
-      const DeepCollectionEquality().hash(values);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(type),
+      const DeepCollectionEquality().hash(format),
+      const DeepCollectionEquality().hash(bitmask),
+      const DeepCollectionEquality().hash(units),
+      const DeepCollectionEquality().hash(_values),
+      const DeepCollectionEquality().hash(mask),
+      const DeepCollectionEquality().hash(maskField),
+      const DeepCollectionEquality().hash(sensor),
+      const DeepCollectionEquality().hash(rangeBottom),
+      const DeepCollectionEquality().hash(rangeTop),
+      const DeepCollectionEquality().hash(from),
+      const DeepCollectionEquality().hash(to));
 
+  @JsonKey(ignore: true)
   @override
-  _$APIFieldCopyWith<_APIField> get copyWith =>
-      __$APIFieldCopyWithImpl<_APIField>(this, _$identity);
+  _$$_APIFieldCopyWith<_$_APIField> get copyWith =>
+      __$$_APIFieldCopyWithImpl<_$_APIField>(this, _$identity);
 }
 
 abstract class _APIField implements APIField {
   const factory _APIField(
-      {String name,
-      String type,
-      int bitmask,
-      String maskField,
-      String sensor,
-      int rangeBottom,
-      int rangeTop,
-      String units,
-      int mask,
-      int from,
-      @nullable int to,
-      String format,
-      Map<int, dynamic> values}) = _$_APIField;
+      {required final String name,
+      required final String type,
+      final String? format,
+      final int? bitmask,
+      final String? units,
+      final Map<int, Object?>? values,
+      final int? mask,
+      final String? maskField,
+      final String? sensor,
+      final int? rangeBottom,
+      final int? rangeTop,
+      final int from,
+      final int? to}) = _$_APIField;
 
   @override
   String get name;
   @override
   String get type;
   @override
-  int get bitmask;
+  String? get format;
   @override
-  String get maskField;
+  int? get bitmask;
   @override
-  String get sensor;
+  String? get units;
   @override
-  int get rangeBottom;
+  Map<int, Object?>? get values;
   @override
-  int get rangeTop;
+  int? get mask;
   @override
-  String get units;
+  String? get maskField;
   @override
-  int get mask;
+  String? get sensor;
+  @override
+  int? get rangeBottom;
+  @override
+  int? get rangeTop;
   @override
   int get from;
   @override
-  @nullable
-  int get to;
+  int? get to;
   @override
-  String get format;
-  @override
-  Map<int, dynamic> get values;
-  @override
-  _$APIFieldCopyWith<_APIField> get copyWith;
+  @JsonKey(ignore: true)
+  _$$_APIFieldCopyWith<_$_APIField> get copyWith =>
+      throw _privateConstructorUsedError;
 }

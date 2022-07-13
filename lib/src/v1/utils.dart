@@ -11,8 +11,12 @@ int rgbToHex(int red, int green, int blue) => blue | (green << 8) | (red << 16);
 final _rand = Random();
 
 @freezed
-abstract class RGB with _$RGB {
-  const factory RGB({int red, int green, int blue}) = _RGB;
+class RGB with _$RGB {
+  const factory RGB({
+    required int red,
+    required int green,
+    required int blue,
+  }) = _RGB;
 }
 
 /// Generates a random rgb color
