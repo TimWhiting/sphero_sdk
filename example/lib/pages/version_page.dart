@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:sphero_sdk/sphero_sdk.dart';
 
 import '../common/state.dart';
 
@@ -29,10 +32,13 @@ class VersionPage extends ConsumerWidget {
           Center(child: Text('Version: ${version.asData?.value ?? ''}')),
           ElevatedButton(
             child: const Text('Change color'),
-            onPressed: () {
-              sphero.maybeWhen(
-                data: (sphero) {
-                  sphero?.randomColor();
+            onPressed: () async {
+              await sphero.maybeWhen(
+                data: (sphero) async {
+                  await sphero?.randomColor();
+                  sphero?.roll(255, Random().nextInt(255)).ignore();
+                  await Future<void>.delayed(const Duration(seconds: 1));
+                  await sphero?.stop();
                 },
                 orElse: () {},
               );

@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:dartx/dartx.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_blue/flutter_blue.dart' as blue;
-
+import 'package:logging/logging.dart';
 import 'adaptor.dart';
 import 'sphero.dart';
 
@@ -24,6 +24,8 @@ class ToyAdvertisement<T extends Sphero> {
   final T Function(SpheroPeripheral) typeof;
 }
 
+final _log = Logger('DiscoveryV1');
+
 class ToyDiscovered<T extends Sphero> extends ToyAdvertisement<T> {
   ToyDiscovered.fromAdvertisement(
     ToyAdvertisement<T> toy, {
@@ -33,19 +35,37 @@ class ToyDiscovered<T extends Sphero> extends ToyAdvertisement<T> {
 }
 
 Future<T> startToy<T extends Sphero>(T toy) async {
-  print('Starting...');
+  _log.fine('Starting...');
   await toy.connect();
   try {
-    print('Started');
+    _log.fine('Connected');
     final version = await toy.version();
 
     print('Version $version');
     final battery = await toy.getPowerState();
-
     print('Battery $battery');
-    Timer.periodic(100.milliseconds, (_) => toy.ping());
+
+    // unawaited(toy.streamGyroscope(0, true));
+    // unawaited(toy.streamAccelOne(0, true));
+    // unawaited(toy.streamAccelerometer(0, true));
+    // unawaited(toy.streamOdometer(0, true));
+    // unawaited(toy.streamVelocity(0, true));
+    // unawaited(toy.streamMotorsBackEmf(0, true));
+    // unawaited(toy.streamImuAngles(0, true));
+    print('Setting options');
+    await toy.setMotionTimeout(0xFFFF);
+    await toy.setInactivityTimeout(1000);
+    await toy.setPermOptionFlags(0x51);
+    print('Done setting options');
+    Timer.periodic(1.seconds, (_) async {
+      try {
+        await toy.ping();
+      } on Exception {
+        _log.warning('No response for ping');
+      }
+    });
   } on Exception {
-    print('Exception while starting toy');
+    _log.warning('Exception while starting toy');
   }
 
   return toy;
@@ -61,10 +81,10 @@ final SPRKPlus = ToyAdvertisement(
 extension BluetoothX on blue.FlutterBlue {
   /// Searches (but does not start) toys that match the passed criteria
   Future<List<ToyDiscovered>> findToys(List<ToyAdvertisement> toysType) async {
-    print('findToys');
+    _log.fine('findToys');
     final toys = <ToyDiscovered>[];
 
-    print('Scanning devices...');
+    _log.fine('Scanning devices...');
     await startScan(timeout: 4.seconds);
     scanResults.listen((sr) {
       for (final s in sr) {
@@ -75,7 +95,7 @@ extension BluetoothX on blue.FlutterBlue {
 
     await stopScan();
 
-    print('Done scanning devices.');
+    _log.fine('Done scanning devices.');
     return toys;
   }
 
@@ -91,14 +111,14 @@ extension BluetoothX on blue.FlutterBlue {
             (discovered.isNotEmpty ? discovered[0] : null);
 
     if (discoveredItem == null) {
-      print('Not found');
+      _log.fine('Not found');
       return null;
     }
 
     final toy = toyType.typeof(discoveredItem.peripheral);
-    print('connecting to $toy');
+    _log.fine('connecting to $toy');
     await startToy(toy);
-    print('found toy');
+    _log.fine('found toy');
 
     return toy as T;
   }
@@ -116,7 +136,7 @@ extension BluetoothX on blue.FlutterBlue {
         }),
       );
     } else {
-      print('Not found');
+      _log.fine('Not found');
       return [];
     }
   }
@@ -143,7 +163,7 @@ extension on blue.ScanResult {
           ),
         );
 
-        print('''
+        _log.warning('''
 name: ${toyAdvertisement.name},
    uuid: ${peripheral.identifier},
    mac-address: ${peripheral.identifier}''');

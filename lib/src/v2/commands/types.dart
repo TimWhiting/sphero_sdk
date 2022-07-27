@@ -195,11 +195,11 @@ class CommandOutput {
 class CommandPartial<T extends IntValueEnum> {
   CommandPartial({
     required this.commandId,
-    this.payload = const [],
+    List<int>? payload,
     this.targetId,
     this.sourceId,
-  });
-  List<int> payload;
+  }) : payload = Uint8List.fromList(payload ?? []);
+  Uint8List payload;
   final T commandId;
   int? targetId;
   int? sourceId;

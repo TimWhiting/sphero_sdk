@@ -1,5 +1,8 @@
 import 'dart:async';
-import 'dart:typed_data';
+import 'dart:collection';
+
+import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 
 import 'adaptor.dart';
 import 'devices/core.dart';
@@ -36,21 +39,22 @@ class Sphero extends SpheroBase with Custom {
   Sphero(
     this.address, {
     AdaptorV1? adaptor,
-    int? sop2 = SOP2.answer,
-    this.timeout = 500,
+    int? sop2,
+    this.timeout = 1000,
     this.emitPacketErrors = false,
     SpheroPeripheral? peripheral,
   }) {
     connection = adaptor ?? AdaptorV1(address, peripheral!);
     sop2Bitfield = sop2 ?? SOP2.both;
   }
+  final _log = Logger('Sphero');
   final String address;
   bool busy = false;
   bool ready = false;
   final packet = PacketParser();
   late AdaptorV1 connection;
   final responseQueue = <int, CommandQueueResponseItem>{};
-  final commandQueue = <CommandQueueItemV1>[];
+  final commandQueue = Queue<CommandQueueItemV1>();
   late int sop2Bitfield;
   int seqCounter = 0;
   int timeout;
@@ -69,29 +73,30 @@ class Sphero extends SpheroBase with Custom {
 
   Future<void> connect() async {
     connection.onRead = (payload) {
-      print('Got payload $payload');
-      emit('data', payload);
-      final parsedPayload = packet.parse(payload);
-      print('Parsed $parsedPayload');
-      Map<String, Object?>? parsedData;
+      try {
+        emit('data', payload);
+        final parsedPayload = packet.parse(payload);
+        Map<String, Object?>? parsedData;
 
-      if (parsedPayload!.sop2 == SOP2.sync) {
-        // synchronous packet
-        emit('response', parsedPayload);
-        final cmd = _responseCmd(parsedPayload.seq);
-        print('response for command $cmd');
-        parsedPayload.printPacket();
-        parsedData = packet.parseResponseData(cmd!, parsedPayload);
+        if (parsedPayload!.sop2 == SOP2.sync) {
+          // synchronous packet
+          emit('response', parsedPayload);
+          final cmd = _responseCmd(parsedPayload.seq);
+          parsedData = packet.parseResponseData(cmd!, parsedPayload);
 
-        _execCallback(parsedPayload.seq, parsedData);
-      } else if (parsedPayload.sop2 == SOP2.async) {
-        // async packet
-        parsedData = packet.parseAsyncData(parsedPayload, ds);
-        emit('async', parsedData);
-      }
+          _execCallback(parsedPayload.seq, parsedData);
+        } else if (parsedPayload.sop2 == SOP2.async) {
+          // async packet
+          parsedData = packet.parseAsyncData(parsedPayload, ds);
+          emit('async', parsedData);
+        }
 
-      if (parsedData?['event'] != null) {
-        emit(parsedData!['event'] as String, parsedData);
+        if (parsedData?['event'] != null) {
+          emit(parsedData!['event']! as String, parsedData);
+        }
+      } on Exception catch (e, st) {
+        print(e);
+        print(st);
       }
     };
     await connection.open();
@@ -117,7 +122,7 @@ class Sphero extends SpheroBase with Custom {
     int vDevice,
     int cmdName,
     Uint8List? data,
-  ) {
+  ) async {
     final seq = _incSeq();
     final completer = Completer<Map<String, Object?>>();
     final cmdPacket = packet.create(
@@ -129,7 +134,12 @@ class Sphero extends SpheroBase with Custom {
     );
     _queueCommand(cmdPacket, completer);
     _execCommand();
-    return completer.future;
+    try {
+      return await completer.future;
+    } on TimeoutException {
+      debugPrint('Command timeout $cmdPacket');
+      return {};
+    }
   }
 
   /// Adds a sphero [command] to the queue, with a [completer] that completes
@@ -139,7 +149,7 @@ class Sphero extends SpheroBase with Custom {
     Completer<Map<String, Object?>> completer,
   ) {
     if (commandQueue.length == 256) {
-      commandQueue.removeAt(0);
+      commandQueue.removeFirst();
     }
     commandQueue.add(CommandQueueItemV1(packet: command, completer: completer));
   }
@@ -152,10 +162,11 @@ class Sphero extends SpheroBase with Custom {
       // Get the seq number from the cmd packet/buffer
       // to store the callback response in that position
       busy = true;
-      cmd = commandQueue.removeAt(0);
+      cmd = commandQueue.removeFirst();
       _queueFuture(cmd.packet, cmd.completer);
-      print('Writing command');
-      cmd.packet.printPacket();
+      _log.warning(
+        'Sending command: ${cmd.packet.packet.map((b) => b.toRadixString(16).padLeft(2, '0')).join()}',
+      );
       connection.write(cmd.packet.packet);
     }
   }
@@ -186,12 +197,15 @@ class Sphero extends SpheroBase with Custom {
 
     final response = CommandQueueResponseItem(
       handler: handler,
+      packet: cmdPacket,
       commandID: CommandID(did: cmdPacket.did, cid: cmdPacket.cid),
     );
     response.timer = Timer(Duration(milliseconds: timeout), () {
       responseQueue.remove(seq);
       if (!completer.isCompleted) {
-        completer.completeError('Sphero command timeout $cmdPacket');
+        completer.completeError(
+          TimeoutException('Sphero command timeout $cmdPacket'),
+        );
       }
     });
     responseQueue[seq] = response;
@@ -212,6 +226,7 @@ class Sphero extends SpheroBase with Custom {
   /// Returns the response [CommandID] (did, cid) passed to the sphero
   /// based on the [seq] from the response (used for parsing responses).
   CommandID? _responseCmd(int seq) {
+    // print('Got seq $seq have $responseQueue');
     final response = responseQueue[seq];
     if (response != null) {
       return response.commandID;
@@ -231,9 +246,19 @@ class Sphero extends SpheroBase with Custom {
 }
 
 class CommandQueueResponseItem {
-  CommandQueueResponseItem({required this.handler, required this.commandID});
+  CommandQueueResponseItem({
+    required this.handler,
+    required this.packet,
+    required this.commandID,
+  });
 
   final Function(Map<String, Object?>) handler;
   final CommandID commandID;
   Timer? timer;
+  final PacketV1 packet;
+
+  @override
+  String toString() {
+    return '$packet';
+  }
 }

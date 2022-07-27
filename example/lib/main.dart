@@ -3,12 +3,18 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
+import 'package:logging/logging.dart';
 import 'common/state.dart';
 import 'pages/bluetooth_info.dart';
 import 'pages/version_page.dart';
 
 void main() {
+  Logger.root.level = Level.WARNING;
+  Logger.root.onRecord.listen((rec) {
+    debugPrint(
+      '${rec.level.name}-${rec.loggerName}: ${rec.time}: ${rec.message}',
+    );
+  });
   runApp(const ProviderScope(child: MyApp()));
 }
 

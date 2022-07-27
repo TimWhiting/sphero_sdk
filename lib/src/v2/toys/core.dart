@@ -58,7 +58,7 @@ class Core {
     decoder = decodeFactory((error, [packet]) => onPacketRead(error, packet));
 
     print('init-connect');
-    await p.connect(autoConnect: true);
+    await p.connect();
 
     print('init-discoverAllServicesAndCharacteristics');
     await p.discoverServices();
@@ -131,7 +131,7 @@ class Core {
   Future<void> destroy() async {
     // TODO handle all unbind, disconnect, etc
     eventsListeners.clear(); // remove references
-    peripheral.disconnect();
+    await peripheral.disconnect();
   }
 
   Future<void> configureSensorStream() async {

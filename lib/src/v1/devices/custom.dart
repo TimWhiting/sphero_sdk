@@ -98,6 +98,7 @@ mixin Custom on SpheroBase {
   /// await orb.randomColor();
   /// ```
   Future<Map<String, Object?>> randomColor() {
+    print('Setting random color');
     final rgb = randomRGBColor();
     return setRgbLed(rgb.red, rgb.green, rgb.blue);
   }

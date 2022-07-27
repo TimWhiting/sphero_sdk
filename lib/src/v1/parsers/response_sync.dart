@@ -2,6 +2,13 @@ import 'response.dart';
 
 // ignore: non_constant_identifier_names
 final RES_PARSER = {
+  '0:1': const APIV1(
+    desc: 'Ping',
+    did: 0x00,
+    cid: 0x01,
+    event: 'ping',
+    fields: [],
+  ),
   '0:2': const APIV1(
     desc: 'Get Version',
     did: 0x00,

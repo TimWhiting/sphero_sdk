@@ -45,7 +45,7 @@ class Queue<T> {
   /// Be careful not to exceed 255 as seq will return to 0 and it can collide.
   void processCommand() {
     final command = commandQueue.removeAt(0);
-    queueListener.onExecute(command.payload);
+    unawaited(queueListener.onExecute(command.payload));
     waitingForResponseQueue.add(command);
     command.timeout =
         Timer(5000.milliseconds, () => onCommandTimedOut(command));

@@ -3,28 +3,41 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
+
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 import 'parsers/response.dart';
 import 'parsers/response_async.dart';
 import 'parsers/response_sync.dart';
 import 'utils.dart';
+
 export 'utils.dart';
 
 const MIN_BUFFER_SIZE = 6;
 
 class FIELDS {
   static const size = 5;
+  // Start of packet index
   static const sop1_pos = 0;
+  // Start of packet hex
   static const sop1_hex = 0xff;
+  // Start of packet2 index
   static const sop2_pos = 1;
+  // Start of packet sync indicator
   static const sop2_sync = 0xff;
+  // Start of packet async indicator
   static const sop2_async = 0xfe;
   static const mrspHex = 0x00;
   static const seqHex = 0x00;
+
+  // MRSP / IDCode index
   static const mrspIdCode = 2;
+  // Seq / MSBLen index
   static const seqMsb = 3;
+  // Dlen / LSBLen index
   static const dlenLsb = 4;
+  // Checksum index??
   static const checksum = 5;
   static const didHex = 0x00;
   static const cidHex = 0x01;
@@ -67,15 +80,33 @@ class PacketV1 {
     return Uint8List.fromList([...p, checksum]);
   }
 
+  String get dataString => data.map((b) => b.toRadixString(16)).join();
+
   @override
-  String toString() =>
-      '''sop1: $sop1, sop2: $sop2, did: $did, cid: $cid, seq: $seq, dlen: $dlen, data: $data''';
+  String toString() {
+    if (sop1 != FIELDS.sop1_hex) {
+      return 'Bad packet $data';
+    } else {
+      if (sop2 == FIELDS.sop2_sync) {
+        return '''sync packet, did: ${did.toRadixString(16)}, cid: ${cid.toRadixString(16)}'''
+            ''' seq: $seq, dlen: $dlen, data: $dataString checksum: ${checksum.toRadixString(16)}''';
+      } else if (idCode == null) {
+        return '''async cmd packet, did: ${did.toRadixString(16)}, cid: ${cid.toRadixString(16)}'''
+            ''' seq: $seq, dlen: $dlen, data: $dataString checksum: ${checksum.toRadixString(16)}''';
+      } else {
+        return '''async packet, idCode: ${idCode?.toRadixString(16)},'''
+            ''' dlenMsb: ${dlenMsb?.toRadixString(16)}, dlenLsb: ${dlenLsb?.toRadixString(16)}, dlen: ${dlen.toRadixString(16)},'''
+            ''' data: $dataString checksum: ${checksum.toRadixString(16)}''';
+      }
+    }
+  }
 }
 
 class PacketParser {
   PacketParser({
     this.emitPacketErrors = false,
   });
+  final _log = Logger('PacketParserV1');
   bool emitPacketErrors;
 
   Uint8List partialBuffer = Uint8List(0);
@@ -108,15 +139,11 @@ class PacketParser {
       partialBuffer = b;
     }
     if (!checkSOPs(b)) {
-      print('Trying to find SOP');
       // Offer one chance to fix SOPs
       b = findSOP(b);
-      print('New packet buffer $b');
     }
     if (checkSOPs(b)) {
-      print('sop looks good');
       if (checkMinSize(b) && checkExpectedSize(b) > -1) {
-        print('size looks good');
         return parseBuffer(b);
       }
       partialBuffer = Uint8List.fromList(b);
@@ -135,7 +162,6 @@ class PacketParser {
     for (var i = 0; i < l.length - 1; i++) {
       if (l[i] == FIELDS.sop1_hex) {
         if (checkSOP2(Uint8List.sublistView(l, i)) != false) {
-          print('Found sop2');
           return l.sublist(i);
         }
       }
@@ -145,7 +171,6 @@ class PacketParser {
 
   @visibleForTesting
   PacketV1 parseBuffer(Uint8List b) {
-    print(b);
     final packet = PacketV1();
     packet.sop1 = b[FIELDS.sop1_pos];
     packet.sop2 = b[FIELDS.sop2_pos];
@@ -211,18 +236,28 @@ class PacketParser {
   }
 
   Map<String, Object?> parseAsyncData(PacketV1 payload, Map<String, int> ds) {
-    print('Parsing async data');
+    _log.info('Parsing async data $ds');
     final parser = ASYNC_PARSER[payload.idCode];
+    if (parser == null) {
+      _log.warning(
+        'No async parser found: ds: $ds, payload: $payload',
+      );
+    }
 
     return parseDataMap(parser, payload, ds);
   }
 
   Map<String, Object?> parseResponseData(CommandID cmd, PacketV1 payload) {
-    print('Parsing sync data');
+    _log.fine('Parsing sync data $cmd');
     final parserId =
         // ignore: prefer_interpolation_to_compose_strings
         cmd.did.toRadixString(16) + ':' + cmd.cid.toRadixString(16);
     final parser = RES_PARSER[parserId];
+    if (parser == null) {
+      _log.warning(
+        'No sync parser found: did: ${cmd.did.toRadixString(16)} cid: ${cmd.cid.toRadixString(16)}, payload: $payload',
+      );
+    }
 
     return parseDataMap(parser, payload);
   }
@@ -237,11 +272,11 @@ class PacketParser {
     Map<String, Object?> pData;
     APIField field;
     var ds = dsIn;
-    if (parser != null && data.isNotEmpty) {
+    if (parser != null) {
       try {
         ds = checkDSMasks(ds, parser);
       } on Exception catch (e) {
-        print(e);
+        _log.warning(e);
         return <String, PacketV1>{'payload': payload};
       }
 
@@ -277,11 +312,6 @@ class PacketParser {
         i = incParserIndex(i, fields, data, dsFlag, dsIndex);
       }
     } else {
-      print('''
-No parser found:  data: $payload, 
-          ${payload.cid},
-          ${payload.did},
-          ${payload.seq}''');
       return <String, PacketV1>{'payload': payload};
     }
 
@@ -338,11 +368,11 @@ No parser found:  data: $payload,
   ]) {
     Object? pField;
     if (field.from >= dataIn.length) {
-      print('Big problem with field, returning 0');
+      _log.warning('Big problem with field, returning 0');
       return 0;
     }
     if (field.to != null && field.to! > dataIn.length) {
-      print('Big problem with field, but still returning field as int');
+      _log.warning('Big problem with field, but still returning field as int');
       final data = dataIn.sublist(field.from);
       return data.isNotEmpty ? bufferToInt(data) : 0;
     }
@@ -393,7 +423,6 @@ No parser found:  data: $payload,
     Map<String, Object?> pData,
   ) {
     var pField = <String, Object?>{};
-    print('valIn $valIn, $field, $pData');
     var val = valIn;
     if (val > field.rangeTop!) {
       val = twosToInt(val);
@@ -439,8 +468,8 @@ No parser found:  data: $payload,
   @visibleForTesting
   int checkExpectedSize(Uint8List buffer) {
     // Size = buffer fields size (SOP1, SOP2, MSRP, SEQ and DLEN) + DLEN value
-    final expectedSize = FIELDS.size + extractDlen(buffer),
-        bufferSize = buffer.length;
+    final expectedSize = FIELDS.size + extractDlen(buffer);
+    final bufferSize = buffer.length;
 
     return (bufferSize < expectedSize) ? -1 : expectedSize;
   }

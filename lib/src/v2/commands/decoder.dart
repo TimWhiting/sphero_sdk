@@ -6,10 +6,8 @@ import 'types.dart';
 
 const MINIMUM_PACKET_LENGTH = 6;
 
-int number(List<int> buffer, int offset) => (ByteDataReader()
-      ..add(buffer)
-      ..readAhead(offset))
-    .readInt16();
+int number(Uint8List buffer, int offset) =>
+    (ByteDataReader()..add(Uint8List.sublistView(buffer, offset))).readInt16();
 
 AllFlags decodeFlags(int flags) {
   final isResponse = (flags & Flags.isResponse) != 0;

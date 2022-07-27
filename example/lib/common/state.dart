@@ -20,7 +20,8 @@ final bleManagerProvider = FutureProvider<FlutterBlue>((ref) async {
   }
   final manager = FlutterBlue.instance;
   print(await manager.isAvailable);
-  manager.setLogLevel(LogLevel.debug);
+  // manager.setLogLevel(LogLevel.error);
+
   return manager;
 });
 final allDevicesProvider = StateProvider<Map<String, ScanResult>>((ref) => {});

@@ -15,6 +15,7 @@ dependencies:
   flutter_hooks: any
   flutter_riverpod: any
   hooks_riverpod: any
+  logging: ^1.0.2
   permission_handler: any
   sphero_sdk:
     path: ../
